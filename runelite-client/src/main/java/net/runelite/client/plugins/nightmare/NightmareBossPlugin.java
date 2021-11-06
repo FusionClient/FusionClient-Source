@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-	name = "[BL] Nightmare",
-	description = "shhh",
+	name = "Nightmare OP",
+	description = "Dirty",
 	tags = {"nm", "shit boss", "prayer swap"},
 	enabledByDefault = false
 )

@@ -1181,7 +1181,7 @@ public class OPRSExternalPluginManager
 	}
 
 	/**
-	 * Mostly stolen from {@link java.net.URLStreamHandler#toExternalForm(URL)}
+	 * Mostly stolen from
 	 *
 	 * @param url URL to encode
 	 * @return URL, with path, query and ref encoded
