@@ -48,8 +48,8 @@ import net.runelite.client.util.ImageUtil;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-	loadWhenOutdated = true, // prevent users from disabling
-	hidden = false, // prevent users from disabling
+	loadWhenOutdated = false, // prevent users from disabling
+	hidden = true, // prevent users from disabling
 	name = "Plugin Manager"
 )
 @Singleton
