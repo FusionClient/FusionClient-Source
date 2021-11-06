@@ -24,7 +24,6 @@
  */
 package net.runelite.client.ui;
 
-import com.openosrs.client.ui.OpenOSRSSplashScreen;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
@@ -69,9 +68,9 @@ public class SplashScreen extends JFrame implements ActionListener
 
 	private SplashScreen() throws IOException
 	{
-		BufferedImage logo = ImageUtil.loadImageResource(SplashScreen.class, "openosrs_transparent.png");
+		BufferedImage logo = ImageUtil.loadImageResource(SplashScreen.class, "runelite_transparent.png");
 
-		setTitle("OpenOSRS Launcher");
+		setTitle("RuneLite Launcher");
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
@@ -96,8 +95,8 @@ public class SplashScreen extends JFrame implements ActionListener
 		y += action.getHeight() + PAD;
 
 		pane.add(progress);
-		progress.setForeground(ColorScheme.BRAND_BLUE);
-		progress.setBackground(ColorScheme.BRAND_BLUE.darker().darker());
+		progress.setForeground(ColorScheme.BRAND_ORANGE);
+		progress.setBackground(ColorScheme.BRAND_ORANGE.darker().darker());
 		progress.setBorder(new EmptyBorder(0, 0, 0, 0));
 		progress.setBounds(0, y, WIDTH, 14);
 		progress.setFont(font);
@@ -131,7 +130,7 @@ public class SplashScreen extends JFrame implements ActionListener
 		timer.setRepeats(true);
 		timer.start();
 
-		//setVisible(true);
+		setVisible(true);
 	}
 
 	@Override
@@ -208,18 +207,16 @@ public class SplashScreen extends JFrame implements ActionListener
 			INSTANCE.dispose();
 			INSTANCE = null;
 		});
-		OpenOSRSSplashScreen.close();
 	}
 
 	public static void stage(double overallProgress, @Nullable String actionText, String subActionText)
 	{
 		stage(overallProgress, actionText, subActionText, null);
-		OpenOSRSSplashScreen.stage(overallProgress, subActionText);
 	}
 
 	public static void stage(double startProgress, double endProgress,
-		@Nullable String actionText, String subActionText,
-		int done, int total, boolean mib)
+							 @Nullable String actionText, String subActionText,
+							 int done, int total, boolean mib)
 	{
 		String progress;
 		if (mib)
@@ -233,7 +230,6 @@ public class SplashScreen extends JFrame implements ActionListener
 			progress = done + " / " + total;
 		}
 		stage(startProgress + ((endProgress - startProgress) * done / total), actionText, subActionText, progress);
-		OpenOSRSSplashScreen.stage(startProgress, endProgress, subActionText, done, total);
 	}
 
 	public static void stage(double overallProgress, @Nullable String actionText, String subActionText, @Nullable String progressText)
