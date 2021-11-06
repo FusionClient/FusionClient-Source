@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
 	loadWhenOutdated = true, // prevent users from disabling
-	hidden = true, // prevent users from disabling
-	name = "OpenOSRS"
+	hidden = false, // prevent users from disabling
+	name = "Plugin Manager"
 )
 @Singleton
 @Slf4j
