@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Plugin-Description: Automatically Logout / Hop / Teleport
+Plugin-Id: autologhop-plugin
+Plugin-License: 3-Clause BSD License
+Plugin-Provider: Soxs
+Plugin-Version: 0.1.6
+
