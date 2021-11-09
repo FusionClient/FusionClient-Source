@@ -48,7 +48,7 @@ import net.runelite.client.util.ImageUtil;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-	loadWhenOutdated = false, // prevent users from disabling
+	loadWhenOutdated = true, // prevent users from disabling
 	hidden = true, // prevent users from disabling
 	name = "Plugin Manager"
 )
@@ -69,7 +69,7 @@ public class OpenOSRSPlugin extends Plugin
 	@Inject
 	private ClientToolbar clientToolbar;
 
-//	private NavigationButton navButton;
+	private NavigationButton navButton;
 
 	private final HotkeyListener hotkeyListener = new HotkeyListener(() -> this.keybind)
 	{
@@ -100,26 +100,26 @@ public class OpenOSRSPlugin extends Plugin
 
 		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "externalmanager_icon.png");
 
-/*		navButton = NavigationButton.builder()
+		navButton = NavigationButton.builder()
 			.tooltip("External Plugin Manager")
 			.icon(icon)
 			.priority(1)
 			.panel(panel)
 			.build();
-		clientToolbar.addNavigation(navButton);*/
+		clientToolbar.addNavigation(navButton);
 
 		this.keybind = config.detachHotkey();
 		keyManager.registerKeyListener(hotkeyListener);
 	}
 
-/*	@Override
+	@Override
 	protected void shutDown()
 	{
 		if (navButton != null)
 		{
 			clientToolbar.removeNavigation(navButton);
 		}
-	} */
+	}
 
 	@Subscribe
 	private void onConfigChanged(ConfigChanged event)
