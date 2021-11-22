@@ -229,7 +229,7 @@ public class PvpToolsPlugin extends Plugin
 		navButton = NavigationButton.builder()
 			.tooltip("PvP Tools")
 			.icon(icon)
-			.priority(5)
+			.priority(6)
 			.panel(panel)
 			.build();
 
