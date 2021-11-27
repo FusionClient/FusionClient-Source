@@ -292,7 +292,7 @@ public interface TheatreConfig extends Config
 		return 2;
 	}
 
-	@ConfigItem(
+	/*@ConfigItem(
 		name = "Hide Bloat Tank",
 		keyName = "hideBloatTank",
 		description = "Hides the entire Bloat tank in the center of the room",
@@ -302,7 +302,7 @@ public interface TheatreConfig extends Config
 	default boolean hideBloatTank()
 	{
 		return false;
-	}
+	} */
 
 	@ConfigItem(
 		name = "Hide Ceiling Chains",

@@ -129,7 +129,7 @@ public class Bloat extends Room
 	{
 		if (e.getGameState() == GameState.LOGGED_IN && inRoomRegion(TheatrePlugin.BLOAT_REGION))
 		{
-			if (config.hideBloatTank())
+		//	if (config.hideBloatTank())
 			{
 				removeGameObjectsFromScene(client.getPlane(), Ints.toArray(tankObjectIDs));
 				removeGameObjectsFromScene(1, Ints.toArray(topOfTankObjectIDs));
