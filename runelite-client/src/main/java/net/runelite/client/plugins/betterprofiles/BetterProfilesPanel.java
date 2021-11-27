@@ -84,7 +84,7 @@ class BetterProfilesPanel extends PluginPanel {
 		helpPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		helpPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		helpPanel.setLayout(new DynamicGridLayout(1, 1));
-		JLabel helpLabel = new JLabel(htmlLabel(String.format("To add and load accounts, first enter a password into the Encryption Password field then press %s. <br /><br /> You can now add as many accounts as you would like. <br /><br /> The next time you restart CaseLite, enter your encryption password and click load accounts to see the accounts you entered.", this.betterProfilesConfig.salt().length() == 0 ? "save" : "unlock")));
+		JLabel helpLabel = new JLabel(htmlLabel(String.format("To add and load accounts, first enter a password into the Encryption Password field then press %s. <br /><br /> You can now add as many accounts as you would like. <br /><br /> The next time you restart CaseLITE, enter your encryption password and click load accounts to see the accounts you entered.", this.betterProfilesConfig.salt().length() == 0 ? "save" : "unlock")));
 		helpLabel.setFont(smallFont);
 		helpPanel.add(helpLabel);
 		this.loginPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
