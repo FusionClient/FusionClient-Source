@@ -929,8 +929,7 @@ public enum WidgetInfo
 
 	POH_TREASURE_CHEST_INVENTORY_CONTAINER(WidgetID.POH_TREASURE_CHEST_INVENTORY_GROUP_ID, 0),
 	;
-
-	private final int groupId;
+    private final int groupId;
 	private final int childId;
 
 	WidgetInfo(int groupId, int childId)

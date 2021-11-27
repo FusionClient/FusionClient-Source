@@ -9,7 +9,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
 	name = "World Ping",
-	enabledByDefault = true,
+	enabledByDefault = false,
 	description = "Displays server cycle time in top-right corner"
 )
 public class TickDebugPlugin extends Plugin {

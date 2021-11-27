@@ -9,11 +9,11 @@ import net.runelite.client.config.ConfigSection;
 public interface AutoLogHopConfig extends Config {
 	@ConfigSection(
 		keyName = "title",
-		name = "Soxs' AutoLogHop",
+		name = "AutoLog/Hop",
 		description = "",
 		position = 0
 	)
-	String title = "Soxs' AutoLogHop";
+	String title = "AutoLog/Hop";
 
 	@ConfigItem(
 		keyName = "method",
@@ -31,7 +31,7 @@ public interface AutoLogHopConfig extends Config {
 		name = "Teleport Method",
 		description = "Logout = log out (0 tick), hop = hop worlds (1 tick), log then hop = logout and hop worlds from client screen (0 tick)",
 		position = 11,
-		section = "Soxs' AutoLogHop",
+		section = " AutoLog/Hop",
 		hidden = true,
 		unhide = "method",
 		unhideValue = "TELEPORT"
