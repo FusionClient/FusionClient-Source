@@ -414,7 +414,9 @@ public class Hooks implements Callbacks
 
 		try
 		{
-			drawMirror();
+			//renderer.render((Graphics2D)finalImage.getGraphics(), OverlayLayer.AFTER_MIRROR);
+			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
+			//drawMirror();
 		}
 		catch (Exception ex)
 		{
