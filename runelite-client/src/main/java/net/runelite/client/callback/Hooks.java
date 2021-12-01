@@ -24,13 +24,7 @@
  */
 package net.runelite.client.callback;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -72,6 +66,7 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayRenderer;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.DeferredEventBus;
+import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.RSTimeUnit;
 
 /**
@@ -87,7 +82,12 @@ public class Hooks implements Callbacks
 
 	private static final GameTick GAME_TICK = new GameTick();
 	private static final BeforeRender BEFORE_RENDER = new BeforeRender();
+
+	//Mirror mode
 	private static final DrawFinished drawFinishedEvent = new DrawFinished();
+	private int mouseX = 0;
+	private int mouseY = 0;
+	private final Image cursor = ImageUtil.getResourceStreamFromClass(Hooks.class, "cursor.png");
 
 	private static Client client;
 	private final OverlayRenderer renderer;
@@ -297,12 +297,16 @@ public class Hooks implements Callbacks
 	@Override
 	public MouseEvent mouseDragged(MouseEvent mouseEvent)
 	{
+		mouseX = mouseEvent.getX();
+		mouseY = mouseEvent.getY();
 		return mouseManager.processMouseDragged(mouseEvent);
 	}
 
 	@Override
 	public MouseEvent mouseMoved(MouseEvent mouseEvent)
 	{
+		mouseX = mouseEvent.getX();
+		mouseY = mouseEvent.getY();
 		return mouseManager.processMouseMoved(mouseEvent);
 	}
 
@@ -408,15 +412,13 @@ public class Hooks implements Callbacks
 		if (client.isMirrored())
 		{
 			drawFinishedEvent.image = copy(finalImage);
-			//	drawFinishedEvent.image.getGraphics().drawImage(cursor, mouseX, mouseY, null);
+			drawFinishedEvent.image.getGraphics().drawImage(cursor, mouseX, mouseY, null);
 			eventBus.post(drawFinishedEvent);
 		}
 
 		try
 		{
-			//renderer.render((Graphics2D)finalImage.getGraphics(), OverlayLayer.AFTER_MIRROR);
 			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
-			//drawMirror();
 		}
 		catch (Exception ex)
 		{
