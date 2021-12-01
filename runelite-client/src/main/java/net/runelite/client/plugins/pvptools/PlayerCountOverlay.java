@@ -44,7 +44,7 @@ public class PlayerCountOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
-		setLayer(OverlayLayer.ABOVE_WIDGETS);
+		setLayer(OverlayLayer.AFTER_MIRROR);
 		setPriority(OverlayPriority.HIGHEST);
 		setPosition(OverlayPosition.TOP_LEFT);
 		setPreferredPosition(OverlayPosition.TOP_LEFT);

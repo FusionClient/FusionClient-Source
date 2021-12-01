@@ -63,7 +63,7 @@ public class MultiIndicatorsMinimapOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.ALWAYS_ON_TOP);
+		setLayer(OverlayLayer.AFTER_MIRROR);
 		setPriority(OverlayPriority.LOW);
 	}
 

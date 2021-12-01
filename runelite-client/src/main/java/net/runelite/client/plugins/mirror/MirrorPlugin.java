@@ -58,13 +58,13 @@ public class MirrorPlugin extends Plugin {
 
                 if (jframe != null) {
                     if (this.config.mirrorName()) {
-                        jframe.setTitle("OpenOSRS Mirror - " + name);
+                        jframe.setTitle("RuneLite - " + name);
                     } else {
-                        jframe.setTitle("OpenOSRS Mirror");
+                        jframe.setTitle("RuneLite");
                     }
                 }
             } else if (jframe != null) {
-                jframe.setTitle("OpenOSRS Mirror");
+                jframe.setTitle("RuneLite");
                 return true;
             }
 
@@ -74,7 +74,7 @@ public class MirrorPlugin extends Plugin {
 
     public void startUp() {
         if (jframe == null) {
-            jframe = new JFrame("OpenOSRS Mirror");
+            jframe = new JFrame("RuneLite");
             jframe.setSize(1280, 720);
             canvas.setSize(1280, 720);
             jframe.add(canvas);
