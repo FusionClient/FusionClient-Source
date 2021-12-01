@@ -163,7 +163,7 @@ public class ClientLoader implements Supplier<Applet>
 
 				SplashScreen.stage(.40, null, "Loading client");
 
-				File oprsInjected = new File(System.getProperty("user.home") + "/.CuntLite/cache/injected-client.jar");
+				File oprsInjected = new File(System.getProperty("user.home") + "/.Fusion/cache/injected-client.jar");
 				if (updateCheckMode == AUTO)
 				{
 					writeInjectedClient(oprsInjected);

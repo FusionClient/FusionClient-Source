@@ -24,6 +24,9 @@
  */
 package net.runelite.client.input;
 
+import net.runelite.client.ui.overlay.OverlayLayer;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public abstract class MouseAdapter implements MouseListener
@@ -69,4 +72,5 @@ public abstract class MouseAdapter implements MouseListener
 	{
 		return mouseEvent;
 	}
+
 }

@@ -23,7 +23,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 RuneLite Enabled {
-    kind=Dark
+    kind=Light
     colorUltraLight=#232323
     colorExtraLight=#232323
     colorLight=#232323

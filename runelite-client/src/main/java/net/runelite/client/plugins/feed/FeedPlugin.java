@@ -53,7 +53,8 @@ import okhttp3.OkHttpClient;
 	name = "News Feed",
 	description = "Show the latest RuneLite blog posts, OSRS news, and JMod Twitter posts",
 	tags = {"external", "integration", "panel", "twitter"},
-	loadWhenOutdated = true
+	loadWhenOutdated = true,
+	hidden = true
 )
 @Slf4j
 public class FeedPlugin extends Plugin

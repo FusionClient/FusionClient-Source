@@ -106,7 +106,7 @@ public class OpenOSRSPlugin extends Plugin
 			.priority(1)
 			.panel(panel)
 			.build();
-		clientToolbar.addNavigation(navButton);
+//		clientToolbar.addNavigation(navButton);
 
 		this.keybind = config.detachHotkey();
 		keyManager.registerKeyListener(hotkeyListener);

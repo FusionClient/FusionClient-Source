@@ -67,7 +67,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "CoX Helper",
+	name = "Cox Additions",
 	enabledByDefault = false,
 	description = "All-in-one plugin for Chambers of Xeric",
 	tags = {"CoX", "chamber", "xeric", "helper"}

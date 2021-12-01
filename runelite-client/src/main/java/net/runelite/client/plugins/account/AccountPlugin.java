@@ -42,7 +42,7 @@ import net.runelite.client.util.ImageUtil;
 
 @PluginDescriptor(
 	name = "Account",
-	description = "Sync RuneLite config settings with your Google account",
+	description = "Turn this off, See Discord #support section for settings",
 	tags = {"external", "google", "integration"},
 	loadWhenOutdated = true
 )
