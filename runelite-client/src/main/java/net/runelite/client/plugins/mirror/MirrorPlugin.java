@@ -24,7 +24,8 @@ import org.pf4j.Extension;
 @PluginDescriptor(
         name = "Mirror",
         description = "Create a new window with the game image minus the top overlay layer",
-        enabledByDefault = false
+        enabledByDefault = false,
+        conflicts = {"GPU", "117 HD (beta)"}
 )
 public class MirrorPlugin extends Plugin {
     @Inject
