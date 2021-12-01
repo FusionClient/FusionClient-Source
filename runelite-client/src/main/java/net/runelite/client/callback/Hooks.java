@@ -62,6 +62,7 @@ import net.runelite.client.Notifier;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.DrawFinished;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.input.MouseManager;
 import net.runelite.client.task.Scheduler;
@@ -86,6 +87,7 @@ public class Hooks implements Callbacks
 
 	private static final GameTick GAME_TICK = new GameTick();
 	private static final BeforeRender BEFORE_RENDER = new BeforeRender();
+	private static final DrawFinished drawFinishedEvent = new DrawFinished();
 
 	private static Client client;
 	private final OverlayRenderer renderer;
@@ -403,6 +405,22 @@ public class Hooks implements Callbacks
 			finalImage = image;
 		}
 
+		if (client.isMirrored())
+		{
+			drawFinishedEvent.image = copy(finalImage);
+			//	drawFinishedEvent.image.getGraphics().drawImage(cursor, mouseX, mouseY, null);
+			eventBus.post(drawFinishedEvent);
+		}
+
+		try
+		{
+			drawMirror();
+		}
+		catch (Exception ex)
+		{
+			log.warn("Error during post-mirror rendering", ex);
+		}
+
 		// Draw the image onto the game canvas
 		graphics.drawImage(finalImage, 0, 0, client.getCanvas());
 
@@ -436,6 +454,21 @@ public class Hooks implements Callbacks
 		try
 		{
 			renderer.renderOverlayLayer(graphics2d, OverlayLayer.ABOVE_SCENE);
+		}
+		catch (Exception ex)
+		{
+			log.warn("Error during overlay rendering", ex);
+		}
+	}
+
+	public void drawMirror()
+	{
+		MainBufferProvider bufferProvider = (MainBufferProvider) client.getBufferProvider();
+		Graphics2D graphics2d = getGraphics(bufferProvider);
+
+		try
+		{
+			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
 		}
 		catch (Exception ex)
 		{

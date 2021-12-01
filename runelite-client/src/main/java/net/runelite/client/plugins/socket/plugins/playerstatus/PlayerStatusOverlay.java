@@ -66,7 +66,7 @@ public class PlayerStatusOverlay extends Overlay {
 
         this.setPosition(OverlayPosition.DYNAMIC);
         this.setPriority(OverlayPriority.HIGH);
-        this.setLayer(OverlayLayer.ABOVE_SCENE);
+        this.setLayer(OverlayLayer.AFTER_MIRROR);
     }
 
     private boolean ignoreMarker(AbstractMarker marker) {

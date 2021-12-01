@@ -332,6 +332,7 @@ public class OverlayManager
 			{
 				overlayMap.put(drawHook, overlay);
 			}
+
 		}
 
 		for (Object key : overlayMap.keys())

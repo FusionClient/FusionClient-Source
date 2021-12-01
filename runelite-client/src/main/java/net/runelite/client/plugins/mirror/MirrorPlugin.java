@@ -18,117 +18,117 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.DrawFinished;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-/*
+import org.pf4j.Extension;
+
+@Extension
 @PluginDescriptor(
-	name = "Mirror",
-	description = "Create a new window with the game image minus the top overlay layer - does not work with gpu/hd currently",
-	enabledByDefault = false,
-	conflicts = {"GPU"}
+        name = "Mirror",
+        description = "Create a new window with the game image minus the top overlay layer",
+        enabledByDefault = false
 )
 public class MirrorPlugin extends Plugin {
-	@Inject
-	private Client client;
-	@Inject
-	private MirrorConfig config;
-	@Inject
-	private ClientThread clientThread;
-	public static JFrame jframe;
-	public static final Canvas canvas;
-	public static BufferedImage bufferedImage;
+    @Inject
+    private Client client;
+    @Inject
+    private MirrorConfig config;
+    @Inject
+    private ClientThread clientThread;
+    public static JFrame jframe;
+    public static final Canvas canvas;
+    public static BufferedImage bufferedImage;
 
-	public MirrorPlugin() {
-	}
+    @Provides
+    MirrorConfig getConfig(ConfigManager configManager) {
+        return (MirrorConfig)configManager.getConfig(MirrorConfig.class);
+    }
 
-	@Provides
-	MirrorConfig getConfig(ConfigManager configManager) {
-		return (MirrorConfig)configManager.getConfig(MirrorConfig.class);
-	}
+    public void updateTitle() {
+        this.clientThread.invokeLater(() -> {
+            if (this.client.getGameState() == GameState.LOGGED_IN) {
+                Player player = this.client.getLocalPlayer();
+                if (player == null) {
+                    return false;
+                }
 
-	public void updateTitle() {
-		this.clientThread.invokeLater(() -> {
-			if (this.client.getGameState() == GameState.LOGGED_IN) {
-				Player player = this.client.getLocalPlayer();
-				if (player == null) {
-					return false;
-				}
+                String name = player.getName();
+                if (Strings.isNullOrEmpty(name)) {
+                    return false;
+                }
 
-				String name = player.getName();
-				if (Strings.isNullOrEmpty(name)) {
-					return false;
-				}
+                if (jframe != null) {
+                    if (this.config.mirrorName()) {
+                        jframe.setTitle("OpenOSRS Mirror - " + name);
+                    } else {
+                        jframe.setTitle("OpenOSRS Mirror");
+                    }
+                }
+            } else if (jframe != null) {
+                jframe.setTitle("OpenOSRS Mirror");
+                return true;
+            }
 
-				if (jframe != null) {
-					if (this.config.mirrorName()) {
-						jframe.setTitle("RuneLite - " + name);
-					} else {
-						jframe.setTitle("RuneLite");
-					}
-				}
-			} else if (jframe != null) {
-				jframe.setTitle("RuneLite");
-				return true;
-			}
+            return false;
+        });
+    }
 
-			return false;
-		});
-	}
+    public void startUp() {
+        if (jframe == null) {
+            jframe = new JFrame("OpenOSRS Mirror");
+            jframe.setSize(1280, 720);
+            canvas.setSize(1280, 720);
+            jframe.add(canvas);
+        }
 
-	public void startUp() {
-		if (jframe == null) {
-			jframe = new JFrame("RuneLite");
-			jframe.setSize(1280, 720);
-			canvas.setSize(1280, 720);
-			jframe.add(canvas);
-		}
+        this.client.setMirrored(true);
+        if (!jframe.isVisible()) {
+            jframe.setVisible(true);
+        }
 
-		if (!jframe.isVisible()) {
-			jframe.setVisible(true);
-		}
+    }
 
-	}
+    public void shutDown() {
+        if (jframe != null) {
+            jframe.dispose();
+            jframe = null;
+        }
 
-	public void shutDown() {
-		if (jframe != null) {
-			jframe.dispose();
-			jframe = null;
-		}
+        this.client.setMirrored(false);
+    }
 
-	}
+    @Subscribe
+    private void onDrawFinished(DrawFinished event) {
+        if (!jframe.isVisible()) {
+            jframe.setVisible(true);
+        }
 
-	@Subscribe
-	private void onDrawFinished(DrawFinished event) {
-		if (!jframe.isVisible()) {
-			jframe.setVisible(true);
-		}
+        if (canvas.getWidth() != event.image.getWidth(canvas) + 15 || canvas.getHeight() != event.image.getHeight(canvas) + 40) {
+            canvas.setSize(event.image.getWidth(canvas) + 15, event.image.getHeight(canvas) + 40);
+            jframe.setSize(canvas.getSize());
+        }
 
-		if (canvas.getWidth() != event.image.getWidth(canvas) + 15 || canvas.getHeight() != event.image.getHeight(canvas) + 40) {
-			canvas.setSize(event.image.getWidth(canvas) + 15, event.image.getHeight(canvas) + 40);
-			jframe.setSize(canvas.getSize());
-		}
+        canvas.getGraphics().drawImage(event.image, 0, 0, jframe);
+    }
 
-		canvas.getGraphics().drawImage(event.image, 0, 0, jframe);
-	}
+    @Subscribe
+    private void onGameStateChanged(GameStateChanged event) {
+        if (event.getGameState() == GameState.LOGGED_IN) {
+            this.updateTitle();
+        }
+    }
 
-	@Subscribe
-	private void onGameStateChanged(GameStateChanged event) {
-		if (event.getGameState() == GameState.LOGGED_IN) {
-			this.updateTitle();
-		}
-	}
+    @Subscribe
+    private void onConfigChanged(ConfigChanged event) {
+        if (event.getGroup().equals("mirror")) {
+            SwingUtilities.invokeLater(() -> {
+                if (jframe != null) {
+                    this.updateTitle();
+                }
 
-	@Subscribe
-	private void onConfigChanged(ConfigChanged event) {
-		if (event.getGroup().equals("mirror")) {
-			SwingUtilities.invokeLater(() -> {
-				if (jframe != null) {
-					this.updateTitle();
-				}
+            });
+        }
+    }
 
-			});
-		}
-	}
-
-	static {
-		canvas = new Canvas();
-	}
-} */
+    static {
+        canvas = new Canvas();
+    }
+}
