@@ -317,6 +317,7 @@ public class OverlayManager
 			{
 				case ABOVE_SCENE:
 				case UNDER_WIDGETS:
+				case AFTER_MIRROR:
 				case ALWAYS_ON_TOP:
 					overlayMap.put(layer, overlay);
 					break;
@@ -332,6 +333,7 @@ public class OverlayManager
 			{
 				overlayMap.put(drawHook, overlay);
 			}
+
 		}
 
 		for (Object key : overlayMap.keys())
