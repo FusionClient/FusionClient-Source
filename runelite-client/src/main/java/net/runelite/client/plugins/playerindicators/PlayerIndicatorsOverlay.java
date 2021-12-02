@@ -11,10 +11,7 @@ import net.runelite.api.Player;
 import net.runelite.api.Point;
 import net.runelite.api.clan.ClanTitle;
 import net.runelite.client.game.ChatIconManager;
-import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.*;
 import net.runelite.client.util.Text;
 
 @Singleton

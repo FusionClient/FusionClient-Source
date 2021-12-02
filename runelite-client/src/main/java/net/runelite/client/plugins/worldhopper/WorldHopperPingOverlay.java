@@ -54,6 +54,7 @@ class WorldHopperPingOverlay extends Overlay
 		this.worldHopperPlugin = worldHopperPlugin;
 		this.worldHopperConfig = worldHopperConfig;
 		setLayer(OverlayLayer.ABOVE_WIDGETS);
+		setLayer(OverlayLayer.ALWAYS_ON_TOP);
 		setPriority(OverlayPriority.HIGH);
 		setPosition(OverlayPosition.DYNAMIC);
 	}

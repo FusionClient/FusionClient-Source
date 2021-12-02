@@ -63,7 +63,7 @@ class ScreenshotOverlay extends Overlay
 	{
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_WIDGETS);
+		setLayer(OverlayLayer.AFTER_MIRROR);
 		this.client = client;
 		this.drawManager = drawManager;
 		this.plugin = plugin;

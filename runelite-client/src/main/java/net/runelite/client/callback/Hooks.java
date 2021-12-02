@@ -425,6 +425,7 @@ public class Hooks implements Callbacks
 			log.warn("Error during post-mirror rendering", ex);
 		}
 
+
 		// Draw the image onto the game canvas
 		graphics.drawImage(finalImage, 0, 0, client.getCanvas());
 

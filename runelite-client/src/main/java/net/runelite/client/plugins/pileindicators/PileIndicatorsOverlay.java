@@ -49,7 +49,7 @@ public class PileIndicatorsOverlay extends Overlay
 		super(plugin);
 		this.plugin = plugin;
 		this.config = config;
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		setLayer(OverlayLayer.AFTER_MIRROR);
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
 	}
