@@ -148,11 +148,11 @@ public class ConfigManager
 
 	@Inject
 	public ConfigManager(
-		@Named("config") File config,
-		ScheduledExecutorService scheduledExecutorService,
-		EventBus eventBus,
-		OkHttpClient okHttpClient,
-		@Nullable Client client)
+			@Named("config") File config,
+			ScheduledExecutorService scheduledExecutorService,
+			EventBus eventBus,
+			OkHttpClient okHttpClient,
+			@Nullable Client client)
 	{
 		this.settingsFileInput = config;
 		this.eventBus = eventBus;
@@ -367,9 +367,9 @@ public class ConfigManager
 		}
 
 		T t = (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]
-			{
-				clazz
-			}, handler);
+				{
+						clazz
+				}, handler);
 
 		return t;
 	}
@@ -599,67 +599,67 @@ public class ConfigManager
 		}
 
 		final List<ConfigSectionDescriptor> sections = getAllDeclaredInterfaceFields(inter).stream()
-			.filter(m -> m.isAnnotationPresent(ConfigSection.class) && m.getType() == String.class)
-			.map(m ->
-			{
-				try
+				.filter(m -> m.isAnnotationPresent(ConfigSection.class) && m.getType() == String.class)
+				.map(m ->
 				{
-					return new ConfigSectionDescriptor(
-						String.valueOf(m.get(inter)),
-						m.getDeclaredAnnotation(ConfigSection.class)
-					);
-				}
-				catch (IllegalAccessException e)
-				{
-					log.warn("Unable to load section {}::{}", inter.getSimpleName(), m.getName());
-					return null;
-				}
-			})
-			.filter(Objects::nonNull)
-			.sorted((a, b) -> ComparisonChain.start()
-				.compare(a.getSection().position(), b.getSection().position())
-				.compare(a.getSection().name(), b.getSection().name())
-				.result())
-			.collect(Collectors.toList());
+					try
+					{
+						return new ConfigSectionDescriptor(
+								String.valueOf(m.get(inter)),
+								m.getDeclaredAnnotation(ConfigSection.class)
+						);
+					}
+					catch (IllegalAccessException e)
+					{
+						log.warn("Unable to load section {}::{}", inter.getSimpleName(), m.getName());
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.sorted((a, b) -> ComparisonChain.start()
+						.compare(a.getSection().position(), b.getSection().position())
+						.compare(a.getSection().name(), b.getSection().name())
+						.result())
+				.collect(Collectors.toList());
 
 		final List<ConfigTitleDescriptor> titles = getAllDeclaredInterfaceFields(inter).stream()
-			.filter(m -> m.isAnnotationPresent(ConfigTitle.class) && m.getType() == String.class)
-			.map(m ->
-			{
-				try
+				.filter(m -> m.isAnnotationPresent(ConfigTitle.class) && m.getType() == String.class)
+				.map(m ->
 				{
-					return new ConfigTitleDescriptor(
-						String.valueOf(m.get(inter)),
-						m.getDeclaredAnnotation(ConfigTitle.class)
-					);
-				}
-				catch (IllegalAccessException e)
-				{
-					log.warn("Unable to load title {}::{}", inter.getSimpleName(), m.getName());
-					return null;
-				}
-			})
-			.filter(Objects::nonNull)
-			.sorted((a, b) -> ComparisonChain.start()
-				.compare(a.getTitle().position(), b.getTitle().position())
-				.compare(a.getTitle().name(), b.getTitle().name())
-				.result())
-			.collect(Collectors.toList());
+					try
+					{
+						return new ConfigTitleDescriptor(
+								String.valueOf(m.get(inter)),
+								m.getDeclaredAnnotation(ConfigTitle.class)
+						);
+					}
+					catch (IllegalAccessException e)
+					{
+						log.warn("Unable to load title {}::{}", inter.getSimpleName(), m.getName());
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.sorted((a, b) -> ComparisonChain.start()
+						.compare(a.getTitle().position(), b.getTitle().position())
+						.compare(a.getTitle().name(), b.getTitle().name())
+						.result())
+				.collect(Collectors.toList());
 
 		final List<ConfigItemDescriptor> items = Arrays.stream(inter.getMethods())
-			.filter(m -> m.getParameterCount() == 0 && m.isAnnotationPresent(ConfigItem.class))
-			.map(m -> new ConfigItemDescriptor(
-				m.getDeclaredAnnotation(ConfigItem.class),
-				m.getReturnType(),
-				m.getDeclaredAnnotation(Range.class),
-				m.getDeclaredAnnotation(Alpha.class),
-				m.getDeclaredAnnotation(Units.class)
-			))
-			.sorted((a, b) -> ComparisonChain.start()
-				.compare(a.getItem().position(), b.getItem().position())
-				.compare(a.getItem().name(), b.getItem().name())
-				.result())
-			.collect(Collectors.toList());
+				.filter(m -> m.getParameterCount() == 0 && m.isAnnotationPresent(ConfigItem.class))
+				.map(m -> new ConfigItemDescriptor(
+						m.getDeclaredAnnotation(ConfigItem.class),
+						m.getReturnType(),
+						m.getDeclaredAnnotation(Range.class),
+						m.getDeclaredAnnotation(Alpha.class),
+						m.getDeclaredAnnotation(Units.class)
+				))
+				.sorted((a, b) -> ComparisonChain.start()
+						.compare(a.getItem().position(), b.getItem().position())
+						.compare(a.getItem().name(), b.getItem().name())
+						.result())
+				.collect(Collectors.toList());
 
 		return new ConfigDescriptor(group, sections, titles, items);
 	}
@@ -1050,8 +1050,8 @@ public class ConfigManager
 			if (configClient != null)
 			{
 				Configuration patch = new Configuration(pendingChanges.entrySet().stream()
-					.map(e -> new ConfigEntry(e.getKey(), e.getValue()))
-					.collect(Collectors.toList()));
+						.map(e -> new ConfigEntry(e.getKey(), e.getValue()))
+						.collect(Collectors.toList()));
 
 				future = configClient.patch(patch);
 			}
@@ -1093,18 +1093,18 @@ public class ConfigManager
 		}
 
 		return profileKeys.stream()
-			.map(key ->
-			{
-				RuneScapeProfile prof = new RuneScapeProfile(
-					getConfiguration(RSPROFILE_GROUP, key, RSPROFILE_DISPLAY_NAME),
-					getConfiguration(RSPROFILE_GROUP, key, RSPROFILE_TYPE, RuneScapeProfileType.class),
-					getConfiguration(RSPROFILE_GROUP, key, RSPROFILE_LOGIN_HASH, byte[].class),
-					key
-				);
+				.map(key ->
+				{
+					RuneScapeProfile prof = new RuneScapeProfile(
+							getConfiguration(RSPROFILE_GROUP, key, RSPROFILE_DISPLAY_NAME),
+							getConfiguration(RSPROFILE_GROUP, key, RSPROFILE_TYPE, RuneScapeProfileType.class),
+							getConfiguration(RSPROFILE_GROUP, key, RSPROFILE_LOGIN_HASH, byte[].class),
+							key
+					);
 
-				return prof;
-			})
-			.collect(Collectors.toList());
+					return prof;
+				})
+				.collect(Collectors.toList());
 	}
 
 	private synchronized RuneScapeProfile findRSProfile(List<RuneScapeProfile> profiles, String username, RuneScapeProfileType type, String displayName, boolean create)
@@ -1114,7 +1114,7 @@ public class ConfigManager
 		{
 			salt = new byte[15];
 			new SecureRandom()
-				.nextBytes(salt);
+					.nextBytes(salt);
 			log.info("creating new salt as there is no existing one {}", Base64.getUrlEncoder().encodeToString(salt));
 			setConfiguration(RSPROFILE_GROUP, RSPROFILE_LOGIN_SALT, salt);
 		}
@@ -1125,8 +1125,8 @@ public class ConfigManager
 		byte[] loginHash = h.hash().asBytes();
 
 		Set<RuneScapeProfile> matches = profiles.stream()
-			.filter(p -> Arrays.equals(p.getLoginHash(), loginHash) && p.getType() == type)
-			.collect(Collectors.toSet());
+				.filter(p -> Arrays.equals(p.getLoginHash(), loginHash) && p.getType() == type)
+				.collect(Collectors.toSet());
 
 		if (matches.size() > 1)
 		{
@@ -1250,19 +1250,19 @@ public class ConfigManager
 		AtomicInteger changes = new AtomicInteger();
 		List<Predicate<String>> migrators = new ArrayList<>();
 		for (String[] tpl : new String[][]
-			{
-				{"(grandexchange)\\.buylimit_(%)\\.(#)", "$1.buylimit.$3"},
-				{"(timetracking)\\.(%)\\.(autoweed|contract)", "$1.$3"},
-				{"(timetracking)\\.(%)\\.(#\\.#)", "$1.$3"},
-				{"(timetracking)\\.(%)\\.(birdhouse)\\.(#)", "$1.$3.$4"},
-				{"(killcount|personalbest)\\.(%)\\.([^.]+)", "$1.$3"},
-				{"(geoffer)\\.(%)\\.(#)", "$1.$3"},
-			})
+				{
+						{"(grandexchange)\\.buylimit_(%)\\.(#)", "$1.buylimit.$3"},
+						{"(timetracking)\\.(%)\\.(autoweed|contract)", "$1.$3"},
+						{"(timetracking)\\.(%)\\.(#\\.#)", "$1.$3"},
+						{"(timetracking)\\.(%)\\.(birdhouse)\\.(#)", "$1.$3.$4"},
+						{"(killcount|personalbest)\\.(%)\\.([^.]+)", "$1.$3"},
+						{"(geoffer)\\.(%)\\.(#)", "$1.$3"},
+				})
 		{
 			String replace = tpl[1];
 			String pat = ("^" + tpl[0] + "$")
-				.replace("#", "-?[0-9]+")
-				.replace("(%)", "(?<login>.*)");
+					.replace("#", "-?[0-9]+")
+					.replace("(%)", "(?<login>.*)");
 			Pattern p = Pattern.compile(pat);
 
 			migrators.add(oldkey ->
@@ -1282,7 +1282,7 @@ public class ConfigManager
 				}
 
 				String profKey = profiles.computeIfAbsent(username, u ->
-					findRSProfile(getRSProfiles(), u, RuneScapeProfileType.STANDARD, u, true).getKey());
+						findRSProfile(getRSProfiles(), u, RuneScapeProfileType.STANDARD, u, true).getKey());
 
 				String[] oldKeySplit = splitKey(oldkey);
 				if (oldKeySplit == null)
