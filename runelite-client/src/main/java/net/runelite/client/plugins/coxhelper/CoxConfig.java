@@ -39,40 +39,40 @@ import net.runelite.client.config.Units;
 @ConfigGroup("Cox")
 public interface CoxConfig extends Config
 {
-	@ConfigSection(
+/*	@ConfigSection(
 		keyName = "muttadileTitle",
 		position = 1,
 		name = "Muttadile",
 		description = ""
 	)
 	String muttadileTitle = "Muttadile";
-
+*/
 	@ConfigItem(
 		position = 2,
 		keyName = "muttadile",
 		name = "Muttadile Marker",
-		description = "Places an overlay around muttadiles showing their melee range.",
-		section = muttadileTitle
+		description = "Places an overlay around muttadiles showing their melee range."
+	//	section = muttadileTitle
 	)
 	default boolean muttadile()
 	{
 		return true;
 	}
 
-	@ConfigSection(
+/*	@ConfigSection(
 		keyName = "tektonTitle",
 		position = 3,
 		name = "Tekton",
 		description = ""
 	)
-	String tektonTitle = "Tekton";
+	String tektonTitle = "Tekton"; */
 
 	@ConfigItem(
 		position = 4,
 		keyName = "tekton",
 		name = "Tekton Marker",
-		description = "Places an overlay around Tekton showing his melee range.",
-		section = tektonTitle
+		description = "Places an overlay around Tekton showing his melee range."
+	//	section = tektonTitle
 	)
 	default boolean tekton()
 	{
@@ -83,28 +83,28 @@ public interface CoxConfig extends Config
 		position = 4,
 		keyName = "tektonTickCounter",
 		name = "Tekton Tick Counters",
-		description = "Counts down current phase timer, and attack ticks.",
-		section = tektonTitle
+		description = "Counts down current phase timer, and attack ticks."
+	//	section = tektonTitle
 	)
 	default boolean tektonTickCounter()
 	{
 		return true;
 	}
 
-	@ConfigSection(
+/*	@ConfigSection(
 		keyName = "guardiansTitle",
 		position = 5,
 		name = "Guardians",
 		description = ""
 	)
-	String guardiansTitle = "Guardians";
+	String guardiansTitle = "Guardians"; */
 
 	@ConfigItem(
 		position = 6,
 		keyName = "guardians",
 		name = "Guardians Overlay",
-		description = "Places an overlay near Guardians showing safespot.",
-		section = guardiansTitle
+		description = "Places an overlay near Guardians showing safespot."
+	//	section = guardiansTitle
 	)
 	default boolean guardians()
 	{
@@ -115,28 +115,28 @@ public interface CoxConfig extends Config
 		position = 6,
 		keyName = "guardinTickCounter",
 		name = "Guardians Tick Timing",
-		description = "Places an overlay on Guardians showing attack tick timers.",
-		section = guardiansTitle
+		description = "Places an overlay on Guardians showing attack tick timers."
+	//	section = guardiansTitle
 	)
 	default boolean guardinTickCounter()
 	{
 		return true;
 	}
 
-	@ConfigSection(
+/*	@ConfigSection(
 		keyName = "vanguardsTitle",
 		position = 7,
 		name = "Vanguards",
 		description = ""
 	)
-	String vanguardsTitle = "Vanguards";
+	String vanguardsTitle = "Vanguards"; */
 
 	@ConfigItem(
 		position = 8,
 		keyName = "vangHighlight",
 		name = "Highlight Vanguards",
-		description = "Color is based on their attack style.",
-		section = vanguardsTitle
+		description = "Color is based on their attack style."
+	//	section = vanguardsTitle
 	)
 	default boolean vangHighlight()
 	{
@@ -147,28 +147,28 @@ public interface CoxConfig extends Config
 		position = 9,
 		keyName = "vangHealth",
 		name = "Show Vanguards Current HP",
-		description = "This will create an infobox with vanguards current hp.",
-		section = vanguardsTitle
+		description = "This will create an infobox with vanguards current hp."
+	//	section = vanguardsTitle
 	)
 	default boolean vangHealth()
 	{
 		return true;
 	}
 
-	@ConfigSection(
+/*	@ConfigSection(
 		keyName = "olmTitle",
 		position = 10,
 		name = "Olm",
 		description = ""
 	)
-	String olmTitle = "Olm";
+	String olmTitle = "Olm"; */
 
 	@ConfigItem(
 		position = 11,
 		keyName = "prayAgainstOlm",
 		name = "Olm Show Prayer",
-		description = "Shows what prayer to use during olm.",
-		section = olmTitle
+		description = "Shows what prayer to use during olm."
+	//	section = olmTitle
 	)
 	default boolean prayAgainstOlm()
 	{
@@ -183,8 +183,8 @@ public interface CoxConfig extends Config
 		position = 11,
 		keyName = "prayAgainstOlmSize",
 		name = "Olm Prayer Size",
-		description = "Change the Size of the Olm Infobox.",
-		section = olmTitle
+		description = "Change the Size of the Olm Infobox."
+	//	section = olmTitle
 	)
 	@Units(Units.PIXELS)
 	default int prayAgainstOlmSize()
@@ -196,8 +196,8 @@ public interface CoxConfig extends Config
 		position = 12,
 		keyName = "timers",
 		name = "Olm Show Burn/Acid Timers",
-		description = "Shows tick timers for burns/acids.",
-		section = olmTitle
+		description = "Shows tick timers for burns/acids."
+	//	section = olmTitle
 	)
 	default boolean timers()
 	{
@@ -208,8 +208,8 @@ public interface CoxConfig extends Config
 		position = 13,
 		keyName = "tpOverlay",
 		name = "Olm Show Teleport Overlays",
-		description = "Shows Overlays for targeted teleports.",
-		section = olmTitle
+		description = "Shows Overlays for targeted teleports."
+	//	section = olmTitle
 	)
 	default boolean tpOverlay()
 	{
@@ -220,8 +220,8 @@ public interface CoxConfig extends Config
 		position = 14,
 		keyName = "olmTick",
 		name = "Olm Tick Counter",
-		description = "Show Tick Counter on Olm",
-		section = olmTitle
+		description = "Show Tick Counter on Olm"
+	//	section = olmTitle
 	)
 	default boolean olmTick()
 	{
@@ -232,8 +232,8 @@ public interface CoxConfig extends Config
 		position = 15,
 		keyName = "olmDebug",
 		name = "Olm Debug Info",
-		description = "Dev tool to show info about olm",
-		section = olmTitle
+		description = "Dev tool to show info about olm"
+	//	section = olmTitle
 	)
 	default boolean olmDebug()
 	{
@@ -244,8 +244,8 @@ public interface CoxConfig extends Config
 		position = 16,
 		keyName = "olmPShowPhase",
 		name = "Olm Phase Type",
-		description = "Will highlight olm depending on which phase type is active. Red=Flame Green=Acid Purple=Crystal",
-		section = olmTitle
+		description = "Will highlight olm depending on which phase type is active. Red=Flame Green=Acid Purple=Crystal"
+	//	section = olmTitle
 	)
 	default boolean olmPShowPhase()
 	{

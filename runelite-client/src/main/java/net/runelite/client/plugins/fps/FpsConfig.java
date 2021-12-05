@@ -96,13 +96,8 @@ public interface FpsConfig extends Config
 		return true;
 	}
 
-	@ConfigItem(
-		keyName = "gpufps",
-		name = "GPU FPS",
-		description = "run fps while in gpu mode",
-		position = 6
-	)
-	default boolean drawFps1() { return true; }
 
 
-}
+	}
+
+

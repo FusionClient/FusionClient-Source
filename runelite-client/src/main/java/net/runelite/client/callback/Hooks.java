@@ -424,7 +424,12 @@ public class Hooks implements Callbacks
 		{
 			log.warn("Error during post-mirror rendering", ex);
 		}
-
+		if (client.isGpu())
+		{
+			// processDrawComplete gets called on GPU by the gpu plugin at the end of its
+			// drawing cycle, which is later on.
+			return;
+		}
 
 		// Draw the image onto the game canvas
 		graphics.drawImage(finalImage, 0, 0, client.getCanvas());
@@ -466,20 +471,6 @@ public class Hooks implements Callbacks
 		}
 	}
 
-	public void drawMirror()
-	{
-		MainBufferProvider bufferProvider = (MainBufferProvider) client.getBufferProvider();
-		Graphics2D graphics2d = getGraphics(bufferProvider);
-
-		try
-		{
-			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
-		}
-		catch (Exception ex)
-		{
-			log.warn("Error during overlay rendering", ex);
-		}
-	}
 
 	@Override
 	public void drawAboveOverheads()

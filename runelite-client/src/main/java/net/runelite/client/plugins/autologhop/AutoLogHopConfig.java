@@ -7,20 +7,19 @@ import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("autologhop")
 public interface AutoLogHopConfig extends Config {
-	@ConfigSection(
+	/*@ConfigSection(
 		keyName = "title",
 		name = "AutoLog/Hop",
 		description = "",
 		position = 0
 	)
 	String title = "AutoLog/Hop";
-
+*/
 	@ConfigItem(
 		keyName = "method",
 		name = "Method",
 		description = "Logout = log out (0 tick), hop = hop worlds (1 tick), log then hop = logout and hop worlds from client screen (0 tick)",
-		position = 10,
-		section = "Soxs' AutoLogHop"
+		position = 10
 	)
 	default Method method() {
 		return Method.LOGOUT_HOP;
