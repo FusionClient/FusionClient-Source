@@ -138,19 +138,19 @@ public class Hooks implements Callbacks
 
 	@Inject
 	private Hooks(
-		Client client,
-		OverlayRenderer renderer,
-		EventBus eventBus,
-		DeferredEventBus deferredEventBus,
-		Scheduler scheduler,
-		InfoBoxManager infoBoxManager,
-		ChatMessageManager chatMessageManager,
-		MouseManager mouseManager,
-		KeyManager keyManager,
-		ClientThread clientThread,
-		DrawManager drawManager,
-		Notifier notifier,
-		ClientUI clientUi
+			Client client,
+			OverlayRenderer renderer,
+			EventBus eventBus,
+			DeferredEventBus deferredEventBus,
+			Scheduler scheduler,
+			InfoBoxManager infoBoxManager,
+			ChatMessageManager chatMessageManager,
+			MouseManager mouseManager,
+			KeyManager keyManager,
+			ClientThread clientThread,
+			DrawManager drawManager,
+			Notifier notifier,
+			ClientUI clientUi
 	)
 	{
 		this.client = client;
@@ -374,7 +374,7 @@ public class Hooks implements Callbacks
 			Dimension stretchedDimensions = client.getStretchedDimensions();
 
 			if (lastStretchedDimensions == null || !lastStretchedDimensions.equals(stretchedDimensions)
-				|| (stretchedImage != null && stretchedImage.validate(gc) == VolatileImage.IMAGE_INCOMPATIBLE))
+					|| (stretchedImage != null && stretchedImage.validate(gc) == VolatileImage.IMAGE_INCOMPATIBLE))
 			{
 				/*
 					Reuse the resulting image instance to avoid creating an extreme amount of objects
@@ -397,9 +397,9 @@ public class Hooks implements Callbacks
 			}
 
 			stretchedGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				client.isStretchedFast()
-					? RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
-					: RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+					client.isStretchedFast()
+							? RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
+							: RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			stretchedGraphics.drawImage(image, 0, 0, stretchedDimensions.width, stretchedDimensions.height, null);
 
 			finalImage = stretchedImage;
@@ -423,12 +423,6 @@ public class Hooks implements Callbacks
 		catch (Exception ex)
 		{
 			log.warn("Error during post-mirror rendering", ex);
-		}
-		if (client.isGpu())
-		{
-			// processDrawComplete gets called on GPU by the gpu plugin at the end of its
-			// drawing cycle, which is later on.
-			return;
 		}
 
 		// Draw the image onto the game canvas
@@ -471,6 +465,20 @@ public class Hooks implements Callbacks
 		}
 	}
 
+	public void drawMirror()
+	{
+		MainBufferProvider bufferProvider = (MainBufferProvider) client.getBufferProvider();
+		Graphics2D graphics2d = getGraphics(bufferProvider);
+
+		try
+		{
+			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
+		}
+		catch (Exception ex)
+		{
+			log.warn("Error during overlay rendering", ex);
+		}
+	}
 
 	@Override
 	public void drawAboveOverheads()
@@ -572,13 +580,13 @@ public class Hooks implements Callbacks
 
 		Skill skill = Skill.values()[statId];
 		FakeXpDrop fakeXpDrop = new FakeXpDrop(
-			skill,
-			xp
+				skill,
+				xp
 		);
 		eventBus.post(fakeXpDrop);
 	}
 
-	
+
 	public static void clearColorBuffer(int x, int y, int width, int height, int color)
 	{
 		BufferProvider bp = client.getBufferProvider();

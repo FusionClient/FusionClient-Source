@@ -63,7 +63,7 @@ public class EffectTimersOverlay extends Overlay
 		super();
 		this.config = config;
 		setPosition(OverlayPosition.DYNAMIC);
-		setLayer(OverlayLayer.AFTER_MIRROR);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	@Override

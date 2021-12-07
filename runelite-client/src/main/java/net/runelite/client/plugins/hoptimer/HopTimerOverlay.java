@@ -23,7 +23,7 @@ public class HopTimerOverlay extends OverlayPanel {
 		this.plugin = plugin;
 		this.setPosition(OverlayPosition.ABOVE_CHATBOX_RIGHT);
 		this.setPriority(OverlayPriority.HIGH);
-		this.setLayer(OverlayLayer.AFTER_MIRROR);
+		this.setLayer(OverlayLayer.UNDER_WIDGETS);
 	}
 
 	public Dimension render(Graphics2D graphics) {

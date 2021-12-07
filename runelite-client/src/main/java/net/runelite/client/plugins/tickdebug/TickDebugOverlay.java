@@ -24,7 +24,7 @@ public class TickDebugOverlay extends Overlay {
 	private TickDebugOverlay(Client client, TickDebugPlugin worldHopperPlugin) {
 		this.client = client;
 		this.tickDebugPlugin = worldHopperPlugin;
-		this.setLayer(OverlayLayer.AFTER_MIRROR);
+		this.setLayer(OverlayLayer.ABOVE_WIDGETS);
 		this.setPriority(OverlayPriority.HIGH);
 		this.setPosition(OverlayPosition.DYNAMIC);
 	}

@@ -61,7 +61,7 @@ public class MultiIndicatorsOverlay extends Overlay
 		this.client = client;
 		this.plugin = plugin;
 		this.config = config;
-		setLayer(OverlayLayer.AFTER_MIRROR);
+		setLayer((OverlayLayer.ABOVE_SCENE));
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.LOW);
 	}
