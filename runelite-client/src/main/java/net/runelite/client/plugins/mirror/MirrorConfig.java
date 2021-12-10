@@ -10,7 +10,9 @@ public interface MirrorConfig extends Config {
             position = 0,
             keyName = "mirrorName",
             name = "Display player name in title",
-            description = "Append the player's to the mirrored window title (if logged in)"
+            description = "Append the player's to the mirrored window title (if logged in)",
+            hidden = true
+
     )
     default boolean mirrorName() {
         return true;

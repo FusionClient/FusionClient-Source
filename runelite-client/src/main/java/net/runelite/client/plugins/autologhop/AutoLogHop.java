@@ -195,6 +195,7 @@ public class AutoLogHop extends Plugin {
 			}
 
 			this.client.invokeMenuAction("Grand Exchange", "<col=ff9040>Ring of wealth ( )</col>", 3, MenuAction.CC_OP.getId(), -1, equipment.getId());
+
 		}
 
 	}
