@@ -1030,8 +1030,7 @@ public class CoxAdditionsPlugin extends Plugin {
 	}
 
 	private void swapMenuEntry(int index, MenuEntry menuEntry) {
-		int eventId = menuEntry.getIdentifier();
-		int type = menuEntry.getType();
+		int type = menuEntry.getIdentifier();
 		String option = Text.removeTags(menuEntry.getOption()).toLowerCase();
 		String target = Text.removeTags(menuEntry.getTarget()).toLowerCase();
 		if (this.client.getVar(Varbits.IN_RAID) == 1) {
@@ -1073,7 +1072,7 @@ public class CoxAdditionsPlugin extends Plugin {
 
 					for (var13 = 0; var13 < i; ++var13) {
 						String spell = var11[var13];
-						if (Text.removeTags(entries[i].getTarget().toLowerCase()).startsWith(spell + " ->") && entries[i].getType() != 8) {
+						if (Text.removeTags(entries[i].getTarget().toLowerCase()).startsWith(spell + " ->") && entries[i].getIdentifier() != 8) {
 							newEntries = (MenuEntry[])ArrayUtils.remove((Object[])entries, i);
 						}
 					}
@@ -1173,7 +1172,7 @@ public class CoxAdditionsPlugin extends Plugin {
 
 					for (int var30 = 0; var30 < var13; ++var30) {
 						String seed = var28[var30];
-						if (text.startsWith(seed + " ->") && entries[i].getType() != 8 && (!text.contains("herb patch") || text.contains("(level-"))) {
+						if (text.startsWith(seed + " ->") && entries[i].getIdentifier() != 8 && (!text.contains("herb patch") || text.contains("(level-"))) {
 							newEntries = (MenuEntry[])ArrayUtils.remove((Object[])entries, i);
 						}
 					}
@@ -1220,7 +1219,7 @@ public class CoxAdditionsPlugin extends Plugin {
 
 				for (i = entries.length - 1; i >= 0; --i) {
 					String text = Text.removeTags(entries[i].getTarget().toLowerCase());
-					if (text.startsWith("empty gourd vial ->") && entries[i].getType() != 8 && !text.contains("geyser") && !text.contains("xeric's aid ") && !text.contains("revitalisation ") && !text.contains("prayer enhance ") && !text.contains("overload ")) {
+					if (text.startsWith("empty gourd vial ->") && entries[i].getIdentifier() != 8 && !text.contains("geyser") && !text.contains("xeric's aid ") && !text.contains("revitalisation ") && !text.contains("prayer enhance ") && !text.contains("overload ")) {
 						entries = (MenuEntry[])ArrayUtils.remove((Object[])entries, i);
 					}
 				}

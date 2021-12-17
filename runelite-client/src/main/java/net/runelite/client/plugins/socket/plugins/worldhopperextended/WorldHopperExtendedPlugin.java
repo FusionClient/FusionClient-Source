@@ -416,13 +416,21 @@ public class WorldHopperExtendedPlugin extends Plugin {
             if (targetWorld == null || currentWorld == null || (
                     !currentWorld.getTypes().contains(WorldType.PVP) && targetWorld.getTypes().contains(WorldType.PVP)))
                 return;
-            MenuEntry hopTo = new MenuEntry();
+
+                client.createMenuEntry(after ? -2 : -1)
+                .setOption("Hop-to")
+                .setTarget(event.getTarget())
+                .setType(MenuAction.RUNELITE)
+                .setParam0(event.getActionParam0())
+                .setParam1(event.getActionParam1());
+
+        /*        MenuEntry hopTo = new MenuEntry();
             hopTo.setOption("Hop-to");
             hopTo.setTarget(event.getTarget());
             hopTo.setType(MenuAction.RUNELITE.getId());
             hopTo.setParam0(event.getActionParam0());
             hopTo.setParam1(event.getActionParam1());
-            insertMenuEntry(hopTo, this.client.getMenuEntries(), after);
+            insertMenuEntry(hopTo, this.client.getMenuEntries(), after);*/
         }
     }
 

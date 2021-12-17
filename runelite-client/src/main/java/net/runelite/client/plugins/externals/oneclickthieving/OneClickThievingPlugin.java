@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import net.runelite.api.ChatMessageType;
@@ -131,7 +132,17 @@ public class OneClickThievingPlugin extends Plugin {
 				return;
 			}
 
-			event.setMenuEntry(new MenuEntry("Pickpocket", npc.getName(), npc.getIndex(), MenuAction.NPC_THIRD_OPTION.getId(), 0, 0, false));
+			event.setMenuOption("Pickpocket");
+			event.setMenuTarget(npc.getName());
+			event.setId(npc.getIndex());
+			event.setMenuAction(MenuAction.NPC_THIRD_OPTION);
+			event.setParam0(0);
+			event.setParam1(0);
+
+
+		//	event.setMenuEntry(new MenuEntry("Pickpocket", npc.getName(), npc.getIndex(), MenuAction.NPC_THIRD_OPTION.getId(), 0, 0, false);
+
+
 			switch(this.getActions(npc).indexOf("Pickpocket")) {
 			case 0:
 				event.setMenuAction(MenuAction.NPC_FIRST_OPTION);
@@ -195,35 +206,82 @@ public class OneClickThievingPlugin extends Plugin {
 
 				if (prayerPotion != null) {
 					String[] foodMenuOptions = this.itemManager.getItemComposition(prayerPotion.getId()).getInventoryActions();
-					event.setMenuEntry(new MenuEntry(foodMenuOptions[0], foodMenuOptions[0], prayerPotion.getId(), MenuAction.ITEM_FIRST_OPTION.getId(), prayerPotion.getIndex(), WidgetInfo.INVENTORY.getId(), false));
+
+				//	event.setMenuEntry(new MenuEntry(foodMenuOptions[0], foodMenuOptions[0], prayerPotion.getId(), MenuAction.ITEM_FIRST_OPTION.getId(), prayerPotion.getIndex(), WidgetInfo.INVENTORY.getId(), false));
+
+
+					event.setMenuOption(foodMenuOptions[0]);
+					event.setMenuTarget(foodMenuOptions[0]);
+					event.setId(prayerPotion.getId()); //check if setId is correct
+					event.setMenuAction(MenuAction.ITEM_FIRST_OPTION);
+					event.setParam0(prayerPotion.getIndex());
+					event.setParam1(WidgetInfo.INVENTORY.getId());
 					return;
 				}
 			}
 
 			if (this.config.enableCoinPouch() && coinpouch != null && coinpouch.getQuantity() == 28) {
-				event.setMenuEntry(new MenuEntry("Open-all", "Coin Pouch", coinpouch.getId(), MenuAction.ITEM_FIRST_OPTION.getId(), coinpouch.getIndex(), WidgetInfo.INVENTORY.getId(), false));
+				event.setMenuOption("Open-all");
+				event.setMenuTarget("Coin Pouch");
+				event.setId(coinpouch.getId()); //check if setId is correct
+				event.setMenuAction(MenuAction.ITEM_FIRST_OPTION);
+				event.setParam0(coinpouch.getIndex());
+				event.setParam1(WidgetInfo.INVENTORY.getId());
+
+				//event.setMenuEntry(new MenuEntry("Open-all", "Coin Pouch", coinpouch.getId(), MenuAction.ITEM_FIRST_OPTION.getId(), coinpouch.getIndex(), WidgetInfo.INVENTORY.getId(), false));
 			} else if (this.config.enableNecklace() && this.getWidgetItem(21143) != null && !this.isItemEquipped(List.of(21143))) {
-				event.setMenuEntry(new MenuEntry("Wear", "Necklace", 21143, MenuAction.ITEM_SECOND_OPTION.getId(), this.getWidgetItem(21143).getIndex(), WidgetInfo.INVENTORY.getId(), false));
+				event.setMenuOption("Wear");
+				event.setMenuTarget("Necklace");
+				event.setId(21143); //check if setId is correct
+				event.setMenuAction(MenuAction.ITEM_SECOND_OPTION);
+				event.setParam0(this.getWidgetItem(21143).getIndex());
+				event.setParam1(WidgetInfo.INVENTORY.getId());
+
+			//	event.setMenuEntry(new MenuEntry("Wear", "Necklace", 21143, MenuAction.ITEM_SECOND_OPTION.getId(), this.getWidgetItem(21143).getIndex(), WidgetInfo.INVENTORY.getId(), false));
 			} else if (this.config.enableSpell() && this.client.getVarbitValue(12414) == 0) {
 				if (this.client.getVarbitValue(4070) != 3) {
 					event.consume();
 					this.notifier.notify("You are on the wrong spellbook");
 					this.sendGameMessage("You are on the wrong spellbook");
 				} else {
-					event.setMenuEntry(new MenuEntry("Cast", "Shadow Veil", 1, MenuAction.CC_OP.getId(), -1, WidgetInfo.SPELL_SHADOW_VEIL.getId(), false));
+
+					event.setMenuOption("Cast");
+					event.setMenuTarget("Shadow Veil");
+					event.setId(1); //check if setId is correct
+					event.setMenuAction(MenuAction.CC_OP);
+					event.setParam0(-1);
+					event.setParam1(WidgetInfo.SPELL_SHADOW_VEIL.getId());
+
+				//	event.setMenuEntry(new MenuEntry("Cast", "Shadow Veil", 1, MenuAction.CC_OP.getId(), -1, WidgetInfo.SPELL_SHADOW_VEIL.getId(), false));
 				}
 			} else if (this.config.enablePray()) {
 				if (this.client.getBoostedSkillLevel(Skill.PRAYER) == 0 && this.prayerTimeOut == 0) {
 					prayerPotion = this.getWidgetItem(this.prayerPotionIDs);
 					if (prayerPotion != null) {
-						event.setMenuEntry(new MenuEntry("Drink", "Prayer", prayerPotion.getId(), MenuAction.ITEM_FIRST_OPTION.getId(), prayerPotion.getIndex(), WidgetInfo.INVENTORY.getId(), false));
+
+						event.setMenuOption("Drink");
+						event.setMenuTarget("Prayer");
+						event.setId(prayerPotion.getId()); //check if setId is correct
+						event.setMenuAction(MenuAction.ITEM_FIRST_OPTION);
+						event.setParam0(prayerPotion.getIndex());
+						event.setParam1(WidgetInfo.INVENTORY.getId());
+
+					//	event.setMenuEntry(new MenuEntry("Drink", "Prayer", prayerPotion.getId(), MenuAction.ITEM_FIRST_OPTION.getId(), prayerPotion.getIndex(), WidgetInfo.INVENTORY.getId(), false));
 					} else if (this.config.haltOnLowFood()) {
 						event.consume();
 						this.notifier.notify("You are out of prayer potions");
 						this.sendGameMessage("You are out of prayer potions");
 					}
 				} else if (this.client.getVarbitValue(Varbits.PRAYER_REDEMPTION.getId()) == 0 && this.client.getBoostedSkillLevel(Skill.PRAYER) > 0 && (this.config.prayMethod() == PrayMethod.REACTIVE_PRAY && this.shouldPray() || this.config.prayMethod() == PrayMethod.LAZY_PRAY)) {
-					event.setMenuEntry(new MenuEntry("Activate", "Redemption", 1, MenuAction.CC_OP.getId(), -1, WidgetInfo.PRAYER_REDEMPTION.getId(), false));
+
+					event.setMenuOption("Activate");
+					event.setMenuTarget("Redemption");
+					event.setId(1); //check if setId is correct
+					event.setMenuAction(MenuAction.CC_OP);
+					event.setParam0(-1);
+					event.setParam1(WidgetInfo.PRAYER_REDEMPTION.getId());
+
+				//	event.setMenuEntry(new MenuEntry("Activate", "Redemption", 1, MenuAction.CC_OP.getId(), -1, WidgetInfo.PRAYER_REDEMPTION.getId(), false));
 				}
 			}
 
