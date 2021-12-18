@@ -115,7 +115,7 @@ public class PlayerIndicatorsPlugin extends Plugin {
 
 			for (int var6 = 0; var6 < var5; ++var6) {
 				MenuEntry entry = var4[var6];
-				int type = entry.getType();
+				int type = entry.getIdentifier();
 				if (type >= 2000) {
 					type -= 2000;
 				}
