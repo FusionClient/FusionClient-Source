@@ -13,7 +13,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
-	name = "[S] Default Interface Tab",
+	name = "[F] Default Interface Tab",
 	description = "Set a default interface tab for logging in and/or post hopping",
 	tags = {"default", "interface", "tab", "hop", "hopping", "zhuri/nicole/mcneill"},
 	enabledByDefault = false

@@ -31,8 +31,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "[S] Zalcano",
-	description = "All-in-one plugin for the Zalcano.",
+	name = "[F] Zalcano",
+	description = "All-in-one plugin for the Zalcano. MADE BY SPOONLITE",
 	tags = {"Zalcano"},
 	enabledByDefault = false
 )

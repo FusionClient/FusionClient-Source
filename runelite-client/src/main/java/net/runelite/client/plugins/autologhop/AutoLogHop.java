@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 @Extension
 @PluginDescriptor(
-	name = "AutoLogHop",
+	name = "[F] AutoLogHop",
 	description = "Auto hops/logs out when another player is seen.",
 	tags = {"logout", "hop worlds", "auto log", "auto hop", "soxs"},
 	enabledByDefault = false,

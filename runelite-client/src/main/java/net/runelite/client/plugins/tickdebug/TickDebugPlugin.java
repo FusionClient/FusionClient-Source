@@ -8,7 +8,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "World Ping",
+	name = "[F] World Ping",
 	enabledByDefault = false,
 	description = "Displays server cycle time in top-right corner"
 )

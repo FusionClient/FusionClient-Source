@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
         description = "BF Made EZ",
         tags = {"EZ BF"},
         enabledByDefault = false,
-        hidden = false
+        hidden = true
 
 )
 public class ezspace extends Plugin {

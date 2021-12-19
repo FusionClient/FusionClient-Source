@@ -50,7 +50,7 @@ import java.util.Set;
 
 @Extension
 @PluginDescriptor(
-		name = "Entity Hider Extended",
+		name = "[F] Entity Hider Extended",
 		enabledByDefault = false,
 		description = "Hide dead NPCs animations",
 		tags = {"npcs"}
