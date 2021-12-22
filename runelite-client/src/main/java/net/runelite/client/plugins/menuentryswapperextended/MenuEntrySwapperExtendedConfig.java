@@ -125,6 +125,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	)
 	String removeSwapsSection = "Remove Options";
 
+
 	//------------------------------------------------------------//
 	// Skilling
 	//------------------------------------------------------------//
@@ -620,6 +621,7 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 		return false;
 	}
 
+
 	@ConfigItem(
 			keyName = "hideAttackIgnoredNPCs",
 			name = "Ignored NPCs",
@@ -683,6 +685,33 @@ public interface MenuEntrySwapperExtendedConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigItem(
+			keyName = "RemoveAttackSaraMinions",
+			name = "Remove Sara Minions Attack'",
+			description = "Remove the attack option on sara minions",
+			position = 6,
+			section = pvmSection
+	)
+	default boolean removeAttackSaraMinions()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "RemoveAttackSara",
+			name = "Remove Attack on Sara'",
+			description = "Remove the attack option on sara ",
+			position = 7,
+			section = pvmSection
+	)
+	default boolean removeAttackSara()
+	{
+		return false;
+	}
+
+
+
 
 	//------------------------------------------------------------//
 	// Custom swaps

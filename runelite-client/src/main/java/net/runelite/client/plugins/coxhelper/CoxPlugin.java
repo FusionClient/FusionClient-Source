@@ -67,10 +67,11 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "Cox Additions",
+	name = "Cox Helper",
 	enabledByDefault = false,
-	description = "All-in-one plugin for Chambers of Xeric",
+	description = "All-in-one plugin for cox (OPENRS Version)",
 	tags = {"CoX", "chamber", "xeric", "helper"}
+
 )
 @Slf4j
 @Getter(AccessLevel.PACKAGE)

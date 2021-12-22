@@ -74,7 +74,7 @@ public class PlayerIndicatorsService {
 		}
 	}
 
-	ClanTitle getClanTitle(Player player) {
+	public ClanTitle getClanTitle(Player player) {
 		ClanChannel clanChannel = this.client.getClanChannel();
 		ClanSettings clanSettings = this.client.getClanSettings();
 		if (clanChannel != null && clanSettings != null) {
@@ -90,7 +90,7 @@ public class PlayerIndicatorsService {
 		}
 	}
 
-	FriendsChatRank getFriendsChatRank(Player player) {
+	public FriendsChatRank getFriendsChatRank(Player player) {
 		FriendsChatManager friendsChatManager = this.client.getFriendsChatManager();
 		if (friendsChatManager == null) {
 			return FriendsChatRank.UNRANKED;

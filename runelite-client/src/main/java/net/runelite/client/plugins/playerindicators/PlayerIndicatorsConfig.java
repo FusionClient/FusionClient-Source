@@ -289,6 +289,17 @@ public interface PlayerIndicatorsConfig extends Config {
 	}
 
 	@ConfigItem(
+			position = 20,
+			keyName = "playerAlertSound",
+			name = "Alert Sound",
+			description = "Ding.",
+			section = "pvpSection"
+	)
+	default boolean playerAlertSound() {
+		return false;
+	}
+
+	@ConfigItem(
 		position = 17,
 		keyName = "spawnNotification2",
 		name = "Clan Members",
