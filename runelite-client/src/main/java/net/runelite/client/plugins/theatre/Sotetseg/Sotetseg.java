@@ -1,7 +1,5 @@
 /*
- * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
- * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
- * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
+ * BikkusLite / UncleLite © 2020
  */
 
 package net.runelite.client.plugins.theatre.Sotetseg;
@@ -25,10 +23,14 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.events.ProjectileMoved;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
+import java.awt.image.BufferedImage;
+
+import net.runelite.client.util.ImageUtil;
 
 @Slf4j
 public class Sotetseg extends Room
@@ -72,6 +74,9 @@ public class Sotetseg extends Room
 	@Getter
 	private int sotetsegTickCount = -1;
 
+	@Getter
+	private int attacksLeft = 10;
+
 	private boolean offTick = false;
 
 	private boolean bigOrbPresent = false;
@@ -83,6 +88,12 @@ public class Sotetseg extends Room
 
 	private static final int GROUNDOBJECT_ID_REDMAZE = 33035;
 	private int overWorldRegionID = -1;
+	static BufferedImage TACTICAL_NUKE_OVERHEAD;
+
+	@Override
+	public void init() {
+		TACTICAL_NUKE_OVERHEAD = ImageUtil.getResourceStreamFromClass(TheatrePlugin.class, "Tactical_Nuke_Care_Package_Icon_MW2.png");
+	}
 
 	@Override
 	public void load()
@@ -130,6 +141,7 @@ public class Sotetseg extends Room
 				{
 					sotetsegActive = false;
 					sotetsegNPC = null;
+					attacksLeft = 10;
 				}
 				break;
 		}
@@ -152,6 +164,33 @@ public class Sotetseg extends Room
 						sotetsegTickCount = 6;
 					}
 				}
+			}
+		}
+	}
+
+	@Subscribe
+	public void onProjectileMoved(ProjectileMoved e)
+	{
+		if (sotetsegActive)
+		{
+			Projectile p = e.getProjectile();
+			if (client.getGameCycle() < p.getStartMovementCycle())
+			{
+				switch (p.getId())
+				{
+					case 1604:
+						sotetsegTickCount = 11;
+						attacksLeft = 10;
+						break;
+					case 1606:
+						WorldPoint soteWp = WorldPoint.fromLocal(client, sotetsegNPC.getLocalLocation());
+						WorldPoint projWp = WorldPoint.fromLocal(client, p.getX1(), p.getY1(), client.getPlane());
+						if (sotetsegNPC.getAnimation() == 8139 && projWp.equals(soteWp))
+						{
+							attacksLeft--;
+						}
+				}
+
 			}
 		}
 	}

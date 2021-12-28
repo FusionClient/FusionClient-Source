@@ -1,7 +1,26 @@
 /*
- * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
- * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
- * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
+ * Copyright (c) 2021 BikkusLite
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package net.runelite.client.plugins.theatre.Xarpus;
@@ -12,6 +31,7 @@ import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.BasicStroke;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import javax.inject.Inject;
@@ -28,6 +48,7 @@ import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.plugins.theatre.TheatrePlugin;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class XarpusOverlay extends RoomOverlay
 {
@@ -58,7 +79,7 @@ public class XarpusOverlay extends RoomOverlay
 
 			if (player != null)
 			{
-				Point point = player.getCanvasTextLocation(graphics, "#", player.getLogicalHeight() + 60);
+				Point point = player.getCanvasTextLocation(graphics, "#", player.getLogicalHeight() + 120);
 				if (point != null)
 				{
 					renderTextLocation(graphics, String.valueOf(xarpus.getInstanceTimer()), Color.CYAN, point);
@@ -79,20 +100,28 @@ public class XarpusOverlay extends RoomOverlay
 				renderTextLocation(graphics, ticksLeftStr, Color.WHITE, canvasPoint);
 			}
 
-			if (config.xarpusExhumed() && (boss.getId() == NpcID.XARPUS_8339 || boss.getId() == 10767 || boss.getId() == 10771))
+			if ((config.xarpusExhumed() || config.xarpusExhumedTick()) && (boss.getId() == NpcID.XARPUS_8339 || boss.getId() == 10767 || boss.getId() == 10771))
 			{
-				for (GroundObject o : xarpus.getXarpusExhumeds().keySet())
+				if (!xarpus.getXarpusExhumeds().isEmpty())
 				{
-					Polygon poly = o.getCanvasTilePoly();
-					if (poly != null)
-					{
-						graphics.setColor(new Color(0, 255, 0, 130));
-						graphics.setStroke(new BasicStroke(1));
-						graphics.draw(poly);
+					Collection<Pair<GroundObject, Integer>> exhumeds = xarpus.getXarpusExhumeds().values();
+					exhumeds.forEach((p) -> {
+						GroundObject o = p.getLeft();
+						int ticks = p.getRight();
 
+						if (config.xarpusExhumed())
+						{
+							Polygon poly = o.getCanvasTilePoly();
+							if (poly != null)
+							{
+								graphics.setColor(new Color(0, 255, 0, 130));
+								graphics.setStroke(new BasicStroke(1));
+								graphics.draw(poly);
+							}
+						}
 						if (config.xarpusExhumedTick())
 						{
-							String count = Integer.toString(xarpus.getXarpusExhumeds().get(o) + 1);
+							String count = Integer.toString(ticks);
 							LocalPoint lp = o.getLocalLocation();
 							Point point = Perspective.getCanvasTextLocation(client, graphics, lp, count, 0);
 							if (point != null)
@@ -100,7 +129,7 @@ public class XarpusOverlay extends RoomOverlay
 								renderTextLocation(graphics, count, Color.WHITE, point);
 							}
 						}
-					}
+					});
 				}
 			}
 

@@ -81,7 +81,7 @@ public class NylocasOverlay extends RoomOverlay
 			Player player = client.getLocalPlayer();
 			if (player != null)
 			{
-				Point point = player.getCanvasTextLocation(graphics, "#", player.getLogicalHeight() + 60);
+				Point point = player.getCanvasTextLocation(graphics, "#", player.getLogicalHeight() + 120);
 				if (point != null)
 				{
 					renderTextLocation(graphics, String.valueOf(nylocas.getInstanceTimer()), Color.CYAN, point);
@@ -240,7 +240,7 @@ public class NylocasOverlay extends RoomOverlay
 			for (NPC npc : npcMap.keySet())
 			{
 				int npcSize = npc.getComposition().getSize();
-				if (config.nyloAggressiveOverlay() && nylocas.getAggressiveNylocas().contains(npc) && !npc.isDead())
+				if (config.nyloAggressiveOverlay() && nylocas.getAggressiveNylocas().contains(npc) && !npc.isDead() && !client.getHiddenNpcIndices().contains(npc.getIndex()))
 				{
 					if (config.nyloAggressiveOverlayStyle() == TheatreConfig.AGGRESSIVENYLORENDERSTYLE.TILE)
 					{
@@ -248,7 +248,7 @@ public class NylocasOverlay extends RoomOverlay
 						if (lp != null)
 						{
 							Polygon poly = getCanvasTileAreaPoly(client, lp, npcSize, -25);
-							renderPoly(graphics, Color.RED, poly, 1);
+							renderPoly(graphics, Color.RED, poly, config.nyloTileWidth());
 						}
 					}
 					else if (config.nyloAggressiveOverlayStyle() == TheatreConfig.AGGRESSIVENYLORENDERSTYLE.HULL)
@@ -270,7 +270,7 @@ public class NylocasOverlay extends RoomOverlay
 				int ticksLeft = npcMap.get(npc);
 				if (ticksLeft > -1 && ticksLeft <= config.nyloExplosionDisplayTicks())
 				{
-					if (config.nyloTimeAlive() && !npc.isDead())
+					if (config.nyloTimeAlive() && !npc.isDead() && !client.getHiddenNpcIndices().contains(npc.getIndex()))
 					{
 						int ticksAlive = ticksLeft;
 						if (config.nyloTimeAliveCountStyle() == TheatreConfig.NYLOTIMEALIVE.COUNTUP)
@@ -299,7 +299,7 @@ public class NylocasOverlay extends RoomOverlay
 							LocalPoint lp = npc.getLocalLocation();
 							if (lp != null)
 							{
-								renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npcSize, -15), 1);
+								renderPoly(graphics, Color.YELLOW, getCanvasTileAreaPoly(client, lp, npcSize, -15), config.nyloTileWidth());
 							}
 						}
 					}
@@ -307,22 +307,22 @@ public class NylocasOverlay extends RoomOverlay
 
 				String name = npc.getName();
 
-				if (config.nyloHighlightOverlay() && !npc.isDead())
+				if (config.nyloHighlightOverlay() && !npc.isDead() && !client.getHiddenNpcIndices().contains(npc.getIndex()))
 				{
 					LocalPoint lp = npc.getLocalLocation();
 					if (lp != null)
 					{
 						if (config.getHighlightMeleeNylo() && "Nylocas Ischyros".equals(name))
 						{
-							renderPoly(graphics, new Color(255, 188, 188), Perspective.getCanvasTileAreaPoly(client, lp, npcSize), 1);
+							renderPoly(graphics, new Color(255, 188, 188), Perspective.getCanvasTileAreaPoly(client, lp, npcSize), config.nyloTileWidth());
 						}
 						else if (config.getHighlightRangeNylo() && "Nylocas Toxobolos".equals(name))
 						{
-							renderPoly(graphics, Color.GREEN, Perspective.getCanvasTileAreaPoly(client, lp, npcSize), 1);
+							renderPoly(graphics, Color.GREEN, Perspective.getCanvasTileAreaPoly(client, lp, npcSize), config.nyloTileWidth());
 						}
 						else if (config.getHighlightMageNylo() && "Nylocas Hagios".equals(name))
 						{
-							renderPoly(graphics, Color.CYAN, Perspective.getCanvasTileAreaPoly(client, lp, npcSize), 1);
+							renderPoly(graphics, Color.CYAN, Perspective.getCanvasTileAreaPoly(client, lp, npcSize), config.nyloTileWidth());
 						}
 					}
 				}
@@ -330,9 +330,9 @@ public class NylocasOverlay extends RoomOverlay
 
 			if (config.bigSplits())
 			{
-				nylocas.getSplitsMap().forEach((lp, ticks) ->
+				nylocas.getSplitsMap().forEach((npc, ticks) ->
 				{
-					Polygon poly = Perspective.getCanvasTileAreaPoly(this.client, lp, 2);
+					Polygon poly = Perspective.getCanvasTileAreaPoly(client, npc.getLocalLocation(), 2);
 					if (poly != null)
 					{
 						if (ticks == 1)
@@ -351,7 +351,7 @@ public class NylocasOverlay extends RoomOverlay
 						}
 					}
 
-					Point textLocation = Perspective.getCanvasTextLocation(this.client, graphics, lp, "#", 0);
+					Point textLocation = Perspective.getCanvasTextLocation(client, graphics, npc.getLocalLocation(), "#", 0);
 					if (textLocation != null)
 					{
 						if (ticks == 1)

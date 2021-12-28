@@ -1,13 +1,30 @@
 /*
- * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
- * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
- * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
- * Extra contributors: terrabl#0001, nicole#1111
+ * Copyright (c) 2021 BikkusLite
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package net.runelite.client.plugins.theatre;
 
-import com.google.common.base.Strings;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +34,11 @@ import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.GraphicsObjectCreated;
-import net.runelite.api.events.GroundObjectDespawned;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.api.events.MenuEntryAdded;
+import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.NpcChanged;
@@ -39,9 +57,7 @@ import net.runelite.client.plugins.theatre.Nylocas.Nylocas;
 import net.runelite.client.plugins.theatre.Sotetseg.Sotetseg;
 import net.runelite.client.plugins.theatre.Verzik.Verzik;
 import net.runelite.client.plugins.theatre.Xarpus.Xarpus;
-import net.runelite.client.util.Text;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import org.pf4j.Extension;
 
 @Extension
@@ -49,7 +65,7 @@ import org.pf4j.Extension;
 	name = "[F] Theatre of Blood",
 	description = "All-in-one plugin for Theatre of Blood",
 	tags = {"ToB", "Theatre", "raids", "bloat", "verzik", "nylo", "xarpus", "sotetseg", "maiden"},
-	enabledByDefault = false
+	enabledByDefault = true
 )
 
 @Slf4j
@@ -86,8 +102,7 @@ public class TheatrePlugin extends Plugin
 	private Room[] rooms = null;
 
 	private boolean tobActive;
-	public static int partySize = 0;
-	private final ArrayList<String> playerList = new ArrayList<>();
+	public static int partySize;
 
 	@Override
 	public void configure(Binder binder)
@@ -127,9 +142,6 @@ public class TheatrePlugin extends Plugin
 		{
 			room.unload();
 		}
-
-		partySize = 0;
-		playerList.clear();
 	}
 
 	@Subscribe
@@ -158,6 +170,8 @@ public class TheatrePlugin extends Plugin
 	public void onNpcChanged(NpcChanged npcChanged)
 	{
 		nylocas.onNpcChanged(npcChanged);
+		xarpus.onNpcChanged(npcChanged);
+		maiden.onNpcChanged(npcChanged);
 	}
 
 	@Subscribe
@@ -165,13 +179,12 @@ public class TheatrePlugin extends Plugin
 	{
 		if (tobActive)
 		{
-			for (int v = 330; v < 335; ++v)
+			partySize = 0;
+			for (int i = 330; i < 335; i++)
 			{
-				String name = Text.standardize(client.getVarcStrValue(v));
-				if (!Strings.isNullOrEmpty(name) && !playerList.contains(name))
+				if (client.getVarcStrValue(i) != null && !client.getVarcStrValue(i).equals(""))
 				{
-					playerList.add(name);
-					partySize = playerList.size();
+					partySize++;
 				}
 			}
 		}
@@ -195,11 +208,6 @@ public class TheatrePlugin extends Plugin
 	public void onVarbitChanged(VarbitChanged event)
 	{
 		tobActive = client.getVar(Varbits.THEATRE_OF_BLOOD) > 1;
-		if (!tobActive)
-		{
-			partySize = 0;
-			playerList.clear();
-		}
 
 		bloat.onVarbitChanged(event);
 		nylocas.onVarbitChanged(event);
@@ -219,6 +227,7 @@ public class TheatrePlugin extends Plugin
 	{
 		nylocas.onMenuEntryAdded(entry);
 		verzik.onMenuEntryAdded(entry);
+		maiden.onMenuEntryAdded(entry);
 	}
 
 	@Subscribe
@@ -231,6 +240,7 @@ public class TheatrePlugin extends Plugin
 	public void onMenuOpened(MenuOpened menu)
 	{
 		nylocas.onMenuOpened(menu);
+		maiden.onMenuOpened(menu);
 	}
 
 	@Subscribe
@@ -259,23 +269,32 @@ public class TheatrePlugin extends Plugin
 	}
 
 	@Subscribe
-	private void onGroundObjectDespawned(GroundObjectDespawned event)
-	{
-		xarpus.onGroundObjectDespawned(event);
-	}
-
-	@Subscribe
 	public void onAnimationChanged(AnimationChanged animationChanged)
 	{
 		bloat.onAnimationChanged(animationChanged);
 		nylocas.onAnimationChanged(animationChanged);
 		sotetseg.onAnimationChanged(animationChanged);
+		maiden.onAnimationChanged(animationChanged);
 	}
 
 	@Subscribe
 	public void onProjectileMoved(ProjectileMoved event)
 	{
+		sotetseg.onProjectileMoved(event);
 		verzik.onProjectileMoved(event);
+	}
+
+	@Subscribe
+	public void onHitsplatApplied(HitsplatApplied e)
+	{
+		xarpus.onHitsplatApplied(e);
+		maiden.onHitsplatApplied(e);
+	}
+
+	@Subscribe
+	public void onGraphicChanged(GraphicChanged graphicChanged)
+	{
+		maiden.onGraphicChanged(graphicChanged);
 	}
 }
 

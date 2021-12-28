@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,6 @@ import javax.inject.Inject;
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import net.runelite.api.Client;
-import net.runelite.api.GraphicsObject;
 import net.runelite.api.ItemID;
 import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
@@ -87,10 +87,16 @@ public class Verzik extends Room
 	private SpecialAttack verzikSpecial = SpecialAttack.NONE;
 
 	@Getter
-	private int verzikYellows;
+	private Map<Projectile, WorldPoint> verzikRangeProjectiles = new HashMap<>();
 
 	@Getter
-	private Map<Projectile, WorldPoint> verzikRangeProjectiles = new HashMap<>();
+	private Map<Projectile, Integer> verzikLightningProjectiles = new HashMap<>();
+
+	@Getter
+	private LinkedHashMap<Projectile, Integer> verzikYellowProjectiles = new LinkedHashMap<>();
+
+	@Getter
+	private Map<Projectile, Integer> verzikGreenBallProjectiles = new HashMap<>();
 
 	@Getter
 	private HashSet<NPC> verzikAggros = new HashSet<>();
@@ -135,6 +141,8 @@ public class Verzik extends Room
 	private static final int NPC_ID_TORNADO = 8386;
 	private static final int VERZIK_RANGE_BALL = 1583;
 	private static final int VERZIK_LIGHTNING_BALL = 1585;
+	private static final int VERZIK_YELLOW_BALL = 1596;
+	private static final int VERZIK_GREEN_BALL = 1598;
 
 	private static final int VERZIK_P1_MAGIC = 8109;
 	private static final int VERZIK_P2_REG = 8114;
@@ -149,6 +157,7 @@ public class Verzik extends Room
 	private Set<Integer> WEAPON_SET;
 	private static final Set<Integer> HELMET_SET = ImmutableSet.of(ItemID.SERPENTINE_HELM, ItemID.TANZANITE_HELM, ItemID.MAGMA_HELM);
 
+	@Getter
 	private boolean isHM;
 	private static final Set<Integer> VERZIK_HM_ID = ImmutableSet.of(10847, 10848, 10849, 10850, 10851, 10852, 10853);
 
@@ -332,7 +341,7 @@ public class Verzik extends Room
 	{
 		if (config.purpleCrabAttackMES() && verzikNPC != null && (verzikNPC.getId() == 8372 || verzikNPC.getId() == 10833 || verzikNPC.getId() == 10850))
 		{
-			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getMenuAction() == MenuAction.NPC_SECOND_OPTION)
+			if (entry.getTarget().contains("Nylocas Athanatos") && entry.getType() == MenuAction.NPC_SECOND_OPTION.getId())
 			{
 				Player player = client.getLocalPlayer();
 				PlayerComposition playerComp = player != null ? player.getPlayerComposition() : null;
@@ -344,14 +353,45 @@ public class Verzik extends Room
 				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
 			}
 		}
+
+		if (config.verzikRemoveAttackYellows() && verzikNPC != null && verzikYellowProjectiles.size() > 0)
+		{
+			if (entry.getTarget().contains("Verzik Vitur") && entry.getType() == MenuAction.NPC_SECOND_OPTION.getId())
+			{
+				client.setMenuOptionCount(client.getMenuOptionCount() - 1);
+			}
+		}
 	}
 
 	@Subscribe
 	public void onProjectileMoved(ProjectileMoved event)
 	{
-		if (event.getProjectile().getId() == VERZIK_RANGE_BALL)
+		if (!verzikActive)
+		{
+			return;
+		}
+
+		Projectile p = event.getProjectile();
+		int ticks = (int) Math.round(p.getRemainingCycles() / 30D);
+
+		if (p.getId() == VERZIK_RANGE_BALL)
 		{
 			verzikRangeProjectiles.put(event.getProjectile(), WorldPoint.fromLocal(client, event.getPosition()));
+		}
+
+		if (p.getId() == VERZIK_LIGHTNING_BALL && ticks > 0)
+		{
+			verzikLightningProjectiles.putIfAbsent(p, ticks);
+		}
+
+		if (p.getId() == VERZIK_YELLOW_BALL && ticks > 0 && client.getLocalPlayer() != null && p.getInteracting() == client.getLocalPlayer())
+		{
+			verzikYellowProjectiles.putIfAbsent(p, ticks);
+		}
+
+		if (p.getId() == VERZIK_GREEN_BALL && ticks > 0)
+		{
+			verzikGreenBallProjectiles.putIfAbsent(p, ticks);
 		}
 	}
 
@@ -404,6 +444,16 @@ public class Verzik extends Room
 						}
 					}
 				}
+
+				for (Iterator<Projectile> it = verzikLightningProjectiles.keySet().iterator(); it.hasNext();)
+				{
+					Projectile key = it.next();
+					verzikLightningProjectiles.replace(key, verzikLightningProjectiles.get(key) - 1);
+					if (verzikLightningProjectiles.get(key) < 0)
+					{
+						it.remove();
+					}
+				}
 			}
 
 			if (verzikPhase == Phase.PHASE3 && !verzikTornadoes.isEmpty())
@@ -449,20 +499,23 @@ public class Verzik extends Room
 
 			if (verzikPhase == Phase.PHASE3)
 			{
-				if (verzikYellows == 0)
+				for (Iterator<Projectile> it = verzikYellowProjectiles.keySet().iterator(); it.hasNext();)
 				{
-					for (GraphicsObject object : client.getGraphicsObjects())
+					Projectile key = it.next();
+					verzikYellowProjectiles.replace(key, verzikYellowProjectiles.get(key) - 1);
+					if (verzikYellowProjectiles.get(key) < 0)
 					{
-						if (object.getId() == 1595)
-						{
-							verzikYellows = 14;
-							break;
-						}
+						it.remove();
 					}
 				}
-				else
+				for (Iterator<Projectile> it = verzikGreenBallProjectiles.keySet().iterator(); it.hasNext();)
 				{
-					verzikYellows--;
+					Projectile key = it.next();
+					verzikGreenBallProjectiles.replace(key, verzikGreenBallProjectiles.get(key) - 1);
+					if (verzikGreenBallProjectiles.get(key) < 0)
+					{
+						it.remove();
+					}
 				}
 			}
 
@@ -655,8 +708,8 @@ public class Verzik extends Room
 		verzikTicksUntilAttack = 0;
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
-		verzikYellows = 0;
 		verzikLightningAttacks = 4;
+		verzikYellowProjectiles.clear();
 	}
 
 	private void verzikCleanup()
@@ -676,8 +729,8 @@ public class Verzik extends Room
 		verzikTickPaused = true;
 		verzikTotalTicksUntilAttack = 0;
 		verzikLastAnimation = -1;
-		verzikYellows = 0;
 		verzikRangedAttacks.clear();
 		verzikLightningAttacks = 4;
+		verzikYellowProjectiles.clear();
 	}
 }

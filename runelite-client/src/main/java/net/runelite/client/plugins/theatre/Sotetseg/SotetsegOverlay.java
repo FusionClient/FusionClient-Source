@@ -1,7 +1,5 @@
 /*
- * THIS PLUGIN WAS WRITTEN BY A KEYBOARD-WIELDING MONKEY BOI BUT SHUFFLED BY A KANGAROO WITH THUMBS.
- * The plugin and it's refactoring was intended for xKylee's Externals but I'm sure if you're reading this, you're probably planning to yoink..
- * or you're just genuinely curious. If you're trying to yoink, it doesn't surprise me.. just don't claim it as your own. Cheers.
+ * BikkusLite / UncleLite © 2020
  */
 
 package net.runelite.client.plugins.theatre.Sotetseg;
@@ -19,6 +17,11 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
 import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.game.SkillIconManager;
+import net.runelite.api.Skill;
+import java.awt.image.BufferedImage;
 
 public class SotetsegOverlay extends RoomOverlay
 {
@@ -26,10 +29,14 @@ public class SotetsegOverlay extends RoomOverlay
 	private Sotetseg sotetseg;
 
 	@Inject
+	private SkillIconManager iconManager;
+
+	@Inject
 	protected SotetsegOverlay(TheatreConfig config)
 	{
 		super(config);
 		setLayer(OverlayLayer.ABOVE_SCENE);
+		setPriority(OverlayPriority.MED);
 	}
 
 	@Override
@@ -49,7 +56,19 @@ public class SotetsegOverlay extends RoomOverlay
 				}
 			}
 
-			if (config.sotetsegOrbAttacksTicks() || config.sotetsegBigOrbTicks())
+			if (config.sotetsegAttackCounter())
+			{
+				int attack = sotetseg.getAttacksLeft();
+				if (attack >= 0)
+				{
+					NPC boss = sotetseg.getSotetsegNPC();
+					final String attacksCounted = String.valueOf(sotetseg.getAttacksLeft());
+					Point canvasPoint = boss.getCanvasTextLocation(graphics, attacksCounted, 250);
+					renderTextLocation(graphics, attacksCounted, Color.YELLOW, canvasPoint);
+				}
+			}
+
+			if (config.sotetsegOrbAttacksTicks() || config.sotetsegBigOrbTicks() || config.sotetsegOrbIcons() != TheatreConfig.SOTETSEGORBICONS.OFF)
 			{
 				for (Projectile p : client.getProjectiles())
 				{
@@ -62,15 +81,54 @@ public class SotetsegOverlay extends RoomOverlay
 						continue;
 					}
 
+					if (config.sotetsegOrbIcons() != TheatreConfig.SOTETSEGORBICONS.OFF)
+					{
+						BufferedImage icon;
+						if (id == Sotetseg.SOTETSEG_MAGE_ORB)
+						{
+							icon = iconManager.getSkillImage(Skill.MAGIC);
+							Point iconlocation = new Point(point.getX() - icon.getWidth() / 2, point.getY() - 30);
+
+							if (config.sotetsegOrbIcons() == TheatreConfig.SOTETSEGORBICONS.ALL)
+							{
+								OverlayUtil.renderImageLocation(graphics, iconlocation, icon);
+							}
+
+							if (p.getInteracting() == client.getLocalPlayer() && config.sotetsegOrbIcons() == TheatreConfig.SOTETSEGORBICONS.YOURS)
+							{
+								OverlayUtil.renderImageLocation(graphics, iconlocation, icon);
+							}
+						}
+
+						if (id == Sotetseg.SOTETSEG_RANGE_ORB)
+						{
+							icon = iconManager.getSkillImage(Skill.RANGED);
+							Point iconlocation = new Point(point.getX() - icon.getWidth() / 2, point.getY() - 30);
+
+							if (config.sotetsegOrbIcons() == TheatreConfig.SOTETSEGORBICONS.ALL)
+							{
+								OverlayUtil.renderImageLocation(graphics, iconlocation, icon);
+							}
+
+							if (p.getInteracting() == client.getLocalPlayer() && config.sotetsegOrbIcons() == TheatreConfig.SOTETSEGORBICONS.YOURS)
+							{
+								OverlayUtil.renderImageLocation(graphics, iconlocation, icon);
+							}
+						}
+					}
+
 					if ((p.getInteracting() == client.getLocalPlayer()) && (id == Sotetseg.SOTETSEG_MAGE_ORB || id == Sotetseg.SOTETSEG_RANGE_ORB) && config.sotetsegOrbAttacksTicks())
 					{
-						renderTextLocation(graphics, (id == Sotetseg.SOTETSEG_MAGE_ORB ? "M" : "R") + (p.getRemainingCycles() / 30), (id == Sotetseg.SOTETSEG_MAGE_ORB ? Color.CYAN : Color.GREEN), point);
+						renderTextLocation(graphics, String.valueOf(p.getRemainingCycles() / 30), (id == Sotetseg.SOTETSEG_MAGE_ORB ? Color.CYAN : Color.GREEN), point);
 					}
 
 					if (id == Sotetseg.SOTETSEG_BIG_AOE_ORB && config.sotetsegBigOrbTicks())
 					{
-						renderTextLocation(graphics, String.valueOf(p.getRemainingCycles() / 30), config.sotetsegBigOrbTickColor(), point);
+						Color color = (p.getRemainingCycles() / 30) > 0 ? config.sotetsegBigOrbTickColor() : Color.ORANGE;
+						renderTextLocation(graphics, String.valueOf(p.getRemainingCycles() / 30), color, point);
 						renderPoly(graphics, config.sotetsegBigOrbTileColor(), p.getInteracting().getCanvasTilePoly());
+						Point imagelocation = new Point(point.getX() - Sotetseg.TACTICAL_NUKE_OVERHEAD.getWidth() / 2, point.getY() - 60);
+						OverlayUtil.renderImageLocation(graphics, imagelocation, Sotetseg.TACTICAL_NUKE_OVERHEAD);
 					}
 				}
 			}

@@ -9,9 +9,12 @@ package net.runelite.client.plugins.theatre.Bloat;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 import javax.inject.Inject;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
@@ -25,7 +28,10 @@ import net.runelite.api.NPCComposition;
 import net.runelite.api.NpcID;
 import net.runelite.api.Scene;
 import net.runelite.api.Tile;
+import net.runelite.api.coords.Angle;
+import net.runelite.api.coords.Direction;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.GameStateChanged;
@@ -35,6 +41,8 @@ import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.plugins.theatre.Bloat.stomp.BloatDown;
+import net.runelite.client.plugins.theatre.Bloat.stomp.def.BloatChunk;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.RoomOverlay;
 import net.runelite.client.plugins.theatre.TheatreConfig;
@@ -70,6 +78,9 @@ public class Bloat extends Room
 	private int bloatState = 0;
 
 	private boolean bloatStarted;
+
+	@Getter
+	private BloatDown bloatDown = null;
 
 	public static final Set<Integer> tankObjectIDs = ImmutableSet.of(32957, 32955, 32959, 32960, 32964, 33084, 0);
 	public static final Set<Integer> topOfTankObjectIDs = ImmutableSet.of(32958, 32962, 32964, 32965, 33062);
@@ -140,6 +151,7 @@ public class Bloat extends Room
 			}
 		}
 
+
 	}
 
 	public void removeGameObjectsFromScene(int plane, int... gameObjectIDs)
@@ -166,6 +178,26 @@ public class Bloat extends Room
 			}
 		}
 
+	}
+
+	private void nullTopOfTankTiles()
+	{
+		List<WorldPoint> wpl = (new WorldArea(3293, 4445, 6, 6, 1)).toWorldPointList();
+		wpl.forEach((wp) -> {
+			Collection<WorldPoint> wpi = WorldPoint.toLocalInstance(client, wp);
+			wpi.forEach(this::nullThisTile);
+		});
+	}
+
+	public void nullThisTile(WorldPoint tile)
+	{
+		int plane = tile.getPlane();
+		int sceneX = tile.getX() - client.getBaseX();
+		int sceneY = tile.getY() - client.getBaseY();
+		if (plane <= 3 && plane >= 0 && sceneX <= 103 && sceneX >= 0 && sceneY <= 103 && sceneY >= 0)
+		{
+			client.getScene().getTiles()[plane][sceneX][sceneY] = null;
+		}
 	}
 
 	@Subscribe
@@ -253,6 +285,34 @@ public class Bloat extends Room
 					}
 				}
 			}
+
+			if (bloatNPC != null)
+			{
+				if (bloatNPC.getAnimation() == -1 && bloatDown != null)
+				{
+					//log.debug("Nulling the old 'Bloat Down'");
+					bloatDown = null;
+				}
+				else if (bloatNPC.getAnimation() != -1 && bloatDown == null && !bloatNPC.isDead())
+				{
+					//log.debug("Building a new 'Bloat Down'");
+					WorldPoint sw = bloatNPC.getWorldLocation();
+					Direction dir = (new Angle(bloatNPC.getOrientation())).getNearestDirection();
+					Supplier<BloatChunk> chunk = () -> {
+						LocalPoint lp = LocalPoint.fromWorld(client, sw);
+						if (lp != null && client.isInInstancedRegion())
+						{
+							int zone = client.getInstanceTemplateChunks()[0][lp.getSceneX() >> 3][lp.getSceneY() >> 3];
+							return BloatChunk.getOccupiedChunk(zone);
+						}
+						else
+						{
+							return BloatChunk.UNKNOWN;
+						}
+					};
+					bloatDown = new BloatDown(client, sw, dir, chunk.get());
+				}
+			}
 		}
 	}
 
@@ -336,6 +396,4 @@ public class Bloat extends Room
 	{
 		return bloatState;
 	}
-
-
 }

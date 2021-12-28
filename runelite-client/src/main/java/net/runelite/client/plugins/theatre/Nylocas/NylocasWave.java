@@ -203,8 +203,7 @@ public class NylocasWave
 			.put(31, new String[]{"mage-range-mage|range-melee-range", "melee-mage-range|mage-melee-range", "range-mage-range|melee-range-mage"})
 			.build();
 
-
-    @Getter
+	@Getter
 	private final int wave;
 
 	@Getter

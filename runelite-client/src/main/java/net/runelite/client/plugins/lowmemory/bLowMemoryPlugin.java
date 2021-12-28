@@ -47,7 +47,9 @@ import javax.inject.Inject;
 	name = "[F] Low Detail",
 	description = "Turns off at bloat",
 	tags = {"memory", "usage", "ground", "decorations", "bloat"},
-	enabledByDefault = false
+	enabledByDefault = false,
+	developerPlugin = true,
+	hidden = true
 )
 @PluginDependency(LowMemoryPlugin.class)
 public class bLowMemoryPlugin extends Plugin

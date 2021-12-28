@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
@@ -19,6 +20,7 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.plugins.theatre.util.coords.SafespotLine;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -201,5 +203,18 @@ public abstract class RoomOverlay extends Overlay
 		}
 
 		return 0;
+	}
+
+	protected void drawLine(Graphics2D graphics, @Nullable SafespotLine safespotLine, @Nonnull Color lineColor, int lineStroke) {
+		if (safespotLine != null) {
+			Point pointA = safespotLine.getTranslatedPointA(this.client);
+			Point pointB = safespotLine.getTranslatedPointB(this.client);
+			if (pointA != null && pointB != null) {
+
+				graphics.setStroke(new BasicStroke((float)lineStroke));
+				graphics.setColor(lineColor);
+				graphics.drawLine(pointA.getX(), pointA.getY(), pointB.getX(), pointB.getY());
+			}
+		}
 	}
 }

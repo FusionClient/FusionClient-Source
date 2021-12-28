@@ -57,7 +57,7 @@ public class NylocasAliveCounterOverlay extends Overlay
 
 		setPosition(OverlayPosition.TOP_LEFT);
 		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_SCENE);
+		//setLayer(OverlayLayer.ABOVE_SCENE);
 		refreshPanel();
 	}
 

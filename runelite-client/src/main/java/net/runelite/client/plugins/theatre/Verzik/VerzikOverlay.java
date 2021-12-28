@@ -12,9 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
-import java.util.Iterator;
 import javax.inject.Inject;
-import net.runelite.api.Actor;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCComposition;
@@ -35,8 +33,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public class VerzikOverlay extends RoomOverlay
 {
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.0");
-	private static final int VERZIK_GREEN_BALL = 1598;
-	private static final int VERZIK_LIGHTNING_BALL = 1585;
 
 	@Inject
 	private Verzik verzik;
@@ -57,7 +53,7 @@ public class VerzikOverlay extends RoomOverlay
 	{
 		if (verzik.isVerzikActive())
 		{
-			if (config.verzikTileOverlay())
+			if (config.verzikTileOverlay() || (config.verzikTileOverlayP3() && !config.verzikTileOverlay() && verzik.getVerzikPhase() == Verzik.Phase.PHASE3))
 			{
 				int size = 1;
 				final NPCComposition composition = verzik.getVerzikNPC().getTransformedComposition();
@@ -86,7 +82,7 @@ public class VerzikOverlay extends RoomOverlay
 			String tick_text = "";
 			if (config.verzikAttackCounter() && verzik.getVerzikSpecial() != Verzik.SpecialAttack.WEBS)
 			{
-				tick_text += "[A] " + verzik.getVerzikAttackCount();
+				tick_text += verzik.getVerzikAttackCount();
 				if (config.verzikAutosTick() || config.verzikTotalTickCounter())
 				{
 					tick_text += " : ";
@@ -116,11 +112,21 @@ public class VerzikOverlay extends RoomOverlay
 			{
 				if (config.verzikProjectiles())
 				{
-					Iterator iterator = verzik.getVerzikRangeProjectiles().values().iterator();
-
-					while (iterator.hasNext())
+					for (Projectile p : verzik.getVerzikRangeProjectiles().keySet())
 					{
-						drawTile(graphics, (WorldPoint) iterator.next(), config.verzikProjectilesColor(), 1, 255, 20);
+						WorldPoint wp = verzik.getVerzikRangeProjectiles().get(p);
+						drawTile(graphics, wp, config.verzikProjectilesColor(), 1, 255, 20);
+						if (config.verzikProjectilesTicks())
+						{
+							LocalPoint lp = LocalPoint.fromWorld(client, wp);
+							if (lp != null)
+							{
+								int ticks = p.getRemainingCycles() / 30;
+								Point point = Perspective.localToCanvas(client, lp, client.getPlane());
+								Color color = ticks > 0 ? Color.WHITE : Color.RED;
+								renderTextLocation(graphics, Integer.toString(ticks), color, point);
+							}
+						}
 					}
 				}
 
@@ -180,24 +186,20 @@ public class VerzikOverlay extends RoomOverlay
 
 				if (config.lightningAttackTick())
 				{
-					client.getProjectiles().forEach((p) -> {
-						Actor getInteracting = p.getInteracting();
-
-						if (p.getId() == VERZIK_LIGHTNING_BALL)
+					for (Projectile p : verzik.getVerzikLightningProjectiles().keySet())
+					{
+						Player localPlayer = client.getLocalPlayer();
+						if (localPlayer != null && p.getInteracting() == localPlayer)
 						{
-							Player localPlayer = client.getLocalPlayer();
-							if (getInteracting != null && getInteracting == localPlayer)
+							int ticks = verzik.getVerzikLightningProjectiles().get(p);
+							String tickstring = String.valueOf(ticks);
+							Point point = Perspective.getCanvasTextLocation(client, graphics, localPlayer.getLocalLocation(), tickstring, 0);
+							if (point != null)
 							{
-								Point point = getProjectilePoint(p);
-								if (point != null)
-								{
-									Point textLocation = new Point(point.getX(), point.getY());
-									renderTextLocation(graphics, Integer.toString(p.getRemainingCycles() / 30), Color.ORANGE, textLocation);
-								}
+								renderTextLocation(graphics, tickstring, (ticks > 0 ? Color.WHITE : Color.ORANGE), point);
 							}
 						}
-
-					});
+					}
 				}
 			}
 
@@ -233,18 +235,27 @@ public class VerzikOverlay extends RoomOverlay
 
 				if (config.verzikYellows())
 				{
-					if (verzik.getVerzikYellows() > 0)
+					for (GraphicsObject object : client.getGraphicsObjects())
 					{
-						String text = Integer.toString(verzik.getVerzikYellows());
-
-						for (GraphicsObject object : client.getGraphicsObjects())
+						if (object.getId() == 1595)
 						{
-							if (object.getId() == 1595)
+							drawTile(graphics, WorldPoint.fromLocal(client, object.getLocation()), Color.YELLOW, 1, 255, 0);
+						}
+					}
+
+					if (verzik.getVerzikYellowProjectiles().size() > 0)
+					{
+						Player localPlayer = client.getLocalPlayer();
+						if (localPlayer != null)
+						{
+							Projectile p = verzik.getVerzikYellowProjectiles().keySet().iterator().next();
+							int ticks = verzik.getVerzikYellowProjectiles().get(p);
+							String tickstring = String.valueOf(ticks);
+
+							Point point = Perspective.getCanvasTextLocation(client, graphics, localPlayer.getLocalLocation(), "#", 0);
+							if (point != null)
 							{
-								drawTile(graphics, WorldPoint.fromLocal(client, object.getLocation()), Color.YELLOW, 1, 255, 0);
-								LocalPoint lp = object.getLocation();
-								Point point = Perspective.getCanvasTextLocation(client, graphics, lp, text, 0);
-								renderTextLocation(graphics, text, Color.WHITE, point);
+								renderTextLocation(graphics, tickstring, Color.WHITE, point);
 							}
 						}
 					}
@@ -252,36 +263,44 @@ public class VerzikOverlay extends RoomOverlay
 
 				if (config.verzikGreenBall() || config.verzikGreenBallTick())
 				{
-					for (Projectile p : client.getProjectiles())
+					for (Projectile p : verzik.getVerzikGreenBallProjectiles().keySet())
 					{
-						if (p.getId() == VERZIK_GREEN_BALL)
+						if (config.verzikGreenBallTick())
 						{
-							if (config.verzikGreenBallTick())
+							int ticks = verzik.getVerzikGreenBallProjectiles().get(p);
+							String tickstring = String.valueOf(ticks);
+							Point point = getProjectilePoint(p);
+							if (point != null)
 							{
-								Point point = getProjectilePoint(p);
-								if (point != null)
-								{
-									Point textLocation = new Point(point.getX(), point.getY());
-									renderTextLocation(graphics, Integer.toString(p.getRemainingCycles() / 30), Color.GREEN, textLocation);
-								}
+								Point textLocation = new Point(point.getX(), point.getY());
+								renderTextLocation(graphics, Integer.toString(ticks), Color.GREEN, textLocation);
 							}
 
-							if (config.verzikGreenBall())
+							Player localPlayer = client.getLocalPlayer();
+							if (localPlayer != null && p.getInteracting() == localPlayer)
 							{
-								Polygon tilePoly;
-								if (config.verzikGreenBallMarker() == TheatreConfig.VERZIKBALLTILE.TILE)
+								Point textLocationPlayer = Perspective.getCanvasTextLocation(client, graphics, localPlayer.getLocalLocation(), "#", 0);
+								if (textLocationPlayer != null)
 								{
-									tilePoly = p.getInteracting().getCanvasTilePoly();
+									renderTextLocation(graphics, tickstring, Color.GREEN, textLocationPlayer);
 								}
-								else
-								{
-									tilePoly = getCanvasTileAreaPoly(client, p.getInteracting().getLocalLocation(), 3, true);
-								}
+							}
+						}
+						if (config.verzikGreenBall())
+						{
+							Polygon tilePoly;
+							if (config.verzikGreenBallMarker() == TheatreConfig.VERZIKBALLTILE.TILE)
+							{
+								tilePoly = p.getInteracting().getCanvasTilePoly();
+							}
+							else
+							{
+								tilePoly = getCanvasTileAreaPoly(client, p.getInteracting().getLocalLocation(), 3, true);
+							}
 
-								if (tilePoly != null)
-								{
-									renderPoly(graphics, config.verzikGreenBallColor(), tilePoly);
-								}
+							if (tilePoly != null)
+							{
+								renderPoly(graphics, config.verzikGreenBallColor(), tilePoly);
 							}
 						}
 					}
@@ -296,13 +315,13 @@ public class VerzikOverlay extends RoomOverlay
 					{
 						if (k.getInteracting() != null && !k.isDead())
 						{
-							if ((config.verzikNyloPersonalWarning() && k.getInteracting() == client.getLocalPlayer())
+							if ((config.verzikNyloPersonalWarning() && (k.getInteracting() == client.getLocalPlayer() || (!config.verzikNyloOtherWarning() && k.getInteracting() != client.getLocalPlayer())))
 								|| (config.verzikNyloOtherWarning() && k.getInteracting() != client.getLocalPlayer()))
 							{
-								Color color = Color.LIGHT_GRAY;
+								Color color = Color.GREEN;
 								if (k.getInteracting() == client.getLocalPlayer())
 								{
-									color = Color.YELLOW;
+									color = Color.RED;
 								}
 
 								Point textLocation = k.getCanvasTextLocation(graphics, k.getInteracting().getName(), 80);
@@ -311,7 +330,8 @@ public class VerzikOverlay extends RoomOverlay
 									OverlayUtil.renderTextLocation(graphics, textLocation, k.getInteracting().getName(), color);
 								}
 
-								if (config.verzikNyloExplodeAOE())
+								if (config.verzikNyloExplodeAOE() && ((config.verzikNyloPersonalWarning() && k.getInteracting() == client.getLocalPlayer())
+								|| (config.verzikNyloOtherWarning() && k.getInteracting() != client.getLocalPlayer())))
 								{
 									int size = 1;
 									int thick_size = 1;
