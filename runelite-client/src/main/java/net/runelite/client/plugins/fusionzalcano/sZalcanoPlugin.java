@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.spoonzalcano;
+package net.runelite.client.plugins.fusionzalcano;
 
 import com.google.inject.Provides;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "[F] Zalcano",
-	description = "All-in-one plugin for the Zalcano. MADE BY SPOONLITE",
+	name = "<html><font color=#FFDD00>[F] Zalcano",
+	description = "All-in-one plugin for the Zalcano. -SponLite",
 	tags = {"Zalcano"},
 	enabledByDefault = false
 )

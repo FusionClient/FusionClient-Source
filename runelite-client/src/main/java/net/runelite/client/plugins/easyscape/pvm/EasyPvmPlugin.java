@@ -47,7 +47,7 @@ import net.runelite.client.util.Text;
 import org.apache.commons.lang3.ArrayUtils;
 
 @PluginDescriptor(
-	name = "[F] EasyPVM",
+	name = "<html><font color=#FFDD00>[F] EasyPVM",
 	description = "EasyPvM.",
 	tags = {"EasyPVM", "easy"},
 	enabledByDefault = false

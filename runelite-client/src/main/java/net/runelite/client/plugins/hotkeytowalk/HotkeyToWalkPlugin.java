@@ -20,7 +20,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-		name = "[F] Hotkey Walk Here",
+		name = "<html><font color=#FFDD00>[F] Hotkey Walk Here",
 		enabledByDefault = false,
 		description = "Use Hotkey to toggle the Walk Here menu option. While pressed you will Walk rather than interact with objects."
 )

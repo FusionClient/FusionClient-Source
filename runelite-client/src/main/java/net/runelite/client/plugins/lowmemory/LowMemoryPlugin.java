@@ -38,7 +38,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
-	name = "Low Detail",
+	name = "<html><font color=#FFDD00>[F] Low Detail",
 	description = "Turn off ground decorations and certain textures, reducing memory usage",
 	tags = {"memory", "usage", "ground", "decorations"},
 	enabledByDefault = false

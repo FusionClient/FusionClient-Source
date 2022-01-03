@@ -62,7 +62,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "[F] Theatre of Blood",
+	name = "<html><font color=#FFDD00>[F] Theatre of Blood",
 	description = "All-in-one plugin for Theatre of Blood",
 	tags = {"ToB", "Theatre", "raids", "bloat", "verzik", "nylo", "xarpus", "sotetseg", "maiden"},
 	enabledByDefault = true

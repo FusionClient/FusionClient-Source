@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.spoonzalcano;
+package net.runelite.client.plugins.fusionzalcano;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,7 +10,6 @@ import java.util.Iterator;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
-import net.runelite.api.GraphicsObject;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.Projectile;

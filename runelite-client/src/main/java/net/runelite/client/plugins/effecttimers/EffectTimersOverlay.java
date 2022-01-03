@@ -26,12 +26,6 @@ package net.runelite.client.plugins.effecttimers;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import javax.inject.Inject;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.Point;
@@ -40,6 +34,10 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class EffectTimersOverlay extends Overlay
 {
@@ -94,7 +92,7 @@ public class EffectTimersOverlay extends Overlay
 		int offset = 0;
 		for (TimerType timerType : TimerType.values())
 		{
-			if (timerType.shouldRender(configManager))
+			if (timerType.shouldRender(configManager) && !actor.isDead())
 			{
 				if (timerManager.isTimerValid(actor, timerType) && timerManager.hasTimerActive(actor, timerType))
 				{

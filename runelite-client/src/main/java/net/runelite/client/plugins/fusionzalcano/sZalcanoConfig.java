@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.spoonzalcano;
+package net.runelite.client.plugins.fusionzalcano;
 
 import java.awt.Color;
 import net.runelite.client.config.Config;

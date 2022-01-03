@@ -68,7 +68,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-	name = "[F] Cox Additions",
+	name = "[S] Cox Additions",
 	description = "Additional plugins for the Chambers of Xeric",
 	tags = {"xeric", "olm", "chambers", "cox", "spoon"},
 	enabledByDefault = false
