@@ -17,7 +17,7 @@ import javax.inject.Singleton;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@PluginDescriptor(name = "<html><font color=#FFDD00>[F] Demonic Gorillas", description = "Count demonic gorilla attacks and display their next possible attack styles", tags = {"combat", "overlay", "pve", "pvm"})
+@PluginDescriptor(name = "[F] Demonic Gorillas", description = "Count demonic gorilla attacks and display their next possible attack styles", tags = {"combat", "overlay", "pve", "pvm"})
 @Singleton
 public class DemonicGorillaPlugin extends Plugin {
     private static final Set<Integer> DEMONIC_PROJECTILES = (Set<Integer>)ImmutableSet.of(Integer.valueOf(1302), Integer.valueOf(1304), Integer.valueOf(856));

@@ -43,7 +43,7 @@ import javax.inject.Inject;
 import java.util.EnumSet;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Effect Timers",
+	name = "[F] Effect Timers",
 	description = "Effect timer overlay on players",
 	tags = {"freeze", "timers", "barrage", "teleblock", "pklite"},
 	enabledByDefault = false

@@ -54,7 +54,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Hallowed Sepulchre",
+	name = "[F] Hallowed Sepulchre",
 	enabledByDefault = false,
 	description = "A plugin for the Hallowed Sepulchre agility minigame.",
 	tags = {"sepulchre", "hallowed", "darkmeyer", "agility", "course", "minigame"}

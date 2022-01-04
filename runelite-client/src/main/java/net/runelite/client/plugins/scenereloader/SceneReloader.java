@@ -14,7 +14,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] DeO Scene Reloader",
+	name = "[F] DeO Scene Reloader",
 	description = "Reloads the scene with Ctrl-R"
 )
 public class SceneReloader extends Plugin implements KeyListener {

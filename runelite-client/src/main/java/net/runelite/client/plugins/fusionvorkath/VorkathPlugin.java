@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-@PluginDescriptor(name = "<html><font color=#FFDD00>[F] Vorkath",
+@PluginDescriptor(name = "[F] Vorkath",
         description = "", tags = {"vorkath", "vork"},
         enabledByDefault = false)
 

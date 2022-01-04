@@ -58,7 +58,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Hydra Helper",
+	name = "[F] Hydra Helper",
 	enabledByDefault = false,
 	description = "Overlays for normal Hydras.",
 	tags = {"hydra", "helper", "baby", "small", "normal", "regular"}

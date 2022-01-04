@@ -44,12 +44,10 @@ import javax.inject.Inject;
 @Extension
 @Slf4j
 @PluginDescriptor(
-	name = "[F] Low Detail",
+	name = "<html><font color=#FFDD00>[F] Low Detail",
 	description = "Turns off at bloat",
 	tags = {"memory", "usage", "ground", "decorations", "bloat"},
-	enabledByDefault = false,
-	developerPlugin = true,
-	hidden = true
+	enabledByDefault = false
 )
 @PluginDependency(LowMemoryPlugin.class)
 public class bLowMemoryPlugin extends Plugin

@@ -15,7 +15,7 @@ import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Hop Timer",
+	name = "[F] Hop Timer",
 	description = "Shows how long before you are out of combat and can hop worlds",
 	enabledByDefault = false
 )

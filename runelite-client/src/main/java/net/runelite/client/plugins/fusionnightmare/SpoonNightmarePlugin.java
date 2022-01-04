@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.*;
 
 @PluginDescriptor(
-        name = "<html><font color=#FFDD00>[F] Nightmare",
+        name = "[F] Nightmare",
         description = "Nightmare Plugin",
         tags = {"nightmare, ashihama, ross stinks, spoon"},
         enabledByDefault = false

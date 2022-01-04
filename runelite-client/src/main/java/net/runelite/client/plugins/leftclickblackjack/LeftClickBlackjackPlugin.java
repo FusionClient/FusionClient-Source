@@ -46,7 +46,7 @@ import javax.inject.Inject;
 
 @Extension
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Left Click Blackjack",
+	name = "[F] Left Click Blackjack",
 	enabledByDefault = false,
 	description = "Allows for one-click blackjacking, both knocking out and pickpocketing",
 	tags = {"blackjack", "thieving"}

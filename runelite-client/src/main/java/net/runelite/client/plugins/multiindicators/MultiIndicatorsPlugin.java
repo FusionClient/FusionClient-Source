@@ -56,7 +56,7 @@ import org.pf4j.Extension;
 
 @Extension
 @PluginDescriptor(
-	name = "[F]Multi-Lines",
+	name = "[F] Multi-Lines",
 	enabledByDefault = false,
 	description = "Show borders of multicombat and PvP safezones",
 	tags = {"multicombat", "lines", "pvp", "deadman", "safezones"}

@@ -33,7 +33,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Zulrah",
+	name = "[F] Zulrah",
 	description = "Zulrah Assistant",
 	tags = {"Zulrah", "Helper"},
 	enabledByDefault = false
