@@ -61,4 +61,5 @@ public class ConfigChanged
 	 * The new value of the entry, null if the entry has been unset.
 	 */
 	private String newValue;
+
 }

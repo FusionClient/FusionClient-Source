@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 @PluginDescriptor(
 	loadWhenOutdated = true, // prevent users from disabling
 	hidden = true, // prevent users from disabling
-	name = "Plugin Manager"
+	name = "Openosrs"
 )
 @Singleton
 @Slf4j
@@ -106,7 +106,9 @@ public class OpenOSRSPlugin extends Plugin
 			.priority(1)
 			.panel(panel)
 			.build();
-//		clientToolbar.addNavigation(navButton);
+		if (!config.hideOprsManager()) {
+			clientToolbar.addNavigation(navButton);
+		}
 
 		this.keybind = config.detachHotkey();
 		keyManager.registerKeyListener(hotkeyListener);
@@ -136,6 +138,15 @@ public class OpenOSRSPlugin extends Plugin
 			final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 			logger.detachAppender("Sentry");
 		}
-	}
 
+		if (config.hideOprsManager() && navButton != null)
+		{
+			clientToolbar.removeNavigation(navButton);
+		}
+
+		if (!config.hideOprsManager())
+		{
+			clientToolbar.addNavigation(navButton);
+		}
+	}
 }

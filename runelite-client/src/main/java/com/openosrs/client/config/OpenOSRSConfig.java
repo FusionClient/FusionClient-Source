@@ -146,4 +146,18 @@ public interface OpenOSRSConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+			keyName = "hideOprsManager",
+			name = "",
+			description = ""
+	)
+	default boolean hideOprsManager()
+	{
+		return false;
+	}
+
+
 }
+
+
