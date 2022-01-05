@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
+ * Copyright (c) 2018, Lotto <https://github.com/devLotto>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,64 +23,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.http.api.cache;
+package net.runelite.client.game;
 
-public class CacheIndex
+import com.google.gson.JsonParseException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.http.api.RuneLiteAPI;
+import net.runelite.http.api.worlds.WorldResult;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+@Slf4j
+@RequiredArgsConstructor
+public class WorldClient
 {
-	private final int indexId;
-	private final int revision;
+	private final OkHttpClient client;
+	private final HttpUrl apiBase;
 
-	public CacheIndex(int indexId, int revision)
+	public WorldResult lookupWorlds() throws IOException
 	{
-		this.indexId = indexId;
-		this.revision = revision;
-	}
+		HttpUrl url = apiBase.newBuilder()
+			.addPathSegment("worlds.js")
+			.build();
 
-	@Override
-	public String toString()
-	{
-		return "CacheIndex{" + "indexId=" + indexId + ", revision=" + revision + '}';
-	}
+		log.debug("Built URI: {}", url);
 
-	@Override
-	public int hashCode()
-	{
-		int hash = 5;
-		hash = 61 * hash + this.indexId;
-		hash = 61 * hash + this.revision;
-		return hash;
-	}
+		Request request = new Request.Builder()
+			.url(url)
+			.build();
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
+		try (Response response = client.newCall(request).execute())
 		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final CacheIndex other = (CacheIndex) obj;
-		if (this.indexId != other.indexId)
-		{
-			return false;
-		}
-		if (this.revision != other.revision)
-		{
-			return false;
-		}
-		return true;
-	}
+			if (!response.isSuccessful())
+			{
+				log.debug("Error looking up worlds: {}", response);
+				throw new IOException("unsuccessful response looking up worlds");
+			}
 
-	public int getIndexId()
-	{
-		return indexId;
-	}
-
-	public int getRevision()
-	{
-		return revision;
+			InputStream in = response.body().byteStream();
+			return RuneLiteAPI.GSON.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), WorldResult.class);
+		}
+		catch (JsonParseException ex)
+		{
+			throw new IOException(ex);
+		}
 	}
 }

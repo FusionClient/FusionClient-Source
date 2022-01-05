@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
+ * Copyright (c) 2021 Hydrox6 <ikada@protonmail.ch>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,83 +22,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.http.api.cache;
+package net.runelite.client.plugins.roofremoval;
 
-import java.time.Instant;
-import java.util.Objects;
+import lombok.Getter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 
-public class Cache
+@Getter
+enum RoofRemovalConfigOverride
 {
-	private final int id;
-	private final int revision;
-	private final Instant date;
+	POH(RoofRemovalConfig::overridePOH, 7257, 7513, 7514, 7769, 7770, 8025, 8026);
 
-	public Cache(int id, int revision, Instant date)
-	{
-		this.id = id;
-		this.revision = revision;
-		this.date = date;
-	}
+	private final Predicate<RoofRemovalConfig> enabled;
+	private final List<Integer> regions;
 
-	@Override
-	public String toString()
+	RoofRemovalConfigOverride(Predicate<RoofRemovalConfig> enabled, Integer... regions)
 	{
-		return "Cache{" + "id=" + id + ", revision=" + revision + ", date=" + date + '}';
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int hash = 5;
-		hash = 29 * hash + this.id;
-		hash = 29 * hash + this.revision;
-		hash = 29 * hash + Objects.hashCode(this.date);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		if (obj == null)
-		{
-			return false;
-		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		final Cache other = (Cache) obj;
-		if (this.id != other.id)
-		{
-			return false;
-		}
-		if (this.revision != other.revision)
-		{
-			return false;
-		}
-		if (!Objects.equals(this.date, other.date))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	public int getId()
-	{
-		return id;
-	}
-
-	public int getRevision()
-	{
-		return revision;
-	}
-
-	public Instant getDate()
-	{
-		return date;
+		this.enabled = enabled;
+		this.regions = Arrays.asList(regions);
 	}
 }

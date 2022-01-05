@@ -145,9 +145,11 @@ import net.runelite.rs.api.RSChatChannel;
 import net.runelite.rs.api.RSClanChannel;
 import net.runelite.rs.api.RSClient;
 import net.runelite.rs.api.RSEnumComposition;
+import net.runelite.rs.api.RSEvictingDualNodeHashTable;
 import net.runelite.rs.api.RSFriendSystem;
 import net.runelite.rs.api.RSIndexedSprite;
 import net.runelite.rs.api.RSInterfaceParent;
+import net.runelite.rs.api.RSItemComposition;
 import net.runelite.rs.api.RSItemContainer;
 import net.runelite.rs.api.RSModelData;
 import net.runelite.rs.api.RSNPC;
@@ -168,6 +170,7 @@ import net.runelite.rs.api.RSWidget;
 import net.runelite.rs.api.RSWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Mixin(RSClient.class)
 public abstract class RSClientMixin implements RSClient
@@ -488,6 +491,10 @@ public abstract class RSClientMixin implements RSClient
 				return AccountType.ULTIMATE_IRONMAN;
 			case 3:
 				return AccountType.HARDCORE_IRONMAN;
+			case 4:
+				return AccountType.GROUP_IRONMAN;
+			case 5:
+				return AccountType.HARDCORE_GROUP_IRONMAN;
 		}
 
 		return AccountType.NORMAL;
@@ -797,9 +804,33 @@ public abstract class RSClientMixin implements RSClient
 	}
 
 	@Inject
+	public static RSRuneLiteMenuEntry newBareRuneliteMenuEntry()
+	{
+		throw new NotImplementedException();
+	}
+
+	@Inject
 	public static RSRuneLiteMenuEntry newRuneliteMenuEntry(int idx)
 	{
-		return null;
+		throw new NotImplementedException();
+	}
+
+	@Inject
+	@Override
+	public MenuEntry createMenuEntry(String option, String target, int identifier, int opcode, int param1, int param2, boolean forceLeftClick)
+	{
+		RSRuneLiteMenuEntry menuEntry = newBareRuneliteMenuEntry();
+
+		menuEntry.setOption(option);
+		menuEntry.setTarget(target);
+		menuEntry.setIdentifier(identifier);
+		menuEntry.setType(MenuAction.of(opcode));
+		menuEntry.setParam0(param1);
+		menuEntry.setParam1(param2);
+		menuEntry.setConsumer(null);
+		menuEntry.setForceLeftClick(forceLeftClick);
+
+		return menuEntry;
 	}
 
 	@Inject
@@ -999,6 +1030,17 @@ public abstract class RSClientMixin implements RSClient
 				menuArgument2
 			);
 			client.getCallbacks().post(menuEntryAdded);
+
+			if (menuEntryAdded.isModified() && client.getMenuOptionCount() == optionCount)
+			{
+				client.getMenuOptions()[tmpOptionsCount] = menuEntryAdded.getOption();
+				client.getMenuTargets()[tmpOptionsCount] = menuEntryAdded.getTarget();
+				client.getMenuIdentifiers()[tmpOptionsCount] = menuEntryAdded.getIdentifier();
+				client.getMenuOpcodes()[tmpOptionsCount] = menuEntryAdded.getType();
+				client.getMenuArguments1()[tmpOptionsCount] = menuEntryAdded.getActionParam0();
+				client.getMenuArguments2()[tmpOptionsCount] = menuEntryAdded.getActionParam1();
+				client.getMenuForceLeftClick()[tmpOptionsCount] = menuEntryAdded.isForceLeftClick();
+			}
 		}
 	}
 
@@ -1692,6 +1734,18 @@ public abstract class RSClientMixin implements RSClient
 		client.getScene().menuOpen(client.getPlane(), x - client.getViewportXOffset(), y - client.getViewportYOffset(), false);
 	}
 
+	@Copy("addWidgetItemMenuItem")
+	@Replace("addWidgetItemMenuItem")
+	static void copy$addWidgetItemMenuItem(RSWidget var0, RSItemComposition var1, int var2, int var3, boolean var4)
+	{
+		String[] var5 = var1.getInventoryActions();
+
+		if (var5.length > var3)
+		{
+			copy$addWidgetItemMenuItem(var0, var1, var2, var3, var4);
+		}
+	}
+
 	@Inject
 	@MethodHook("updateNpcs")
 	public static void updateNpcs(boolean var0, RSPacketBuffer var1)
@@ -1723,12 +1777,16 @@ public abstract class RSClientMixin implements RSClient
 		client.getCallbacks().post(chatMessage);
 	}
 
-	@Inject
-	@MethodHook("draw")
-	public void draw(boolean var1)
+	@Copy("draw")
+	@Replace("draw")
+	public void copy$draw(boolean var1)
 	{
 		callbacks.frame();
 		updateCamera();
+
+		copy$draw(var1);
+
+		checkResize();
 	}
 
 	@MethodHook("drawInterface")
@@ -2019,7 +2077,7 @@ public abstract class RSClientMixin implements RSClient
 		if (len > 0)
 		{
 			int type = getMenuOpcodes()[len - 1];
-			return type == MenuAction.RUNELITE_OVERLAY.getId();
+			return type == MenuAction.RUNELITE_OVERLAY.getId() || type == MenuAction.RUNELITE_OVERLAY_CONFIG.getId() || type == MenuAction.RUNELITE_INFOBOX.getId();
 		}
 
 		return false;
@@ -2658,6 +2716,69 @@ public abstract class RSClientMixin implements RSClient
 	protected final void doCycle()
 	{
 		client.getCallbacks().tick();
+	}
+
+	@Inject
+	public static void check(String name, RSEvictingDualNodeHashTable dualNodeHashTable)
+	{
+		boolean var3 = dualNodeHashTable.isTrashing();
+		dualNodeHashTable.setThreshold(dualNodeHashTable.getThreshold() * 0.92F + (var3 ? 0.07999998F : 0.0F));
+		if (var3)
+		{
+			if (dualNodeHashTable.getThreshold() > 0.2F)
+			{
+				client.getLogger().trace("cache {} is thrashing", name);
+			}
+
+			if (dualNodeHashTable.getThreshold() > 0.9F && dualNodeHashTable.getCapacity() < dualNodeHashTable.getTmpCapacity() * 8)
+			{
+				dualNodeHashTable.increaseCapacity(dualNodeHashTable.getCapacity() * 2);
+				client.getLogger().info("cache {} thrashing, enlarging to {} entries", name, dualNodeHashTable.getCapacity());
+			}
+		}
+
+		dualNodeHashTable.getDeque().add(dualNodeHashTable.getDualNode());
+	}
+
+	@Inject
+	public static void checkResize()
+	{
+		check("Script_cached", client.getScriptCache());
+		check("StructDefinition_cached", client.getRSStructCompositionCache());
+		check("HealthBarDefinition_cached", client.getHealthBarCache());
+		check("HealthBarDefinition_cachedSprites", client.getHealthBarSpriteCache());
+		check("ObjectDefinition_cachedModels", client.getObjectDefinitionModelsCache());
+		check("Widget_cachedSprites", client.getWidgetSpriteCache());
+		check("ItemDefinition_cached", client.getItemCompositionCache());
+		check("VarbitDefinition_cached", client.getVarbitCache());
+		check("EnumDefinition_cached", client.getEnumDefinitionCache());
+		check("FloorUnderlayDefinition_cached", client.getFloorUnderlayDefinitionCache());
+		check("FloorOverlayDefinition_cached", client.getFloorOverlayDefinitionCache());
+		check("HitSplatDefinition_cached", client.getHitSplatDefinitionCache());
+		check("HitSplatDefinition_cachedSprites", client.getHitSplatDefinitionSpritesCache());
+		check("HitSplatDefinition_cachedFonts", client.getHitSplatDefinitionDontsCache());
+		check("InvDefinition_cached", client.getInvDefinitionCache());
+		check("ItemDefinition_cachedModels", client.getItemDefinitionModelsCache());
+		check("ItemDefinition_cachedSprites", client.getItemDefinitionSpritesCache());
+		check("KitDefinition_cached", client.getKitDefinitionCache());
+		check("NpcDefinition_cached", client.getNpcDefinitionCache());
+		check("NpcDefinition_cachedModels", client.getNpcDefinitionModelsCache());
+		check("ObjectDefinition_cached", client.getObjectDefinitionCache());
+		check("ObjectDefinition_cachedModelData", client.getObjectDefinitionModelDataCache());
+		check("ObjectDefinition_cachedEntities", client.getObjectDefinitionEntitiesCache());
+		check("ParamDefinition_cached", client.getParamDefinitionCache());
+		check("PlayerAppearance_cachedModels", client.getPlayerAppearanceModelsCache());
+		check("SequenceDefinition_cached", client.getSequenceDefinitionCache());
+		check("SequenceDefinition_cachedFrames", client.getSequenceDefinitionFramesCache());
+		check("SequenceDefinition_cachedModel", client.getSequenceDefinitionModelsCache());
+		check("SpotAnimationDefinition_cached", client.getSpotAnimationDefinitionCache());
+		check("SpotAnimationDefinition_cachedModels", client.getSpotAnimationDefinitionModlesCache());
+		check("VarcInt_cached", client.getVarcIntCache());
+		check("VarpDefinition_cached", client.getVarpDefinitionCache());
+		check("Widget_cachedModels", client.getModelsCache());
+		check("Widget_cachedFonts", client.getFontsCache());
+		check("Widget_cachedSpriteMasks", client.getSpriteMasksCache());
+		check("WorldMapElement_cachedSprites", client.getSpritesCache());
 	}
 }
 

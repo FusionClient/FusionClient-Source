@@ -538,14 +538,6 @@ public interface RSClient extends RSGameEngine, Client
 	@Override
 	int[][] getXteaKeys();
 
-	@Import("gameDrawingMode")
-	@Override
-	int getGameDrawingMode();
-
-	@Import("gameDrawingMode")
-	@Override
-	void setGameDrawingMode(int gameDrawingMode);
-
 	@Import("cycleCntr")
 	int getCycleCntr();
 
@@ -926,7 +918,7 @@ public interface RSClient extends RSGameEngine, Client
 	int[][] getOccupiedTilesTick();
 
 	@Import("ObjectDefinition_cachedModels")
-	RSEvictingDualNodeHashTable getCachedModels2();
+	RSEvictingDualNodeHashTable getObjectDefinitionModelsCache();
 
 	@Import("Scene_drawnCount")
 	int getCycle();
@@ -1483,4 +1475,91 @@ public interface RSClient extends RSGameEngine, Client
 
 	@Import("objectSounds")
 	Deque<AmbientSoundEffect> getAmbientSoundEffects();
+
+	@Import("EnumDefinition_cached")
+	RSEvictingDualNodeHashTable getEnumDefinitionCache();
+
+	@Import("FloorUnderlayDefinition_cached")
+	RSEvictingDualNodeHashTable getFloorUnderlayDefinitionCache();
+
+	@Import("FloorOverlayDefinition_cached")
+	RSEvictingDualNodeHashTable getFloorOverlayDefinitionCache();
+
+	@Import("HitSplatDefinition_cached")
+	RSEvictingDualNodeHashTable getHitSplatDefinitionCache();
+
+	@Import("HitSplatDefinition_cachedSprites")
+	RSEvictingDualNodeHashTable getHitSplatDefinitionSpritesCache();
+
+	@Import("HitSplatDefinition_cachedFonts")
+	RSEvictingDualNodeHashTable getHitSplatDefinitionDontsCache();
+
+	@Import("InvDefinition_cached")
+	RSEvictingDualNodeHashTable getInvDefinitionCache();
+
+	@Import("ItemDefinition_cachedModels")
+	RSEvictingDualNodeHashTable getItemDefinitionModelsCache();
+
+	@Import("ItemDefinition_cachedSprites")
+	RSEvictingDualNodeHashTable getItemDefinitionSpritesCache();
+
+	@Import("KitDefinition_cached")
+	RSEvictingDualNodeHashTable getKitDefinitionCache();
+
+	@Import("NpcDefinition_cached")
+	RSEvictingDualNodeHashTable getNpcDefinitionCache();
+
+	@Import("NpcDefinition_cachedModels")
+	RSEvictingDualNodeHashTable getNpcDefinitionModelsCache();
+
+	@Import("ObjectDefinition_cached")
+	RSEvictingDualNodeHashTable getObjectDefinitionCache();
+
+	@Import("ObjectDefinition_cachedModelData")
+	RSEvictingDualNodeHashTable getObjectDefinitionModelDataCache();
+
+	@Import("ObjectDefinition_cachedEntities")
+	RSEvictingDualNodeHashTable getObjectDefinitionEntitiesCache();
+
+	@Import("ParamDefinition_cached")
+	RSEvictingDualNodeHashTable getParamDefinitionCache();
+
+	@Import("PlayerAppearance_cachedModels")
+	RSEvictingDualNodeHashTable getPlayerAppearanceModelsCache();
+
+	@Import("SequenceDefinition_cached")
+	RSEvictingDualNodeHashTable getSequenceDefinitionCache();
+
+	@Import("SequenceDefinition_cachedFrames")
+	RSEvictingDualNodeHashTable getSequenceDefinitionFramesCache();
+
+	@Import("SequenceDefinition_cachedModel")
+	RSEvictingDualNodeHashTable getSequenceDefinitionModelsCache();
+
+	@Import("SpotAnimationDefinition_cached")
+	RSEvictingDualNodeHashTable getSpotAnimationDefinitionCache();
+
+	@Import("SpotAnimationDefinition_cachedModels")
+	RSEvictingDualNodeHashTable getSpotAnimationDefinitionModlesCache();
+
+	@Import("VarcInt_cached")
+	RSEvictingDualNodeHashTable getVarcIntCache();
+
+	@Import("VarpDefinition_cached")
+	RSEvictingDualNodeHashTable getVarpDefinitionCache();
+
+	@Import("Widget_cachedModels")
+	RSEvictingDualNodeHashTable getModelsCache();
+
+	@Import("Widget_cachedFonts")
+	RSEvictingDualNodeHashTable getFontsCache();
+
+	@Import("Widget_cachedSpriteMasks")
+	RSEvictingDualNodeHashTable getSpriteMasksCache();
+
+	@Import("WorldMapElement_cachedSprites")
+	RSEvictingDualNodeHashTable getSpritesCache();
+
+	@Construct
+	RSIterableNodeHashTable createIterableNodeHashTable(int size);
 }

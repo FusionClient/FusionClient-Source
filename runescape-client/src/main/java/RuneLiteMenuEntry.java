@@ -7,6 +7,10 @@ public class RuneLiteMenuEntry implements MenuEntry
 	public Consumer consumer;
 	public int idx;
 
+	public RuneLiteMenuEntry()
+	{
+	}
+
 	public RuneLiteMenuEntry(int idx)
 	{
 		this.idx = idx;
@@ -336,5 +340,12 @@ public class RuneLiteMenuEntry implements MenuEntry
 		hash = hash * 59 + (type == null ? 43 : type.hashCode());
 
 		return hash;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "MenuEntryImpl(getOption=" + this.getOption() + ", getTarget=" + this.getTarget() + ", getIdentifier=" + this.getIdentifier() + ", getType=" + this.getType() + ", getParam0=" + this.getParam0() + ", getParam1=" + this.getParam1() + ", isForceLeftClick=" + this.isForceLeftClick() + ", isDeprioritized=" + this.isDeprioritized() + ")";
+
 	}
 }
