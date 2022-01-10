@@ -239,7 +239,7 @@ public class SpoonNexPlugin extends Plugin {
 
 		if (text.contains("Nex: <col=9090ff>")) {
 			if (text.contains("AT LAST!")) {
-				playAudio = "atLast.wav";
+				playAudio = "at_last.wav";
 			} else if ((text.contains("Fumus") || text.contains("Umbra") || text.contains("Cruor") || text.contains("Glacies")) && text.contains(", don't fail me!")) {
 				for(NPC npc : this.client.getNpcs()) {
 					if ((npc.getId() == 11283 && text.contains("Fumus, don't fail me!")) || (npc.getId() == 11284 && text.contains("Umbra, don't fail me!"))
@@ -259,7 +259,15 @@ public class SpoonNexPlugin extends Plugin {
 				} else if (text.contains("Glacies")) {
 					playAudio = "glacies_dont_fail_me.wav";
 				}
-			} else if (text.contains("Let the virus flow through you!")) {
+			} else if(text.contains("Fumus!")) {
+					playAudio = "fumus.wav";
+			} else if(text.contains("Umbra!")){
+					playAudio = "umbra.wav";
+			} else if(text.contains("Cruor!")) {
+					playAudio = "cruor.wav";
+			} else if(text.contains("Glacies!")){
+					playAudio = "glacies.wav";
+			} else if(text.contains("Let the virus flow through you!")) {
 				nex.currentSpecial = "virus";
 				nex.nextSpecial = "no escape";
 				nex.attacksTilSpecial = 5;
