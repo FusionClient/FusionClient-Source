@@ -255,7 +255,7 @@ public class SpoonNexPlugin extends Plugin {
 				} else if (text.contains("Umbra")) {
 					playAudio = "umbra_dont_fail_me.wav";
 				} else if (text.contains("Cruor")) {
-					playAudio = "cruor_dont_fail_me";
+					playAudio = "cruor_dont_fail_me.wav";
 				} else if (text.contains("Glacies")) {
 					playAudio = "glacies_dont_fail_me.wav";
 				}
