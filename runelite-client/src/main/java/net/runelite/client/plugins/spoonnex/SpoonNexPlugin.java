@@ -314,6 +314,7 @@ public class SpoonNexPlugin extends Plugin {
 				activeMage = null;
 				nex.attacksTilSpecial = 0;
 				nex.invulnerableTicks = 6;
+				playAudio = "fill_my_soul_with_smoke.wav";
 			} else if (text.contains("Darken my shadow!")) {
 				nex.phase = 2;
 				activeMage = null;
