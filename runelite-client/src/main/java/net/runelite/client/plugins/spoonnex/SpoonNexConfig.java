@@ -33,29 +33,10 @@ public interface SpoonNexConfig extends Config {
 	default boolean specialTicks(){ return false; }
 
 	@ConfigItem(
-			keyName = "audio",
-			name = "RS3 Voice Audio",
-			description = "If only they put them in by default",
-			position = 2,
-			section = specSection
-	)
-	default boolean audio() { return false; }
-
-	@Range(min = 0, max = 100)
-	@ConfigItem(
-			keyName = "audioVolume",
-			name = "Audio Volume",
-			description = "Sets the volume for all audio clips",
-			position = 3,
-			section = specSection
-	)
-	default int audioVolume() { return 40; }
-
-	@ConfigItem(
 			keyName = "virus",
 			name = "Infected Players",
 			description = "Down with the sickness... Oh, ah, ah, ah, ah",
-			position = 4,
+			position = 2,
 			section = specSection
 	)
 	default VirusMode virus(){ return VirusMode.OFF; }
@@ -64,7 +45,7 @@ public interface SpoonNexConfig extends Config {
 			keyName = "noEscape",
 			name = "No Escape",
 			description = "A10 Strafe 2: Electric Boogaloo",
-			position = 5,
+			position = 3,
 			section = specSection
 	)
 	default NoEscapeMode noEscape(){ return NoEscapeMode.NEX; }
@@ -73,7 +54,7 @@ public interface SpoonNexConfig extends Config {
 			keyName = "shadowSpots",
 			name = "Shadow Spots",
 			description = "Highlights shadow spots on the ground during shadow phase",
-			position = 6,
+			position = 4,
 			section = specSection
 	)
 	default ShadowsMode shadowSpots(){ return ShadowsMode.OFF; }
@@ -82,7 +63,7 @@ public interface SpoonNexConfig extends Config {
 			keyName = "sacrifice",
 			name = "Blood Sacrifice AoE",
 			description = "Bring that ass here boi",
-			position = 7,
+			position = 5,
 			section = specSection
 	)
 	default boolean sacrifice(){ return false; }
@@ -91,7 +72,7 @@ public interface SpoonNexConfig extends Config {
 			keyName = "icePrison",
 			name = "Ice Prison Tiles",
 			description = "help",
-			position = 8,
+			position = 6,
 			section = specSection
 	)
 	default boolean icePrison(){ return false; }
@@ -100,7 +81,7 @@ public interface SpoonNexConfig extends Config {
 			keyName = "containThis",
 			name = "Contain This AoE",
 			description = "Highlights an AoE around Nex for the Contain This special",
-			position = 9,
+			position = 7,
 			section = specSection
 	)
 	default boolean containThis(){ return false; }
@@ -109,7 +90,7 @@ public interface SpoonNexConfig extends Config {
 			keyName = "wrathWarning",
 			name = "Wrath Warning",
 			description = "Inshallah habibi",
-			position = 10,
+			position = 8,
 			section = specSection
 	)
 	default boolean wrathWarning() { return false; }
@@ -170,6 +151,39 @@ public interface SpoonNexConfig extends Config {
 			position = 6
 	)
 	default boolean nexWheelchair(){ return false; }
+
+	@ConfigItem(
+			keyName = "audio",
+			name = "RS3 Voice Audio",
+			description = "If only they put them in by default",
+			position = 7
+	)
+	default boolean audio() { return false; }
+
+	@Range(min = 0, max = 100)
+	@ConfigItem(
+			keyName = "audioVolume",
+			name = "Audio Volume",
+			description = "Sets the volume for all audio clips",
+			position = 8
+	)
+	default int audioVolume() { return 40; }
+
+	@ConfigItem(
+			keyName = "playerCounter",
+			name = "Player Counter",
+			description = "Displays how many players are alive in the current instance",
+			position = 9
+	)
+	default boolean playerCounter() { return false; }
+
+	@ConfigItem(
+			keyName = "prayerHelper",
+			name = "Prayer Helper",
+			description = "Is it really that hard?",
+			position = 10
+	)
+	default boolean prayerHelper() { return false; }
 
 	@ConfigItem(
 			keyName = "olmPTSD",

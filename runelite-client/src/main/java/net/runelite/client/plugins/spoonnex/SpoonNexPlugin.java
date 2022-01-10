@@ -2,7 +2,6 @@ package net.runelite.client.plugins.spoonnex;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Point;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
@@ -16,6 +15,7 @@ import org.pf4j.Extension;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.sound.sampled.*;
+import java.awt.Point;
 import java.awt.*;
 import java.io.BufferedInputStream;
 import java.util.*;
@@ -24,7 +24,7 @@ import java.util.*;
 @PluginDescriptor(
 	name = "<html><font color=#FFDD00>[F] Nex",
 	description = "Nihilism intensifies",
-	tags = {"Nex", "gwd", "Spoon", "Torva", "Ancient"},
+	tags = {"Nex", "gwd", "Spoon", "Torva", "Ancient", "Fusion"},
 	enabledByDefault = false
 )
 @Slf4j
@@ -40,6 +40,12 @@ public class SpoonNexPlugin extends Plugin {
 	private SpoonNexOverlay overlay;
 
 	@Inject
+	private SpoonNexPanelOverlay panelOverlay;
+
+	@Inject
+	private SpoonNexPrayerBox prayerOverlay;
+
+	@Inject
 	private OverlayManager overlayManager;
 
 	private static final int[] nexRegions = { 11345, 11601, 11857 };
@@ -48,7 +54,6 @@ public class SpoonNexPlugin extends Plugin {
 	public Nex nex = null;
 	public NPC activeMage = null;
 	public ArrayList<GameObject> gameObjects = new ArrayList<>();
-	public boolean fightStarted = false;
 	public Map<String, Integer> covidList = new HashMap<>();
 	public boolean sacrificeTarget = false;
 	private static Clip nexAudio;
@@ -69,22 +74,26 @@ public class SpoonNexPlugin extends Plugin {
 	protected void startUp() {
 		reset();
 		overlayManager.add(overlay);
+		overlayManager.add(panelOverlay);
+		overlayManager.add(prayerOverlay);
 	}
 
 	@Override
 	protected void shutDown() {
 		reset();
 		overlayManager.remove(overlay);
+		overlayManager.remove(panelOverlay);
+		overlayManager.remove(prayerOverlay);
 	}
 
 	private void reset() {
+	//	System.out.println("Resettttttttttt");
 		nex = null;
 		activeMage = null;
 		raveObjects.clear();
 		forWhyColors.clear();
 		gameObjects.clear();
 		client.clearHintArrow();
-		fightStarted = false;
 		covidList.clear();
 		sacrificeTarget = false;
 	}
@@ -104,21 +113,9 @@ public class SpoonNexPlugin extends Plugin {
 	}
 
 	@Subscribe
-	private void onGameStateChanged(GameStateChanged state) {
-		if (state.getGameState() == GameState.LOGGED_IN && fightStarted && !checkArea()) {
-			reset();
-		}
-	}
-
-	private boolean checkArea() {
-		return Arrays.equals(client.getMapRegions(), nexRegions);
-	}
-
-	@Subscribe
 	private void onNpcSpawned(NpcSpawned event) {
 		if(nexIds.contains(event.getNpc().getId())) {
 			nex = new Nex(event.getNpc());
-			fightStarted = true;
 		}
 	}
 
@@ -284,7 +281,7 @@ public class SpoonNexPlugin extends Plugin {
 				nex.currentSpecial = "sacrifice";
 				nex.nextSpecial = "siphon";
 				nex.attacksTilSpecial = 5;
-				nex.specialTicksLeft = 9;
+				nex.specialTicksLeft = 7;
 				playAudio = "bloodSacrifice.wav";
 			} else if (text.contains("A siphon will solve this!")) {
 				nex.currentSpecial = "siphon";
@@ -361,7 +358,7 @@ public class SpoonNexPlugin extends Plugin {
 			}
 		} else {
 			if (text.contains("Nex has marked you for a blood sacrifice! RUN!")) {
-				nex.specialTicksLeft = 9;
+				nex.specialTicksLeft = 7;
 				sacrificeTarget = true;
 			}
 		}
@@ -369,7 +366,7 @@ public class SpoonNexPlugin extends Plugin {
 
 	@Subscribe
 	private void onMenuOptionClicked(MenuOptionClicked event) {
-		if(config.nexWheelchair() && event.getMenuOption().contains("Attack") && event.getMenuTarget().contains("Nex") && nex != null && nex.invulnerableTicks > 0) {
+		if(config.nexWheelchair() && event.getMenuOption().contains("Attack") && event.getMenuTarget().contains("Nex") && nex != null && nex.invulnerableTicks > 2) {
 			event.consume();
 		}
 	}

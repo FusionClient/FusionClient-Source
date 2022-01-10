@@ -1,4 +1,4 @@
-package net.runelite.client.plugins.ratjam;
+package net.runelite.client.plugins.ratJam;
 
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
