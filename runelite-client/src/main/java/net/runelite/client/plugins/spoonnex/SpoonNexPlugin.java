@@ -250,59 +250,63 @@ public class SpoonNexPlugin extends Plugin {
 					}
 				}
 
-				if (text.contains("Umbra")) {
-					playAudio = "umbra.wav";
+				if (text.contains("Fumus")) {
+					playAudio = "fumus_dont_fail_me.wav";
+				} else if (text.contains("Umbra")) {
+					playAudio = "umbra_dont_fail_me.wav";
 				} else if (text.contains("Cruor")) {
-					playAudio = "cruor.wav";
+					playAudio = "cruor_dont_fail_me";
 				} else if (text.contains("Glacies")) {
-					playAudio = "glacies.wav";
+					playAudio = "glacies_dont_fail_me.wav";
 				}
 			} else if (text.contains("Let the virus flow through you!")) {
 				nex.currentSpecial = "virus";
 				nex.nextSpecial = "no escape";
 				nex.attacksTilSpecial = 5;
-				playAudio = "virus.wav";
+				playAudio = "virus_flow_through_you.wav";
 			} else if (text.contains("There is...")) {
 				nex.currentSpecial = "no escape";
 				nex.nextSpecial = "virus";
 				nex.attacksTilSpecial = 5;
-				playAudio = config.noEscape() == SpoonNexConfig.NoEscapeMode.NEX ? "noEscape.wav" : "backInNam.wav";
+				playAudio = config.noEscape() == SpoonNexConfig.NoEscapeMode.NEX ? "there_is.wav" : "backInNam.wav";
 			} else if (text.contains("Embrace darkness!")) {
 				nex.currentSpecial = "darkness";
 				nex.nextSpecial = "shadows";
 				nex.attacksTilSpecial = 5;
+				playAudio = "embracedarkness.wav";
 			} else if (text.contains("Fear the shadow!")) {
 				nex.currentSpecial = "shadows";
 				nex.nextSpecial = "darkness";
 				nex.attacksTilSpecial = 5;
 				nex.specialTicksLeft = 5;
-				playAudio = "fearTheShadows.wav";
+				playAudio = "fear_the_shadow.wav";
 			} else if (text.contains("I demand a blood sacrifice!")) {
 				nex.currentSpecial = "sacrifice";
 				nex.nextSpecial = "siphon";
 				nex.attacksTilSpecial = 5;
 				nex.specialTicksLeft = 7;
-				playAudio = "bloodSacrifice.wav";
+				playAudio = "demand_blood_sacrifice.wav";
 			} else if (text.contains("A siphon will solve this!")) {
 				nex.currentSpecial = "siphon";
 				nex.nextSpecial = "sacrifice";
 				nex.attacksTilSpecial = 5;
 				nex.specialTicksLeft = 9;
-				playAudio = "siphon.wav";
+				playAudio = "a_siphon_will_solve_this.wav";
 			} else if (text.contains("Contain this!")) {
 				nex.currentSpecial = "contain";
 				nex.nextSpecial = "ice prison";
 				nex.attacksTilSpecial = 5;
 				nex.specialTicksLeft = 6;
-				playAudio = "containThis.wav";
+				playAudio = "contain_this.wav";
 			} else if (text.contains("Die now, in a prison of ice!")) {
 				nex.currentSpecial = "ice prison";
 				nex.nextSpecial = "contain";
 				nex.attacksTilSpecial = 5;
 				nex.specialTicksLeft = 14;
+				playAudio = "iceprison.wav";
 			} else if (text.contains("Taste my wrath!")) {
 				nex.currentSpecial = "wrath";
-				playAudio = "tasteMyWrath.wav";
+				playAudio = "taste_my_wrath.wav";
 				if(client.getLocalPlayer() != null && client.getLocalPlayer().getName() != null && client.getLocalPlayer().getName().equals("Null God"))
 					event.setMessage("<col=ff0000>Allahuakbar! *Click*</col>");
 			} else if (text.contains("Fill my soul with smoke!")) {
@@ -315,24 +319,24 @@ public class SpoonNexPlugin extends Plugin {
 				activeMage = null;
 				nex.attacksTilSpecial = 0;
 				nex.invulnerableTicks = 6;
-				playAudio = "darkenMyShadow.wav";
+				playAudio = "darken_my_shadow.wav";
 			} else if (text.contains("Flood my lungs with blood!")) {
 				nex.phase = 3;
 				activeMage = null;
 				nex.attacksTilSpecial = 0;
 				nex.invulnerableTicks = 6;
-				playAudio = "floodMyLungs.wav";
+				playAudio = "flood_my_lungs_with_blood.wav";
 			} else if (text.contains("Infuse me with the power of ice!")) {
 				nex.phase = 4;
 				activeMage = null;
 				nex.attacksTilSpecial = 0;
 				nex.invulnerableTicks = 6;
-				playAudio = "infuseWithIce.wav";
+				playAudio = "infuse_me_withe_power_of_ice.wav";
 			} else if (text.contains("NOW, THE POWER OF ZAROS!")) {
 				nex.phase = 5;
 				activeMage = null;
 				nex.invulnerableTicks = 6;
-				playAudio = "powerOfZaros.wav";
+				playAudio = "now_the_power_of_zaros.wav";
 			}
 
 			if (!playAudio.equals("") && config.audio() && config.audioVolume() > 0) {
