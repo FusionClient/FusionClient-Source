@@ -237,7 +237,7 @@ public class SpoonNexPlugin extends Plugin {
 		String text = event.getMessage();
 		String playAudio = "";
 
-		if (text.contains("Nex: <col=9090ff>")) {
+		if (text.contains("Nex: <col=9090ff>") || text.contains("Nex: <col=0000ff>")) {
 			if (text.contains("AT LAST!")) {
 				playAudio = "at_last.wav";
 			} else if ((text.contains("Fumus") || text.contains("Umbra") || text.contains("Cruor") || text.contains("Glacies")) && text.contains(", don't fail me!")) {
