@@ -38,7 +38,7 @@ import java.util.*;
 
 @PluginDescriptor(
         name = "<html><font color=#FFDD00>[F] Theatre",
-        description = "Pretty much everything useful for Tob in 1 plugin: SpoonLite",
+        description = "Pretty much everything useful for Tob in 1 plugin<br>Made by: SpoonLite",
         tags = {"theatre, raids", "tob", "maiden", "bloat", "nylo", "sotetseg", "xarpus", "verzik", "steroids", "additions", "spoon"},
         enabledByDefault = false
 )

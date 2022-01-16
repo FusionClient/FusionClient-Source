@@ -20,7 +20,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] DeO - EasyScape",
+	name = "[F] DeO - EasyScape",
 	enabledByDefault = false
 )
 public class DEasyScapePlugin extends Plugin {

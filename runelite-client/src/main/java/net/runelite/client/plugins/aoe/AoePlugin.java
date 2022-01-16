@@ -28,7 +28,7 @@ import java.util.*;
 @PluginDescriptor(
 	name = "<html><font color=#FFDD00>[F] AoE Warnings",
 	enabledByDefault = false,
-	description = "Shows the final destination for AoE Attack projectiles.Credit: SpoonLite",
+	description = "Shows the final destination for AoE Attack projectiles.Credit <br>Credit: SpoonLite",
 	tags = {"bosses", "combat", "pve", "overlay"}
 )
 public class AoePlugin extends Plugin

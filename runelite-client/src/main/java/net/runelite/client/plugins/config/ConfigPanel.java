@@ -95,21 +95,7 @@ import javax.swing.plaf.basic.BasicSpinnerUI;
 import javax.swing.text.JTextComponent;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.ConfigButtonClicked;
-import net.runelite.client.config.Button;
-import net.runelite.client.config.ConfigDescriptor;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigItemDescriptor;
-import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.ConfigObject;
-import net.runelite.client.config.ConfigSection;
-import net.runelite.client.config.ConfigSectionDescriptor;
-import net.runelite.client.config.ConfigTitle;
-import net.runelite.client.config.ConfigTitleDescriptor;
-import net.runelite.client.config.Keybind;
-import net.runelite.client.config.ModifierlessKeybind;
-import net.runelite.client.config.Range;
-import net.runelite.client.config.Units;
+import net.runelite.client.config.*;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ExternalPluginsChanged;
@@ -179,6 +165,8 @@ class ConfigPanel extends PluginPanel
 
 	private PluginConfigurationDescriptor pluginConfig = null;
 
+	@Inject
+	private RuneLiteConfig runeLiteConfig;
 
 	@Inject
 	private ConfigPanel(PluginListPanel pluginList, ConfigManager configManager, PluginManager pluginManager,
@@ -605,6 +593,7 @@ class ConfigPanel extends PluginPanel
 		return button;
 	}
 
+
 	private JButton createButton(ConfigDescriptor cd, ConfigItemDescriptor cid)
 	{
 		JButton button = new JButton(cid.name());
@@ -621,12 +610,19 @@ class ConfigPanel extends PluginPanel
 
 	private JCheckBox createCheckbox(ConfigDescriptor cd, ConfigItemDescriptor cid)
 	{
-		JCheckBox checkbox = new ToggleButton();
+		JCheckBox checkbox;
+		if (runeLiteConfig.rlCheckbox()) {
+			checkbox = new JCheckBox();
+			checkbox.setBackground(ColorScheme.LIGHT_GRAY_COLOR);
+		} else {
+			checkbox = new ToggleButton();
+		}
 		checkbox.setPreferredSize(new Dimension(26, 25));
 		checkbox.setSelected(Boolean.parseBoolean(configManager.getConfiguration(cd.getGroup().value(), cid.getItem().keyName())));
 		checkbox.addActionListener(ae -> changeConfiguration(checkbox, cd, cid));
 		return checkbox;
 	}
+
 
 	private JComponent createIntSpinner(ConfigDescriptor cd, ConfigItemDescriptor cid)
 	{
@@ -644,7 +640,7 @@ class ConfigPanel extends PluginPanel
 		// Config may previously have been out of range
 		value = Ints.constrainToRange(value, min, max);
 
-		if (max < Integer.MAX_VALUE)
+		if (max < Integer.MAX_VALUE && runeLiteConfig.stupidSliders())
 		{
 			JLabel sliderValueLabel = new JLabel();
 			JSlider slider = new JSlider(min, max, value);
@@ -659,21 +655,21 @@ class ConfigPanel extends PluginPanel
 			}
 			slider.setPreferredSize(new Dimension(80, 25));
 			slider.addChangeListener((l) ->
-				{
-					if (units != null)
 					{
-						sliderValueLabel.setText(slider.getValue() + units.value());
-					}
-					else
-					{
-						sliderValueLabel.setText(String.valueOf(slider.getValue()));
-					}
+						if (units != null)
+						{
+							sliderValueLabel.setText(slider.getValue() + units.value());
+						}
+						else
+						{
+							sliderValueLabel.setText(String.valueOf(slider.getValue()));
+						}
 
-					if (!slider.getValueIsAdjusting())
-					{
-						changeConfiguration(slider, cd, cid);
+						if (!slider.getValueIsAdjusting())
+						{
+							changeConfiguration(slider, cd, cid);
+						}
 					}
-				}
 			);
 
 			SpinnerModel model = new SpinnerNumberModel(value, min, max, 1);

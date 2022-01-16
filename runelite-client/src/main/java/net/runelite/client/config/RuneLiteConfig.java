@@ -345,6 +345,33 @@ public interface RuneLiteConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "customFont",
+			name = "Custom Font",
+			description = "Sets the custom font",
+			position = 34,
+			section = overlaySettings
+	)
+	default String customFont() { return "segoe ui"; }
+
+	@ConfigItem(
+			keyName = "customFontSize",
+			name = "Custom Font Size",
+			description = "Sets the custom font size",
+			position = 35,
+			section = overlaySettings
+	)
+	default int customFontSize() { return 12; }
+
+	@ConfigItem(
+			keyName = "customFontWeight",
+			name = "Custom Weight",
+			description = "Sets the custom font weight",
+			position = 36,
+			section = overlaySettings
+	)
+	default FontWeight customFontWeight() { return FontWeight.PLAIN; }
+
+	@ConfigItem(
 		keyName = "menuEntryShift",
 		name = "Require Shift for overlay menu",
 		description = "Overlay right-click menu will require shift to be added",
@@ -419,6 +446,16 @@ public interface RuneLiteConfig extends Config
 		return ComponentConstants.STANDARD_BACKGROUND_COLOR;
 	}
 
+	@Alpha
+	@ConfigItem(
+			keyName = "infoboxBackgroundColor",
+			name = "Infobox Color",
+			description = "Configures the background color of infoboxes",
+			position = 43,
+			section = overlaySettings
+	)
+	default Color infoboxBackgroundColor() { return ComponentConstants.STANDARD_BACKGROUND_COLOR; }
+
 	@ConfigItem(
 		keyName = "sidebarToggleKey",
 		name = "Sidebar Toggle Key",
@@ -464,4 +501,38 @@ public interface RuneLiteConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+			keyName = "stupidSliders",
+			name = "Use sliders",
+			description = "Uses sliders instead of infoboxes",
+			position = 52
+	)
+	default boolean stupidSliders()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "rlCheckbox",
+			name = "Use RuneLite Checkboxes",
+			description = "Uses the RuneLite checkboxes instead of the OPRS toggles",
+			position = 53
+
+	)
+	default boolean rlCheckbox() { return true; }
+
+	enum FontWeight {
+		PLAIN(0), BOLD(1), ITALIC(2);
+
+		public int weight;
+		FontWeight(int i) {
+			weight = i;
+		}
+
+		public int getWeight() {
+			return weight;
+		}
+	}
 }
+

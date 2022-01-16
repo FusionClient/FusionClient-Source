@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Easybank",
+	name = "[F] Easybank",
 	description = "EasyBank.",
 	tags = {"EasyBank", "easy"},
 	enabledByDefault = false

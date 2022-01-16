@@ -11,22 +11,22 @@ import javax.inject.Inject;
 import java.awt.*;
 
 class GwdEssenceHiderOverlay extends OverlayPanel {
-	private final Client client;
-	private final GwdEssenceHiderPlugin plugin;
+    private final Client client;
+    private final GwdEssenceHiderPlugin plugin;
     private final GwdEssenceHiderConfig config;
 
-	@Inject
-	private GwdEssenceHiderOverlay(Client client, GwdEssenceHiderPlugin plugin, GwdEssenceHiderConfig config) {
-		this.client = client;
-		this.plugin = plugin;
+    @Inject
+    private GwdEssenceHiderOverlay(Client client, GwdEssenceHiderPlugin plugin, GwdEssenceHiderConfig config) {
+        this.client = client;
+        this.plugin = plugin;
         this.config = config;
-		setPosition(OverlayPosition.TOP_LEFT);
-		setLayer(OverlayLayer.ABOVE_SCENE);
-		setPriority(OverlayPriority.MED);
-	}
+        setPosition(OverlayPosition.TOP_LEFT);
+        setLayer(OverlayLayer.ABOVE_SCENE);
+        setPriority(OverlayPriority.MED);
+    }
 
-	@Override
-	public Dimension render(Graphics2D graphics) {
+    @Override
+    public Dimension render(Graphics2D graphics) {
         if(plugin.gwdWidget){
             panelComponent.getChildren().clear();
             if(plugin.armaKc > 0){
@@ -63,15 +63,15 @@ class GwdEssenceHiderOverlay extends OverlayPanel {
             }
             if (plugin.nexKc > 0){
                 panelComponent.getChildren().add(LineComponent.builder()
-                        .leftColor(Color.MAGENTA)
+                        .leftColor(config.textColor() ? config.nexColor() : config.defaultColor())
                         .left(config.godMode() == GwdEssenceHiderConfig.GodMode.FULL_NAME ? "Ancient: " : "Nex: ")
-                        .rightColor(Color.MAGENTA)
+                        .rightColor(config.textColor() ? config.nexColor() : config.defaultColor())
                         .right(String.valueOf(plugin.nexKc))
                         .build());
             }
             panelComponent.setPreferredSize(new Dimension(graphics.getFontMetrics().stringWidth("Saradomin:   ") + 40, 0));
             return super.render(graphics);
         }
-		return null;
-	}
+        return null;
+    }
 }

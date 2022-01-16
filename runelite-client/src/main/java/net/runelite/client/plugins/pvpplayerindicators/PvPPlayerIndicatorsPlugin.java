@@ -50,7 +50,7 @@ import static net.runelite.api.MenuAction.*;
 
 @PluginDescriptor(
 		name = "<html><font color=#FFDD00>[F] Player Indicators",
-		description = "Highlight players on-screen and/or on the minimap. Credit: SpoonLite",
+		description = "Highlight players on-screen and/or on the minimap.<br>Credit: SpoonLite/Steroid",
 		tags = {"highlight", "minimap", "overlay", "players"},
 		conflicts = "Player Indicators"
 )

@@ -3,6 +3,7 @@ package net.runelite.client.plugins.nex;
 import com.google.inject.Provides;
 import lombok.Getter;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -19,7 +20,7 @@ import java.util.*;
 @Extension
 @PluginDescriptor(
         name = "[Y] Nex",
-        description = "Shows additional figures in the ancient chamber.",
+        description = "Shows additional figures in the ancient chamber. <br>Made by: Yuri",
         tags = {"nex", "ancient", "god", "wars"}
 )
 public class NexPlugin extends Plugin {
@@ -47,16 +48,25 @@ public class NexPlugin extends Plugin {
     private Map<String, Integer> sickPlayers;
 
     @Getter
+    private WorldPoint bloodSacrificeLocation;
+
+    @Getter
     private int bloodSacrificeTimer;
 
     @Getter
     private int iceShardTimer;
 
     @Getter
+    private int iceCageTimer;
+
+    @Getter
     private int nexInvulnerability;
 
     @Getter
     private Set<GameObject> shadowObjects;
+
+    @Getter
+    private Set<GameObject> iceObjects;
 
     @Provides
     protected NexConfig getConfig(ConfigManager configManager) {
@@ -71,6 +81,7 @@ public class NexPlugin extends Plugin {
         iceShardTimer = 0;
         nexInvulnerability = 0;
         shadowObjects = new HashSet<>();
+        iceObjects = new HashSet<>();
         overlayManager.add(overlay);
     }
 
@@ -86,6 +97,8 @@ public class NexPlugin extends Plugin {
             nexInvulnerability--;
         if (iceShardTimer > 0)
             iceShardTimer--;
+        if (iceCageTimer > 0)
+            iceCageTimer--;
         if (config.showTargetableEntity()) {
             NPC target = findNpc(targets);
             if (target != null)
@@ -112,9 +125,25 @@ public class NexPlugin extends Plugin {
         String msg = event.getMessage();
         if (cmt == ChatMessageType.GAMEMESSAGE && event
                 .getName().equals("") && event
-                .getSender() == null && "<col=e00a19>Nex has marked you for a blood sacrifice! RUN!</col>"
-                .equals(msg))
-            bloodSacrificeTimer = 9;
+                .getSender() == null) {
+            if ("<col=e00a19>Nex has marked you for a blood sacrifice! RUN!</col>".equals(msg)) {
+                bloodSacrificeLocation = client.getLocalPlayer().getWorldLocation();
+                bloodSacrificeTimer = 9;
+            }
+            parseNexVoiceLine(msg, true);
+        }
+    }
+
+    private void parseNexVoiceLine(String txt, boolean isChatBox) {
+        Arrays.stream(NexConstant.NEX_ALL_DIALOGUES).filter(x -> isChatBox ? x.chats(txt) : x.matches(txt)).forEach(x -> {
+            currentPhase = x.getPhase();
+            int invulnerability = x.getInvulnerability();
+            if (invulnerability >= 0)
+                nexInvulnerability = invulnerability;
+        });
+        calculateTargetableEntity(txt);
+        if (isChatBox ? NexConstant.NEX_LINE_ICE_SHARD.chats(txt) : NexConstant.NEX_LINE_ICE_SHARD.matches(txt))
+            iceShardTimer = 6;
     }
 
     @Subscribe
@@ -123,15 +152,7 @@ public class NexPlugin extends Plugin {
         String text = event.getOverheadText();
         if (actor instanceof NPC && "Nex".equals(actor.getName())) {
             NPC npc = (NPC)actor;
-            Arrays.<NexDialogue>stream(NexConstant.NEX_ALL_DIALOGUES).filter(x -> x.matches(text)).forEach(x -> {
-                currentPhase = x.getPhase();
-                int invulnerability = x.getInvulnerability();
-                if (invulnerability >= 0)
-                    nexInvulnerability = invulnerability;
-            });
-            calculateTargetableEntity(text);
-            if (NexConstant.NEX_LINE_ICE_SHARD.matches(text))
-                iceShardTimer = 6;
+            parseNexVoiceLine(text, false);
         }
         if (actor instanceof net.runelite.api.Player && "*Cough*".equals(text))
             sickPlayers.put(actor.getName(), 5);
@@ -141,14 +162,28 @@ public class NexPlugin extends Plugin {
     public void onGameObjectSpawned(GameObjectSpawned event) {
         GameObject obj = event.getGameObject();
         if (NexConstant.SHADOW_GAME_OBJECT_IDS.contains(obj.getId()))
-            shadowObjects.add(obj);
+            if (!shadowObjects.contains(obj))
+                shadowObjects.add(obj);
+        if (NexConstant.ICE_CAGE_PLACEHOLDER.contains(obj.getId()))
+            if (!iceObjects.contains(obj)) {
+                iceObjects.add(obj);
+                if (iceObjects.size() == 1 && iceCageTimer == 0) {
+                    iceCageTimer = 9;
+                } else if (iceCageTimer > 7) {
+                    iceCageTimer = 0;
+                }
+            }
     }
 
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
         GameObject obj = event.getGameObject();
         if (NexConstant.SHADOW_GAME_OBJECT_IDS.contains(obj.getId()))
-            shadowObjects.remove(obj);
+            if (shadowObjects.contains(obj))
+                shadowObjects.remove(obj);
+        if (NexConstant.ICE_CAGE_PLACEHOLDER.contains(obj.getId()))
+            if (iceObjects.contains(obj))
+                iceObjects.remove(obj);
     }
 
     @Subscribe

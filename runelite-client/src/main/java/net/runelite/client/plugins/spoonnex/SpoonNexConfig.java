@@ -14,6 +14,14 @@ public interface SpoonNexConfig extends Config {
 	)
 	String specSection = "Specials";
 
+	@ConfigSection(
+			name = "Timer",
+			description = "Configuration for Kill/Phase Timers",
+			position = 100,
+			closedByDefault = true
+	)
+	String timerSection = "Timer";
+
 	@ConfigItem(
 			keyName = "attacksTilSpecial",
 			name = "Attacks Until Special",
@@ -95,6 +103,51 @@ public interface SpoonNexConfig extends Config {
 	)
 	default boolean wrathWarning() { return false; }
 
+	@ConfigItem(
+			keyName = "killTimer",
+			name = "Kill Timer",
+			description = "Display either an infobox or panel with kill/phase times",
+			position = 0,
+			section = timerSection
+	)
+	default KillTimerMode killTimer() { return KillTimerMode.OFF; }
+
+	@ConfigItem(
+			keyName = "phaseNameType",
+			name = "Phase Name Type",
+			description = "Display phases in timers and messages as either numbers(P1, P2, P3) or name(Smoke, shadow, blood)",
+			position = 1,
+			section = timerSection
+	)
+	default PhaseNameTypeMode phaseNameType() { return PhaseNameTypeMode.NUMBER; }
+
+	@ConfigItem(
+			keyName = "phaseChatMessages",
+			name = "Phase Chat Message",
+			description = "Puts message in chatbox for each phase",
+			position = 2,
+			section = timerSection
+	)
+	default boolean phaseChatMessages() { return false; }
+
+	@ConfigItem(
+			keyName = "showMinionSplit",
+			name = "Show Minion Split",
+			description = "Shows boss and minion times for each phase",
+			position = 3,
+			section = timerSection
+	)
+	default boolean showMinionSplit() { return false; }
+
+	@ConfigItem(
+			keyName = "usePrecise",
+			name = "Use Precise",
+			description = "Uses precise time for timers with decimals",
+			position = 4,
+			section = timerSection
+	)
+	default boolean usePrecise() { return false; }
+
 	@Range(min = 1, max = 100)
 	@ConfigItem(
 			keyName = "textSize",
@@ -113,10 +166,10 @@ public interface SpoonNexConfig extends Config {
 	default boolean invulnerableTicks(){ return false; }
 
 	@ConfigItem(
-		keyName = "mageHighlight",
-		name = "Mage Highlight",
-		description = "Highlight the currently active ancient mage",
-		position = 2
+			keyName = "mageHighlight",
+			name = "Mage Highlight",
+			description = "Highlight the currently active ancient mage",
+			position = 2
 	)
 	default MageHighlightMode mageHighlight(){ return MageHighlightMode.OFF; }
 
@@ -219,5 +272,13 @@ public interface SpoonNexConfig extends Config {
 
 	enum NoEscapeMode {
 		NEX, CCR
+	}
+
+	enum KillTimerMode {
+		OFF, INFOBOX, PANEL
+	}
+
+	enum PhaseNameTypeMode {
+		NUMBER, NAME
 	}
 }

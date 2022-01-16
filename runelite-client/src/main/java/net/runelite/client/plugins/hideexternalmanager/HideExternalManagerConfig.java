@@ -17,14 +17,4 @@ public interface HideExternalManagerConfig extends Config {
         return false;
     }
 
-    /*@ConfigItem(
-            position = 1,
-            keyName = "hideSpoon",
-            name = "Hide SpoonLite External Manager",
-            description = "Hides the SpoonLite external manager to look less sus."
-    )
-    default boolean hideSpoon()
-    {
-        return false;
-    }*/
 }

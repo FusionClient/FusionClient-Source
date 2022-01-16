@@ -72,13 +72,7 @@ public class HideExternalManagerPlugin extends Plugin
                 } else {
                     readdTabs(false);
                 }
-            } /*else if (event.getKey().equals("hideSpoon")) {
-                if (config.hideSpoon()) {
-                    removeTabs();
-                } else {
-                    readdTabs(false);
-                }
-            }*/
+            }
         }
     }
 
@@ -87,9 +81,7 @@ public class HideExternalManagerPlugin extends Plugin
         if (config.hideOPRS()) {
             configManager.setConfiguration("openosrs", "hideOprsManager", true);
         }
-        /*if (config.hideSpoon()) {
-            configManager.setConfiguration("openosrs", "hideSpoonManager", true);
-        }*/
+
     }
 
     private void readdTabs(boolean onShutdown)
@@ -101,9 +93,7 @@ public class HideExternalManagerPlugin extends Plugin
             if (!config.hideOPRS()) {
                 configManager.setConfiguration("openosrs", "hideOprsManager", false);
             }
-            /*if (!config.hideSpoon()) {
-                configManager.setConfiguration("openosrs", "hideSpoonManager", false);
-            }*/
+
         }
     }
 }

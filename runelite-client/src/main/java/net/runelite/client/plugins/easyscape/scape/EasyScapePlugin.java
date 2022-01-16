@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Easyscape",
+	name = "[F] Easyscape",
 	description = "EasyScape.",
 	tags = {"EasyScape, blackjack, construction, black, left click"},
 	enabledByDefault = false
