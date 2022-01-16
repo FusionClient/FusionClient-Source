@@ -81,7 +81,7 @@ public interface ReflectionConfig extends Config {
     @ConfigItem(
             name = "Plugin Toggled Color",
             keyName = "pluginSwitcherOnColor",
-            description = "Default is SpoonLite color",
+            description = "Default is Fusion color",
             position = 3
     )
     default Color pluginSwitcherOnColor() {
@@ -92,7 +92,7 @@ public interface ReflectionConfig extends Config {
     @ConfigItem(
             name = "Plugin Favorited Color",
             keyName = "pluginStarOnColor",
-            description = "Default is SpoonLite color",
+            description = "Default is Fusion color",
             position = 4
     )
     default Color pluginStarOnColor() {
