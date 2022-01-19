@@ -63,7 +63,7 @@ import java.util.List;
 @Extension
 @PluginDescriptor(
         name = "Reflection",
-        description = "Changes the client name, image, and color scheme. By default will be Fusion Icon<br>Made By: SpoonLite",
+        description = "Changes the client name, image, and color scheme. By default will be Fusion",
         tags = {"config", "rewriter", "reflection"},
         enabledByDefault = false
 )
@@ -184,7 +184,7 @@ public class ReflectionPlugin extends Plugin
                 image = ImageIO.read(ICON_FILE);
             } catch (IOException e)
             {
-                image = ImageUtil.loadImageResource(ReflectionPlugin.class, "fusion1.png");
+                image = ImageUtil.loadImageResource(ReflectionPlugin.class, "Fusion.png");
             }
         }
         ClientUI.getFrame().setIconImage(image);
