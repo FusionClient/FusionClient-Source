@@ -191,8 +191,8 @@ public class SpoonNexPlugin extends Plugin {
 
 	@Subscribe
 	private void onOverheadTextChanged(OverheadTextChanged event) {
-		if (event.getActor() instanceof Player && config.olmPTSD()){
-			if (event.getActor().getOverheadText().equals("*Cough*")) {
+		if (event.getActor() instanceof Player && event.getActor().getOverheadText().equals("*Cough*") && nex != null){
+			{
 				if (config.olmPTSD()) {
 					event.getActor().setOverheadText(new Random().nextInt(2) == 0 ? "Burn with me!" : "I will burn with you!");
 				}
