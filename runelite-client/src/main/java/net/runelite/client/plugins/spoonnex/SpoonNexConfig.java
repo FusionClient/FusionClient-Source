@@ -51,7 +51,7 @@ public interface SpoonNexConfig extends Config {
 
 	@ConfigItem(
 			keyName = "noEscape",
-			name = "No Escape",
+			name = "No Escape Sound",
 			description = "A10 Strafe 2: Electric Boogaloo",
 			position = 3,
 			section = specSection
@@ -184,10 +184,10 @@ public interface SpoonNexConfig extends Config {
 	default boolean invulnerableTicks(){ return false; }
 
 	@ConfigItem(
-			keyName = "mageHighlight",
-			name = "Mage Highlight",
-			description = "Highlight the currently active ancient mage",
-			position = 2
+		keyName = "mageHighlight",
+		name = "Mage Highlight",
+		description = "Highlight the currently active ancient mage",
+		position = 2
 	)
 	default MageHighlightMode mageHighlight(){ return MageHighlightMode.OFF; }
 
@@ -303,5 +303,4 @@ public interface SpoonNexConfig extends Config {
 	enum PhaseNameTypeMode {
 		NUMBER, NAME
 	}
-
 }
