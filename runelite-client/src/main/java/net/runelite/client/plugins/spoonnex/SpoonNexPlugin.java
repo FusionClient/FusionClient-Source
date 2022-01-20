@@ -31,7 +31,6 @@ import java.util.*;
 		enabledByDefault = false
 )
 
-
 @Slf4j
 @Singleton
 public class SpoonNexPlugin extends Plugin {
@@ -125,6 +124,7 @@ public class SpoonNexPlugin extends Plugin {
 		client.clearHintArrow();
 		covidList.clear();
 		sacrificeTarget = false;
+		raveRunway.clear();
 		if(timerTicksLeft == 0)
 			infoBoxManager.removeInfoBox(timerBox);
 	}
@@ -244,8 +244,12 @@ public class SpoonNexPlugin extends Plugin {
 				covidList.replace(name, covidList.get(name), ticks);
 			}
 			covidList.entrySet().removeIf(entry -> entry.getValue() == 0);
-		}
 
+			raveRunway.clear();
+			for(int i=0; i<30; i++){
+				raveRunway.add(Color.getHSBColor(new Random().nextFloat(), 1.0F, 1.0F));
+			}
+		}
 		if(timerTicksLeft > 0) {
 			timerTicksLeft--;
 			if(timerTicksLeft == 0) {
@@ -352,6 +356,7 @@ public class SpoonNexPlugin extends Plugin {
 				nex.currentSpecial = "no escape";
 				nex.nextSpecial = "virus";
 				nex.attacksTilSpecial = 5;
+				nex.specialTicksLeft = 7;
 				playAudio = config.noEscape() == SpoonNexConfig.NoEscapeMode.NEX ? "there_is.wav" : "backInNam.wav";
 			}  else if (text.contains("NO ESCAPE!")) {
 				if(config.noEscape() == SpoonNexConfig.NoEscapeMode.NEX)
