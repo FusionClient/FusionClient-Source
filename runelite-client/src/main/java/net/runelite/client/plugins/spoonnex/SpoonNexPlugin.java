@@ -90,6 +90,7 @@ public class SpoonNexPlugin extends Plugin {
 	public int ratJamFrame = 1;
 	public int ratJamTicks = 0;
 	public Point ratJamPoint = null;
+	public ArrayList<Color> raveRunway = new ArrayList<Color>();
 
 	@Provides
 	SpoonNexConfig provideConfig(ConfigManager configManager) {
@@ -192,13 +193,11 @@ public class SpoonNexPlugin extends Plugin {
 	@Subscribe
 	private void onOverheadTextChanged(OverheadTextChanged event) {
 		if (event.getActor() instanceof Player && event.getActor().getOverheadText().equals("*Cough*") && nex != null){
-			{
-				if (config.olmPTSD()) {
-					event.getActor().setOverheadText(new Random().nextInt(2) == 0 ? "Burn with me!" : "I will burn with you!");
-				}
-				covidList.remove(event.getActor().getName());
-				covidList.put(event.getActor().getName(), 5);
+			if (config.olmPTSD()) {
+				event.getActor().setOverheadText(new Random().nextInt(2) == 0 ? "Burn with me!" : "I will burn with you!");
 			}
+			covidList.remove(event.getActor().getName());
+			covidList.put(event.getActor().getName(), 5);
 		} else if (event.getActor().getName() != null && event.getActor().getName().equals("Nex") && event.getOverheadText().contains("Taste my wrath!")
 				&& client.getLocalPlayer() != null && client.getLocalPlayer().getName() != null && client.getLocalPlayer().getName().equals("rollsyy")) {
 			event.getActor().setOverheadText("Allahuakbar! *Click*");

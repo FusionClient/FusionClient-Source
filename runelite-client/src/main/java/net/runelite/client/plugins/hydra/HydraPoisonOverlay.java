@@ -38,6 +38,7 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import net.runelite.api.Client;
 import static net.runelite.api.Perspective.getCanvasTileAreaPoly;
+
 import net.runelite.api.Projectile;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.ui.overlay.Overlay;

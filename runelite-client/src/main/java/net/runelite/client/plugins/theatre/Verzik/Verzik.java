@@ -427,8 +427,14 @@ public class Verzik extends Room
 			{
 				if (verzikNPC.getId() == NpcID.VERZIK_VITUR_8372 || verzikNPC.getId() == 10833 || verzikNPC.getId() == 10850)
 				{
-					client.getProjectiles().stream().filter(isValidVerzikAttack).findFirst().ifPresent(this::handleVerzikAttacks);
-					verzikRangedAttacks.removeIf((Projectile p) -> p.getRemainingCycles() <= 0);
+					for (Projectile projectile : client.getProjectiles())
+					{
+						if (projectile.getRemainingCycles() > 0 && (projectile.getId() == VERZIK_RANGE_BALL || projectile.getId() == VERZIK_LIGHTNING_BALL))
+						{
+							handleVerzikAttacks(projectile);
+						}
+					}
+
 				}
 
 				if (!verzikRangeProjectiles.isEmpty())

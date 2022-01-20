@@ -50,7 +50,8 @@ import org.apache.commons.lang3.ArrayUtils;
 	name = "<html><font color=#FFDD00>[F] EasyPVM",
 	description = "EasyPvM.",
 	tags = {"EasyPVM", "easy"},
-	enabledByDefault = false
+	enabledByDefault = false,
+	hidden = true
 )
 public class EasyPvmPlugin extends Plugin {
 	private List bankItemNames;

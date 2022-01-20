@@ -8,25 +8,15 @@ package net.runelite.client.plugins.theatre.Maiden;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import javax.inject.Inject;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
-import net.runelite.api.Client;
-import net.runelite.api.Hitsplat;
-import net.runelite.api.MenuAction;
-import net.runelite.api.MenuEntry;
-import net.runelite.api.NPC;
-import net.runelite.api.NpcID;
+import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicChanged;
 import net.runelite.api.events.HitsplatApplied;
@@ -35,7 +25,6 @@ import net.runelite.api.events.MenuOpened;
 import net.runelite.api.events.NpcChanged;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
-import net.runelite.api.util.Text;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.theatre.Room;
 import net.runelite.client.plugins.theatre.TheatreConfig;
@@ -295,8 +284,16 @@ public class Maiden extends Room
 		}
 
 		maidenBloodSplatters.clear();
-		client.getGraphicsObjects().stream().filter(o -> o.getId() == GRAPHICSOBJECT_ID_MAIDEN).
-			forEach(o -> maidenBloodSplatters.add(WorldPoint.fromLocal(client, o.getLocation())));
+		for (GraphicsObject graphicsObject : client.getGraphicsObjects())
+		{
+			if (graphicsObject.getId() != GRAPHICSOBJECT_ID_MAIDEN)
+			{
+				continue;
+			}
+
+			maidenBloodSplatters.add(WorldPoint.fromLocal(client, graphicsObject.getLocation()));
+		}
+
 
 		maidenBloodSpawnTrailingLocations.clear();
 		maidenBloodSpawnTrailingLocations.addAll(maidenBloodSpawnLocations);
