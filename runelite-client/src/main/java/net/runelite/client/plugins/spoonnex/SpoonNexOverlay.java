@@ -4,6 +4,7 @@ import net.runelite.api.*;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.plugins.nex.NexPhase;
 import net.runelite.client.ui.overlay.*;
 import net.runelite.client.util.ImageUtil;
 
@@ -243,6 +244,7 @@ class SpoonNexOverlay extends Overlay {
 			graphics.fill(polygon);
 		}
 	}
+
 
 	private void drawRunwayTiles(Graphics2D graphics, WorldPoint leftTop, WorldPoint middle, WorldPoint rightBottom, int index, Color color) {
 		if(config.noEscapeRunway() == SpoonNexConfig.NoEscapeRunwayMode.RAVEST){

@@ -71,6 +71,7 @@ public class OneClickThievingPlugin extends Plugin {
 	private OverlayManager overlayManager;
 	Set foodMenuOption;
 	Set prayerPotionIDs;
+
 	Set foodBlacklist;
 	Set coinPouches;
 	private boolean shouldHeal;
@@ -81,7 +82,7 @@ public class OneClickThievingPlugin extends Plugin {
 
 	public OneClickThievingPlugin() {
 		this.foodMenuOption = Set.of("Drink", "Eat");
-		this.prayerPotionIDs = Set.of(139, 141, 143, 2434, 3024, 3026, 3028, 3030, 189, 191, 193, 2450);
+		this.prayerPotionIDs = Set.of(139, 141, 143, 2434, 3024, 3026, 3028, 3030, 189, 191, 193, 2450, 26346, 26344, 26342, 26340);
 		this.foodBlacklist = Set.of(139, 141, 143, 2434, 3024, 3026, 3028, 3030, 24774, 189, 191, 193, 2450);
 		this.coinPouches = Set.of(22521, 22522, 22523, 22524, 22525, 22526, 22527, 22528, 22529, 22530, 22531, 22532, 22533, 22534, 22535, 22536, 22537, 22538, 24703);
 		this.shouldHeal = false;

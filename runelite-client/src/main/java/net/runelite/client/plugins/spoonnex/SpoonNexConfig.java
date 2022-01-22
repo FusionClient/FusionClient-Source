@@ -272,6 +272,8 @@ public interface SpoonNexConfig extends Config {
 	)
 	default boolean forWhy(){ return false; }
 
+
+
 	enum MageHighlightMode {
 		OFF, ARROW, TILE, BOTH
 	}

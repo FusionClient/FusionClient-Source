@@ -11,6 +11,7 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.nex.NexPhase;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import org.pf4j.Extension;
@@ -57,6 +58,7 @@ public class SpoonNexPlugin extends Plugin {
 
 	@Inject
 	private InfoBoxManager infoBoxManager;
+
 
 	@Inject
 	private ItemManager itemManager;
@@ -511,3 +513,4 @@ public class SpoonNexPlugin extends Plugin {
 		return config.usePrecise() ? min + (sec < 10 ? ":0" : ":") + sec + "." + sec_tenth : min + (sec < 10 ? ":0" : ":") + sec;
 	}
 }
+
