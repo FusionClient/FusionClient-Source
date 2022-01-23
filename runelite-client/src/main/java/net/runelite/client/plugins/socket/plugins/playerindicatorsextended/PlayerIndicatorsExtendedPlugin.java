@@ -1,9 +1,6 @@
 package net.runelite.client.plugins.socket.plugins.playerindicatorsextended;
 
 import com.google.inject.Provides;
-import java.util.ArrayList;
-import java.util.Objects;
-import javax.inject.Inject;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
@@ -12,20 +9,29 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ChatIconManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.socket.org.json.JSONObject;
-import net.runelite.client.plugins.socket.packet.*;
+import net.runelite.client.plugins.socket.SocketPlugin;
+import net.runelite.client.plugins.socket.packet.SocketMembersUpdate;
+import net.runelite.client.plugins.socket.packet.SocketPlayerJoin;
+import net.runelite.client.plugins.socket.packet.SocketShutdown;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Objects;
+
+@Extension
 @PluginDescriptor(
         name = "Socket - Player Indicator",
         description = "Shows you players who are in your socket",
-        tags = {"indicator, socket, player, highlight"},
-        enabledByDefault = false
+        tags = {"indicator, socket, player, highlight"}
 )
+@PluginDependency(SocketPlugin.class)
 public class PlayerIndicatorsExtendedPlugin extends Plugin {
     private static final Logger log = LoggerFactory.getLogger(PlayerIndicatorsExtendedPlugin.class);
 
@@ -60,7 +66,7 @@ public class PlayerIndicatorsExtendedPlugin extends Plugin {
     }
 
     public ArrayList<Actor> getPlayers() {
-        return this.players;
+        return players;
     }
 
     int activeTick = 0;
@@ -68,28 +74,28 @@ public class PlayerIndicatorsExtendedPlugin extends Plugin {
     boolean cleared = false;
 
     protected void startUp() {
-        this.overlayManager.add(this.overlay);
-        this.overlayManager.add(this.overlayMinimap);
-        this.players = new ArrayList<>();
-        this.names = new ArrayList<>();
+        overlayManager.add(overlay);
+        overlayManager.add(overlayMinimap);
+        players = new ArrayList<>();
+        names = new ArrayList<>();
     }
 
     protected void shutDown() {
-        this.overlayManager.remove(this.overlay);
-        this.overlayManager.remove(this.overlayMinimap);
+        overlayManager.remove(overlay);
+        overlayManager.remove(overlayMinimap);
     }
 
     @Subscribe
     public void onSocketPlayerJoin(SocketPlayerJoin event) {
-        this.names.add(event.getPlayerName());
-        if (event.getPlayerName().equals(Objects.requireNonNull(this.client.getLocalPlayer()).getName()))
-            this.names.clear();
+        names.add(event.getPlayerName());
+        if (event.getPlayerName().equals(Objects.requireNonNull(client.getLocalPlayer()).getName()))
+            names.clear();
     }
 
     @Subscribe
     public void onSocketMembersUpdate(SocketMembersUpdate event)
     {
-        this.names.clear();
+        names.clear();
         for(String s : event.getMembers())
         {
             if(!s.equals(client.getLocalPlayer().getName()))

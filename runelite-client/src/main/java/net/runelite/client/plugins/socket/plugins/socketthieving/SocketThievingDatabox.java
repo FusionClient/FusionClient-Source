@@ -1,17 +1,14 @@
 package net.runelite.client.plugins.socket.plugins.socketthieving;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.util.Arrays;
-import java.util.List;
-import javax.inject.Inject;
-
 import net.runelite.api.Client;
-
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.components.LayoutableRenderableEntity;
 import net.runelite.client.ui.overlay.components.LineComponent;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class SocketThievingDatabox extends OverlayPanel {
     private SocketThievingPlugin plugin;
@@ -30,18 +27,18 @@ public class SocketThievingDatabox extends OverlayPanel {
 
     public Dimension render(Graphics2D graphics) {
         int myindex;
-        if (this.plugin.gc_local == null || this.plugin.gc_local.num_opened == 0) {
+        if (plugin.gc_local == null || plugin.gc_local.num_opened == 0) {
             myindex = -1;
         } else {
-            myindex = Arrays.binarySearch(this.plugin.gc_others, 0, this.plugin.gc_others_count,
-                    this.plugin.gc_local, this.plugin.comparator);
+            myindex = Arrays.binarySearch(plugin.gc_others, 0, plugin.gc_others_count,
+                    plugin.gc_local, plugin.comparator);
             if (myindex < 0)
                 myindex = -myindex - 1;
         }
-        int sum_grubs = this.plugin.num_grubs;
-        for (int i = 0; i < this.plugin.gc_others_count; i++)
-            sum_grubs += (this.plugin.gc_others[i]).num_with_grubs * this.config.grubRate() / 100;
-        List<LayoutableRenderableEntity> elems = this.panelComponent.getChildren();
+        int sum_grubs = plugin.num_grubs;
+        for (int i = 0; i < plugin.gc_others_count; i++)
+            sum_grubs += (plugin.gc_others[i]).num_with_grubs * config.grubRate() / 100;
+        List<LayoutableRenderableEntity> elems = panelComponent.getChildren();
         elems.clear();
         elems.add(LineComponent.builder()
                 .leftColor(Color.WHITE)
@@ -83,18 +80,18 @@ public class SocketThievingDatabox extends OverlayPanel {
             }
         }
 
-        for (int j = 0; j < this.plugin.gc_others_count; j++) {
+        for (int j = 0; j < plugin.gc_others_count; j++) {
             if (j == myindex) {
-                add_gc_line(elems, this.plugin.gc_local, true);
+                add_gc_line(elems, plugin.gc_local, true);
             }
-            if(plugin.socketPlayerNames.contains(this.plugin.gc_others[j].displayname.toLowerCase())){
-                add_gc_line(elems, this.plugin.gc_others[j], true);
+            if(plugin.socketPlayerNames.contains(plugin.gc_others[j].displayname.toLowerCase())){
+                add_gc_line(elems, plugin.gc_others[j], true);
             }else{
-                add_gc_line(elems, this.plugin.gc_others[j], false);
+                add_gc_line(elems, plugin.gc_others[j], false);
             }
         }
-        if (myindex == this.plugin.gc_others_count)
-            add_gc_line(elems, this.plugin.gc_local, true);
+        if (myindex == plugin.gc_others_count)
+            add_gc_line(elems, plugin.gc_local, true);
         return super.render(graphics);
     }
 
@@ -102,11 +99,11 @@ public class SocketThievingDatabox extends OverlayPanel {
         if(socket){
             elems.add(LineComponent.builder()
                     .left("\u2713 " + gc.displayname)
-                    .right(String.valueOf(gc.num_with_grubs) + "/" + gc.num_opened).build());
+                    .right(gc.num_with_grubs + "/" + gc.num_opened).build());
         }else{
             elems.add(LineComponent.builder()
                     .left("\u2717 " + gc.displayname)
-                    .right(String.valueOf(gc.num_with_grubs) + "/" + gc.num_opened).build());
+                    .right(gc.num_with_grubs + "/" + gc.num_opened).build());
         }
     }
 }

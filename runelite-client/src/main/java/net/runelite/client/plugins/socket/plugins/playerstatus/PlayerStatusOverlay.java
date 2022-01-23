@@ -1,33 +1,8 @@
-/*
- * Copyright (c) 2020, Charles Xu <github.com/kthisiscvpv>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package net.runelite.client.plugins.socket.plugins.playerstatus;
 
-import net.runelite.api.*;
 import net.runelite.api.Point;
+import net.runelite.api.*;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameIndicator;
 import net.runelite.client.plugins.socket.plugins.playerstatus.gametimer.GameTimer;
@@ -64,9 +39,9 @@ public class PlayerStatusOverlay extends Overlay {
         this.itemManager = itemManager;
         this.spriteManager = spriteManager;
 
-        this.setPosition(OverlayPosition.DYNAMIC);
-        this.setPriority(OverlayPriority.HIGH);
-        this.setLayer(OverlayLayer.AFTER_MIRROR);
+        setPosition(OverlayPosition.DYNAMIC);
+        setPriority(OverlayPriority.HIGH);
+        setLayer(OverlayLayer.ABOVE_SCENE);
     }
 
     private boolean ignoreMarker(AbstractMarker marker) {
@@ -77,9 +52,9 @@ public class PlayerStatusOverlay extends Overlay {
             GameIndicator indicator = ((IndicatorMarker) marker).getIndicator();
             switch (indicator) {
                 case VENGEANCE_ACTIVE:
-                    return !this.config.showVengeanceActive();
+                    return (config.showVengeanceActive() == PlayerStatusConfig.vengeMode.OFF);
                 case SPEC_XFER:
-                    return (this.config.showSpecXfer() == PlayerStatusConfig.xferIconMode.OFF);
+                    return (config.showSpecXfer() == PlayerStatusConfig.xferIconMode.OFF);
                 default:
                     return true;
             }
@@ -87,16 +62,22 @@ public class PlayerStatusOverlay extends Overlay {
             GameTimer timer = ((TimerMarker) marker).getTimer();
             switch (timer) {
                 case VENGEANCE:
-                    return !this.config.showVengeanceCooldown();
+                    return !config.showVengeanceCooldown();
                 case IMBUED_HEART:
-                    return !this.config.showImbuedHeart();
+                    return !config.showImbuedHeart();
                 case OVERLOAD:
                 case OVERLOAD_RAID:
-                    return !this.config.showOverload();
+                    return !config.showOverload();
                 case PRAYER_ENHANCE:
-                    return !this.config.showPrayerEnhance();
+                    return !config.showPrayerEnhance();
                 case STAMINA:
-                    return !this.config.showStamina();
+                    return !config.showStamina();
+                case DIVINE_SCB:
+                case DIVINE_ATTACK:
+                case DIVINE_STRENGTH:
+                case DIVINE_BASTION:
+                case DIVINE_RANGE:
+                    return !config.showDivines();
                 default:
                     return true;
             }
@@ -106,18 +87,18 @@ public class PlayerStatusOverlay extends Overlay {
     }
 
     private List<AbstractMarker> renderPlayer(Graphics graphics, Player p, List<AbstractMarker> markers) {
-        List<AbstractMarker> toRemove = new ArrayList<AbstractMarker>();
+        List<AbstractMarker> toRemove = new ArrayList<>();
 
-        int size = this.config.getIndicatorSize();
-        int margin = this.config.getIndicatorPadding();
+        int size = config.getIndicatorSize();
+        int margin = config.getIndicatorPadding();
         graphics.setFont(new Font("SansSerif", Font.BOLD, (int) (0.75d * size)));
 
-        Point base = Perspective.localToCanvas(this.client, p.getLocalLocation(), this.client.getPlane(), p.getLogicalHeight());
+        Point base = Perspective.localToCanvas(client, p.getLocalLocation(), client.getPlane(), p.getLogicalHeight());
         int zOffset = 0;
-        int xOffset = this.config.getIndicatorXOffset() - (size / 2);
+        int xOffset = config.getIndicatorXOffset() - (size / 2);
 
         for (AbstractMarker marker : markers) {
-            if (this.ignoreMarker(marker))
+            if (ignoreMarker(marker))
                 continue;
 
             if (marker instanceof TimerMarker) {
@@ -158,12 +139,12 @@ public class PlayerStatusOverlay extends Overlay {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        Map<String, List<AbstractMarker>> effects = this.plugin.getStatusEffects();
-        Player p = this.client.getLocalPlayer();
+        Map<String, List<AbstractMarker>> effects = plugin.getStatusEffects();
+        Player p = client.getLocalPlayer();
 
         List<AbstractMarker> localMarkers = effects.get(null);
         if (localMarkers != null) {
-            List<AbstractMarker> toRemove = this.renderPlayer(graphics, p, localMarkers);
+            List<AbstractMarker> toRemove = renderPlayer(graphics, p, localMarkers);
 
             if (!toRemove.isEmpty()) {
                 synchronized (effects) {
@@ -176,28 +157,28 @@ public class PlayerStatusOverlay extends Overlay {
             }
         }
 
-        for (Player t : this.client.getPlayers()) {
+        for (Player t : client.getPlayers()) {
             if(config.showSpecXfer() != PlayerStatusConfig.xferIconMode.OFF) {
-                for (Map.Entry<String, PlayerStatus> entry : this.plugin.getPartyStatus().entrySet()) {
+                for (Map.Entry<String, PlayerStatus> entry : plugin.getPartyStatus().entrySet()) {
                     String name = entry.getKey();
                     PlayerStatus status = entry.getValue();
                     if (name.equals(t.getName())) {
                         System.out.println(plugin.playerNames.size());
                         if(config.showSpecXfer() == PlayerStatusConfig.xferIconMode.ALL ||
                                 (config.showSpecXfer() == PlayerStatusConfig.xferIconMode.LIST && plugin.playerNames.contains(t.getName().toLowerCase()))) {
-                            int size = this.config.getIndicatorSize();
-                            int margin = this.config.getIndicatorPadding();
+                            int size = config.getIndicatorSize();
+                            int margin = config.getIndicatorPadding();
                             graphics.setFont(new Font("SansSerif", Font.BOLD, (int) (0.75d * size)));
-                            Point base = Perspective.localToCanvas(this.client, t.getLocalLocation(), this.client.getPlane(), t.getLogicalHeight());
+                            Point base = Perspective.localToCanvas(client, t.getLocalLocation(), client.getPlane(), t.getLogicalHeight());
                             int zOffset = 0;
-                            int xOffset = this.config.getIndicatorXOffset() - (size / 2);
+                            int xOffset = config.getIndicatorXOffset() - (size / 2);
                             BufferedImage icon = spriteManager.getSprite(SpriteID.SPELL_ENERGY_TRANSFER, 0);
                             zOffset += size;
 
                             int xDelta = icon.getWidth() + margin; // +5 for padding
                             String text = status.getSpecial() + "%";
 
-                            if(status.getSpecial() <= this.config.specThreshold()) {
+                            if(status.getSpecial() <= config.specThreshold()) {
                                 graphics.setColor(Color.BLACK);
                                 graphics.drawString(text, base.getX() + xOffset + xDelta + 1, base.getY() + zOffset);
 
@@ -215,9 +196,20 @@ public class PlayerStatusOverlay extends Overlay {
             }
 
             if (p != t) {
+                if(plugin.noSocketVenged.contains(t.getName()) && config.showVengeanceActive() == PlayerStatusConfig.vengeMode.ALL) {
+                    Point base = Perspective.localToCanvas(client, t.getLocalLocation(), t.getWorldLocation().getPlane(), t.getLogicalHeight());
+                    if(base != null) {
+                        int size = config.getIndicatorSize();
+                        IndicatorMarker marker = new IndicatorMarker(GameIndicator.VENGEANCE_ACTIVE);
+                        marker.setBaseImage(spriteManager.getSprite(GameIndicator.VENGEANCE_ACTIVE.getImageId(), 0));
+                        BufferedImage icon = marker.getImage(size);
+                        graphics.drawImage(icon, base.getX() + config.getIndicatorXOffset() - (size / 2), base.getY(), null);
+                    }
+                }
+
                 List<AbstractMarker> markers = effects.get(t.getName());
                 if (markers != null) {
-                    List<AbstractMarker> toRemove = this.renderPlayer(graphics, t, markers);
+                    List<AbstractMarker> toRemove = renderPlayer(graphics, t, markers);
 
                     if (!toRemove.isEmpty()) {
                         synchronized (markers) {

@@ -37,6 +37,8 @@ public class GameTimerConstant {
     public static final String CANNON_REPAIR_MESSAGE = "You repair your cannon, restoring it to working order.";
     public static final String CHARGE_EXPIRED_MESSAGE = "<col=ef1020>Your magical charge fades away.</col>";
     public static final String CHARGE_MESSAGE = "<col=ef1020>You feel charged with magic power.</col>";
+    public static final String DIVINE_DRINK_MESSAGE = "You drink some of your divine";
+    public static final String DIVINE_EXPIRED_MESSAGE = "The effects of the divine potion have worn off.";
     public static final String EXTENDED_ANTIFIRE_DRINK_MESSAGE = "You drink some of your extended antifire potion.";
     public static final String EXTENDED_SUPER_ANTIFIRE_DRINK_MESSAGE = "You drink some of your extended super antifire potion.";
     public static final String FROZEN_MESSAGE = "<col=ef1020>You have been frozen!</col>";

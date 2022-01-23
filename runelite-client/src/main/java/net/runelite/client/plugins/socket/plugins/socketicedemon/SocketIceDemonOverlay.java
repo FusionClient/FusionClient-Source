@@ -1,12 +1,11 @@
 package net.runelite.client.plugins.socket.plugins.socketicedemon;
 
-import javax.inject.Inject;
-
-import net.runelite.api.*;
 import net.runelite.api.Point;
+import net.runelite.api.*;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.*;
 
+import javax.inject.Inject;
 import java.awt.*;
 
 public class SocketIceDemonOverlay extends OverlayPanel {

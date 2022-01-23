@@ -1,12 +1,9 @@
 package net.runelite.client.plugins.socket.plugins.socketDPS;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.util.regex.Pattern;
 import net.runelite.client.ui.overlay.RenderableEntity;
+
+import java.awt.*;
+import java.util.regex.Pattern;
 
 public class SocketTextComponent implements RenderableEntity {
     private static final String COL_TAG_REGEX = "(<col=([0-9a-fA-F]){2,6}>)";

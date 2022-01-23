@@ -28,7 +28,6 @@ package net.runelite.client.plugins.socket.plugins.playerstatus.gametimer;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.GraphicID;
 import net.runelite.api.ItemID;
 import net.runelite.api.SpriteID;
 
@@ -43,7 +42,12 @@ public enum GameTimer {
     OVERLOAD_RAID(ItemID.OVERLOAD_4_20996, GameTimerImageType.ITEM, "Overload", 5, ChronoUnit.MINUTES, true),
     PRAYER_ENHANCE(ItemID.PRAYER_ENHANCE_4, GameTimerImageType.ITEM, "Prayer enhance", 290, ChronoUnit.SECONDS, true),
     STAMINA(ItemID.STAMINA_POTION4, GameTimerImageType.ITEM, "Stamina", 2, ChronoUnit.MINUTES, true),
-    IMBUED_HEART(ItemID.IMBUED_HEART, GameTimerImageType.ITEM, "Imbued heart", 1316, 420, ChronoUnit.SECONDS);
+    IMBUED_HEART(ItemID.IMBUED_HEART, GameTimerImageType.ITEM, "Imbued heart", 1316, 420, ChronoUnit.SECONDS),
+    DIVINE_SCB(ItemID.DIVINE_SUPER_COMBAT_POTION4, GameTimerImageType.ITEM, "Divine Super Combat", 5, ChronoUnit.MINUTES, true),
+    DIVINE_ATTACK(ItemID.DIVINE_SUPER_ATTACK_POTION4, GameTimerImageType.ITEM, "Divine Super Attack", 5, ChronoUnit.MINUTES, true),
+    DIVINE_STRENGTH(ItemID.DIVINE_SUPER_STRENGTH_POTION4, GameTimerImageType.ITEM, "Divine Super Strength", 5, ChronoUnit.MINUTES, true),
+    DIVINE_RANGE(ItemID.DIVINE_RANGING_POTION4, GameTimerImageType.ITEM, "Divine Ranging", 5, ChronoUnit.MINUTES, true),
+    DIVINE_BASTION(ItemID.DIVINE_BASTION_POTION4, GameTimerImageType.ITEM, "Divine Bastion", 5, ChronoUnit.MINUTES, true);
 
     private final Duration duration;
     private final Integer graphicId;

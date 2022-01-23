@@ -1,10 +1,13 @@
 package net.runelite.client.plugins.socket.plugins.socketDPS;
 
-import java.awt.Color;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.runelite.client.config.*;
+import net.runelite.client.config.Alpha;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+
+import java.awt.*;
 
 @ConfigGroup("socketdpscounter")
 public interface SocketDpsConfig extends Config {
@@ -48,7 +51,7 @@ public interface SocketDpsConfig extends Config {
         return true;
     }
 
-    @ConfigItem(position = 4, keyName = "playersToHighlight", name = "Players to Highlight", description = "List of player names to highlight")
+    @ConfigItem(position = 4, keyName = "playersToHighlight", name = "Players to Highlight", description = "Sets the players to highlight")
     default String getPlayerToHighlight() {
         return "";
     }
@@ -68,9 +71,30 @@ public interface SocketDpsConfig extends Config {
     @ConfigItem(position = 8, keyName = "backgroundColor", name = "Background Color", description = "Sets the overlay color on the custom setting")
     default Color backgroundColor() { return new Color(23, 23,23, 156); }
 
+    @ConfigItem(position = 9, keyName = "showDifference", name = "Show Difference", description = "Shows the difference between your damage and the boostee")
+    default boolean showDifference() {
+        return false;
+    }
+
+    @ConfigItem(position = 10, keyName = "earlyWarning", name = "At Risk Warning", description = "Show difference changes color to orange at this threshold", hidden = true, unhide = "showDifference")
+    default int earlyWarning() { return 100; }
+
+    @ConfigItem(position = 11, keyName = "lateWarning", name = "Snipe Warning", description = "Show difference changes color to red at this threshold", hidden = true, unhide = "showDifference")
+    default int lateWarning() { return 50; }
+
+    @ConfigItem(position = 12, keyName = "isMain", name = "Is Main Account", description = "Set the account as a main account")
+    default boolean isMain() {
+        return false;
+    }
+
+    @ConfigItem(position = 13, keyName = "boostedPlayerName", name = "Boosted Player Name", description = "Sets the name of the player being boosted")
+    default String boostedPlayerName() {
+        return "";
+    }
+
     @Getter
     @RequiredArgsConstructor
     enum backgroundMode {
-        STANDARD, CUSTOM, HIDE;
+        STANDARD, CUSTOM, HIDE
     }
 }

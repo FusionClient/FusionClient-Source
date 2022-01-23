@@ -1,17 +1,13 @@
 package net.runelite.client.plugins.socket.plugins.playerindicatorsextended;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import javax.inject.Inject;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.Point;
-import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
-import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
+import net.runelite.client.ui.overlay.*;
 import net.runelite.client.util.Text;
+
+import javax.inject.Inject;
+import java.awt.*;
 
 public class PlayerIndicatorsExtendedMinimapOverlay extends Overlay {
     private final Client client;

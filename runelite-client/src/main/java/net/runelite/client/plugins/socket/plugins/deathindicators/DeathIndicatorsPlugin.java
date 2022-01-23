@@ -7,103 +7,102 @@ import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.Widget;
-import net.runelite.client.ClientInterface;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.pf4j.Extension;
 
 import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-import static net.runelite.api.ScriptID.XPDROPS_SETDROPSIZE;
-import static net.runelite.api.widgets.WidgetInfo.TO_CHILD;
-import static net.runelite.api.widgets.WidgetInfo.TO_GROUP;
 
 @Slf4j
-
+@Extension
 @PluginDescriptor(
         name = "Socket - Death Indicators",
         description = "Shows you NPCs that have been killed",
-        tags = {"Socket, death, kill"},
-        enabledByDefault = false
+        tags = {"Socket, death, kill"}
 )
-public class DeathIndicatorsPlugin extends Plugin
-{
+@PluginDependency(SocketPlugin.class)
+public class DeathIndicatorsPlugin extends Plugin {
+    @Inject
+    private Client client;
+    @Inject
+    private EventBus eventBus;
+    @Inject
+    private ConfigManager configManager;
+    @Inject
+    private OverlayManager overlayManager;
     @Inject
     private DeathIndicatorsConfig config;
-
-    @Inject
-    ConfigManager configManager;
-
-    @Inject
-    PluginManager pluginManager;
-
     @Inject
     private DeathIndicatorsOverlay overlay;
 
-    @Inject
-    private Client client;
-
-    @Inject
-    private OverlayManager overlayManager;
-
-    @Inject
-    private EventBus eventBus;
-
     private ArrayList<NyloQ> nylos;
-
-    private ArrayList<Method> reflectedMethods;
-    private ArrayList<Plugin> reflectedPlugins;
+    private boolean inNylo = false;
 
     @Getter
     private ArrayList<NPC> deadNylos;
-
     @Getter
     private NyloQ maidenNPC;
 
-    private int partySize;
+    private ArrayList<Integer> hiddenIndices;
+    private int partySize = -1;
+
+    private boolean mirrorMode;
+
+    @Inject
+    private PluginManager pluginManager;
+    private ArrayList<Method> reflectedMethods;
+    private ArrayList<Plugin> reflectedPlugins;
 
     @Provides
-    DeathIndicatorsConfig getConfig(ConfigManager configManager)
-    {
+    DeathIndicatorsConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(DeathIndicatorsConfig.class);
     }
 
     @Override
-    protected void startUp()
-    {
-        deadNylos = new ArrayList<NPC>();
-        this.overlayManager.add(overlay);
-        nylos = new ArrayList<NyloQ>();
+    protected void startUp() {
+        deadNylos = new ArrayList<>();
+        nylos = new ArrayList<>();
+        hiddenIndices = new ArrayList<>();
+        overlayManager.add(overlay);
         reflectedMethods = new ArrayList<>();
         reflectedPlugins = new ArrayList<>();
-        for(Plugin p : pluginManager.getPlugins())
-        {
-            Method m = null;
-            try
-            {
-                m = p.getClass().getDeclaredMethod("SocketDeathIntegration", int.class);
-            }
-            catch(NoSuchMethodException e)
-            {
+        for (Plugin p : pluginManager.getPlugins()) {
+            Method m;
+
+            try {
+                m = p.getClass().getDeclaredMethod("SocketDeathIntegration", Integer.TYPE);
+            } catch (NoSuchMethodException var5) {
                 continue;
             }
+
             reflectedMethods.add(m);
             reflectedPlugins.add(p);
         }
+    }
+
+    @Override
+    protected void shutDown() {
+        deadNylos = null;
+        nylos = null;
+        hiddenIndices = null;
+        partySize = -1;
+        overlayManager.remove(overlay);
     }
 
     @Subscribe
@@ -157,42 +156,43 @@ public class DeathIndicatorsPlugin extends Plugin
         int id = event.getNpc().getId();
         switch (id)
         {
-            case 8342:
-            case 10791://melee
-            case 8343:
-            case 10792://range
-            case 8344:
-            case 10793://mage
+            case NpcID.NYLOCAS_ISCHYROS_8342:
+            case NpcID.NYLOCAS_ISCHYROS_10791: //melee
+            case NpcID.NYLOCAS_TOXOBOLOS_8343:
+            case NpcID.NYLOCAS_TOXOBOLOS_10792: //range
+            case NpcID.NYLOCAS_HAGIOS:
+            case NpcID.NYLOCAS_HAGIOS_10793: //mage
                 nylos.add(new NyloQ(event.getNpc(), 0, smallHP));
                 break;
-            case 10775:
-            case 10774:
-            case 10776:
+            case NpcID.NYLOCAS_ISCHYROS_10774: //Story mode smalls
+            case NpcID.NYLOCAS_TOXOBOLOS_10775:
+            case NpcID.NYLOCAS_HAGIOS_10776:
                 nylos.add(new NyloQ(event.getNpc(), 0, smSmallHP));
                 break;
-            case 10777:
-            case 10778:
-            case 10779:
+            case NpcID.NYLOCAS_ISCHYROS_10777: //Story mode bigs
+            case NpcID.NYLOCAS_TOXOBOLOS_10778:
+            case NpcID.NYLOCAS_HAGIOS_10779:
                 nylos.add(new NyloQ(event.getNpc(), 0, smBigHP));
                 break;
-            case 8345:
-            case 10794://melee
-            case 8346:
-            case 10795://range
-            case 8347:
-            case 10796://mage
-            case 8351:
-            case 10783:
-            case 10800://melee aggro
-            case 8352:
-            case 10784:
-            case 10801://range aggro
-            case 8353:
-            case 10785:
-            case 10802://mage aggro
+            case NpcID.NYLOCAS_ISCHYROS_8345:
+            case NpcID.NYLOCAS_ISCHYROS_10794: //melee
+            case NpcID.NYLOCAS_TOXOBOLOS_8346:
+            case NpcID.NYLOCAS_TOXOBOLOS_10795: //range
+            case NpcID.NYLOCAS_HAGIOS_8347:
+            case NpcID.NYLOCAS_HAGIOS_10796: //mage
+            case NpcID.NYLOCAS_ISCHYROS_8351:
+            case NpcID.NYLOCAS_ISCHYROS_10783:
+            case NpcID.NYLOCAS_ISCHYROS_10800: //melee aggro
+            case NpcID.NYLOCAS_TOXOBOLOS_8352:
+            case NpcID.NYLOCAS_TOXOBOLOS_10784:
+            case NpcID.NYLOCAS_TOXOBOLOS_10801: //range aggro
+            case NpcID.NYLOCAS_HAGIOS_8353:
+            case NpcID.NYLOCAS_HAGIOS_10785:
+            case NpcID.NYLOCAS_HAGIOS_10802: //mage aggro
                 nylos.add(new NyloQ(event.getNpc(), 0, bigHP));
                 break;
-            case 8360:
+            case NpcID.THE_MAIDEN_OF_SUGADINTI:
+            case NpcID.THE_MAIDEN_OF_SUGADINTI_10822:
                 NyloQ maidenTemp = new NyloQ(event.getNpc(), 0, maidenHP);
                 nylos.add(maidenTemp);
                 maidenNPC = maidenTemp;
@@ -200,60 +200,63 @@ public class DeathIndicatorsPlugin extends Plugin
 
     }
 
+
     @Subscribe
-    public void onNpcDespawned(NpcDespawned event)
-    {
-        if(nylos.size() != 0)
-        {
-            nylos.removeIf(q -> q.npc.equals(event.getNpc()));
+    public void onNpcDespawned(NpcDespawned event) {
+        if (nylos.size() != 0) {
+            nylos.removeIf((q) -> q.npc.equals(event.getNpc()));
         }
-        if(deadNylos.size() != 0)
-        {
-            deadNylos.removeIf(q->q.equals(event.getNpc()));
+
+        if (deadNylos.size() != 0) {
+            deadNylos.removeIf((q) -> q.equals(event.getNpc()));
+        }
+
+        int id = event.getNpc().getId();
+        switch (id) {
+            case NpcID.THE_MAIDEN_OF_SUGADINTI: //normal mode
+            case NpcID.THE_MAIDEN_OF_SUGADINTI_8361:
+            case NpcID.THE_MAIDEN_OF_SUGADINTI_8362:
+            case NpcID.THE_MAIDEN_OF_SUGADINTI_8363:
+            case NpcID.THE_MAIDEN_OF_SUGADINTI_8364:
+            case NpcID.THE_MAIDEN_OF_SUGADINTI_8365:
+                maidenNPC = null;
+                break;
         }
     }
-
 
     @Subscribe
     public void onScriptPreFired(ScriptPreFired scriptPreFired)
     {
-        if(!inNylo) return;
-        if (scriptPreFired.getScriptId() == XPDROPS_SETDROPSIZE)
+        if (inNylo)
         {
-            final int[] intStack = client.getIntStack();
-            final int intStackSize = client.getIntStackSize();
-            final int widgetId = intStack[intStackSize - 4];
-            try
+            if (scriptPreFired.getScriptId() == 996)
             {
-                processXpDrop(widgetId);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
+                int[] intStack = client.getIntStack();
+                int intStackSize = client.getIntStackSize();
+                int widgetId = intStack[intStackSize - 4];
+
+                try
+                {
+                    processXpDrop(widgetId);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private boolean inRegion(int... regions)
-    {
-        if (client.getMapRegions() != null)
-        {
-            for (int i : client.getMapRegions())
-            {
-                for (int j : regions)
-                {
-                    if (i == j)
-                    {
-                        return true;
-                    }
-                }
-            }
+    private boolean inRegion(int... regions) {
+        if (client.getMapRegions() != null) {
+            int[] mapRegions = client.getMapRegions();
+
+            return Arrays.stream(mapRegions).anyMatch(i -> Arrays.stream(regions).anyMatch(j -> i == j));
         }
         return false;
     }
 
-    private void postHit(int index, int dmg)
-    {
+    private void postHit(int index, int dmg) {
         JSONArray data = new JSONArray();
         JSONObject message = new JSONObject();
         message.put("index", index);
@@ -267,86 +270,134 @@ public class DeathIndicatorsPlugin extends Plugin
     @Subscribe
     public void onHitsplatApplied(HitsplatApplied hitsplatApplied)
     {
-        if(!inNylo) return;
+        if (inNylo)
         {
-            for(NyloQ q : nylos)
+            Iterator<NyloQ> nyloQIterator = nylos.iterator();
+
+            while (true)
             {
-                if(hitsplatApplied.getActor().equals(q.npc))
+                NyloQ q;
+                do
                 {
-                    if(hitsplatApplied.getHitsplat().getHitsplatType().equals(Hitsplat.HitsplatType.HEAL))
+                    if (!nyloQIterator.hasNext())
                     {
-                        q.hp+= hitsplatApplied.getHitsplat().getAmount();
+                        return;
                     }
-                    else
-                    {
-                        q.hp -= hitsplatApplied.getHitsplat().getAmount();
-                    }
+
+                    q = nyloQIterator.next();
+                } while (!hitsplatApplied.getActor().equals(q.npc));
+
+                if (hitsplatApplied.getHitsplat().getHitsplatType().equals(Hitsplat.HitsplatType.HEAL))
+                {
+                    q.hp += hitsplatApplied.getHitsplat().getAmount();
+                }
+                else
+                {
+                    q.hp -= hitsplatApplied.getHitsplat().getAmount();
                     q.queuedDamage -= hitsplatApplied.getHitsplat().getAmount();
-                    if (q.hp <= 0)
+                }
+
+                if (q.hp <= 0)
+                {
+                    NyloQ finalQ = q;
+                    deadNylos.removeIf((o) -> o.equals(finalQ.npc));
+                }
+                else if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363
+                        || q.npc.getId() == 10822 || q.npc.getId() == 10823 || q.npc.getId() == 10824 || q.npc.getId() == 10825)
+                {
+                    double percent = (double) q.hp / (double) q.maxHP;
+                    if (percent < 0.7D && q.phase == 0)
                     {
-                        deadNylos.removeIf(o -> o.equals(q.npc));
+                        q.phase = 1;
                     }
-                    else if(q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363)
+
+                    if (percent < 0.5D && q.phase == 1)
                     {
-                        double percent = ((double)q.hp)/((double)q.maxHP);
-                        if(percent < .7)
-                        {
-                            q.phase = 1;
-                        }
-                        if(percent < .5)
-                        {
-                            q.phase = 2;
-                        }
-                        if(percent < .3)
-                        {
-                            q.phase = 3;
-                        }
+                        q.phase = 2;
                     }
+
+                    if (percent < 0.3D && q.phase == 2)
+                    {
+                        q.phase = 3;
+                    }
+
+					/*if (config.maidenHPBar() && percent > 0.1D && percent < 1.0D)
+					{
+						client.setVarbitValue(client.getVarps(), 6448, (int) (percent * 1000));
+					}
+					 */
                 }
             }
         }
     }
 
     @Subscribe
-    public void onSocketReceivePacket(SocketReceivePacket event) {
-        if(!inNylo) return;
-        try
+    public void onSocketReceivePacket(SocketReceivePacket event)
+    {
+        if (inNylo)
         {
-            JSONObject payload = event.getPayload();
-            if (!payload.has("sDeath"))
-                return;
-
-            JSONArray data = payload.getJSONArray("sDeath");
-            JSONObject jsonmsg = data.getJSONObject(0);
-            int index = jsonmsg.getInt("index");
-            int damage = jsonmsg.getInt("damage");
-            for(NyloQ q : nylos)
+            try
             {
-                if(q.npc.getIndex() == index)
+                JSONObject payload = event.getPayload();
+                if (payload.has("sDeath"))
                 {
-                    q.queuedDamage+=damage;
-                    if(q.hp-q.queuedDamage <= 0)
+                    JSONArray data = payload.getJSONArray("sDeath");
+                    JSONObject jsonmsg = data.getJSONObject(0);
+                    int index = jsonmsg.getInt("index");
+                    int damage = jsonmsg.getInt("damage");
+                    Iterator<NyloQ> nyloQIterator = nylos.iterator();
+
+                    while (true)
                     {
-                        if(deadNylos.stream().noneMatch(o->o.getIndex()==q.npc.getIndex()))
+                        NyloQ q;
+                        do
+                        {
+                            if (!nyloQIterator.hasNext())
+                            {
+                                return;
+                            }
+
+                            q = nyloQIterator.next();
+                        } while (q.npc.getIndex() != index);
+
+                        q.queuedDamage += damage;
+                        NyloQ finalQ = q;
+                        if (q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363
+                                || q.npc.getId() == 10822 || q.npc.getId() == 10823 || q.npc.getId() == 10824 || q.npc.getId() == 10825)
+                        {
+                            if (q.queuedDamage > 0)
+                            {
+                                double percent = ((double) q.hp - (double) q.queuedDamage) / (double) q.maxHP;
+                                if (percent < 0.7D && q.phase == 0)
+                                {
+                                    q.phase = 1;
+                                }
+
+                                if (percent < 0.5D && q.phase == 1)
+                                {
+                                    q.phase = 2;
+                                }
+
+                                if (percent < 0.3D && q.phase == 2)
+                                {
+                                    q.phase = 3;
+                                }
+                            }
+                        }
+                        else if (q.hp - q.queuedDamage <= 0 && deadNylos.stream().noneMatch((o) -> o.getIndex() == finalQ.npc.getIndex()))
                         {
                             deadNylos.add(q.npc);
-                            if(config.hideNylo())
+                            if (config.hideNylo())
                             {
-
-                                ClientInterface.setHidden(q.npc, true);
+                                setHiddenNpc(q.npc, true);
                                 q.hidden = true;
-                                if(reflectedPlugins.size() == reflectedMethods.size())
-                                {
-                                    for(int i = 0; i < reflectedPlugins.size(); i++)
-                                    {
-                                        try
-                                        {
+                                if (reflectedPlugins.size() == reflectedMethods.size()) {
+                                    for(int i = 0; i < reflectedPlugins.size(); ++i) {
+                                        try {
                                             Method tm = reflectedMethods.get(i);
                                             tm.setAccessible(true);
                                             tm.invoke(reflectedPlugins.get(i), q.npc.getIndex());
-                                        }
-                                        catch (NullPointerException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError e)
-                                        {
+                                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | ExceptionInInitializerError | NullPointerException var11) {
                                             log.debug("Failed on plugin: " + reflectedPlugins.get(i).getName());
                                         }
                                     }
@@ -354,61 +405,169 @@ public class DeathIndicatorsPlugin extends Plugin
                             }
                         }
                     }
-                    if(q.npc.getId() == 8360 || q.npc.getId() == 8361 || q.npc.getId() == 8362 || q.npc.getId() == 8363)
-                    {
-                        double percent = ((double)q.hp-q.queuedDamage)/((double)q.maxHP);
-                        if(percent < .7)
-                        {
-                            q.phase = 1;
-                        }
-                        if(percent < .5)
-                        {
-                            q.phase = 2;
-                        }
-                        if(percent < .3)
-                        {
-                            q.phase = 3;
-                        }
-                    }
                 }
             }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void setHiddenNpc(NPC npc, boolean hidden) {
+        List<Integer> newHiddenNpcIndicesList = client.getHiddenNpcIndices();
+        if (hidden) {
+            newHiddenNpcIndicesList.add(npc.getIndex());
+            hiddenIndices.add(npc.getIndex());
+        } else {
+            if (newHiddenNpcIndicesList.contains(npc.getIndex())) {
+                newHiddenNpcIndicesList.remove((Integer) npc.getIndex());
+            }
+        }
+        client.setHiddenNpcIndices(newHiddenNpcIndicesList);
+
     }
 
     void addToDamageQueue(int damage)
     {
-        if(damage == -1)
+        if (damage != -1)
         {
-            return;
-        }
-        Actor interacted = Objects.requireNonNull(client.getLocalPlayer()).getInteracting();
-        NPC interactedNPC;
-        if(interacted instanceof NPC)
-        {
-            interactedNPC = (NPC) interacted;
-            postHit(interactedNPC.getIndex(), damage);
+            Actor interacted = Objects.requireNonNull(client.getLocalPlayer()).getInteracting();
+            if (interacted instanceof NPC)
+            {
+                NPC interactedNPC = (NPC) interacted;
+                postHit(interactedNPC.getIndex(), damage);
+            }
+
         }
     }
 
+
     private void processXpDrop(int widgetId) throws InterruptedException
     {
-        final Widget xpdrop = client.getWidget(TO_GROUP(widgetId), TO_CHILD(widgetId));
-        if(xpdrop == null) return;
-        final Widget[] children = xpdrop.getChildren();
-        final Widget textWidget = children[0];
-        String text = textWidget.getText();
-        boolean isDamage = false;
-        Optional<Plugin> o = pluginManager.getPlugins().stream().filter(p->p.getName().equals("damagedrops")).findAny();
-        if(o.isPresent())
+        Widget xpDrop = client.getWidget(WidgetInfo.TO_GROUP(widgetId), WidgetInfo.TO_CHILD(widgetId));
+        if (xpDrop != null)
         {
-            if(pluginManager.isPluginEnabled(o.get()))
+            Widget[] children = xpDrop.getChildren();
+            Widget text = children[0];
+            String cleansedXpDrop = cleanseXpDrop(text.getText());
+            int damage = -1;
+            int weaponUsed = Objects.requireNonNull(Objects.requireNonNull(client.getLocalPlayer()).getPlayerComposition()).getEquipmentId(KitType.WEAPON);
+            if (client.getLocalPlayer().getAnimation() != 1979)
             {
-                isDamage = (configManager.getConfiguration("damagedrops", "replaceEXPDrop").equals("true"));
+                // magic sprite
+                if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 202))
+                {
+                    // sang/tridents
+                    if (weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292 || weaponUsed == 25731)
+                    {
+                        if (client.getLocalPlayer().getAnimation() == 1979)
+                        {
+                            return;
+                        }
+
+                        if (client.getVarbitValue(4696) == 0)
+                        {
+                            if (client.getVar(VarPlayer.ATTACK_STYLE) != 3)
+                            {
+                                damage = (int) ((double) Integer.parseInt(cleansedXpDrop) / 2.0D);
+                            }
+                        }
+                        else
+                        {
+                            if (client.getVar(VarPlayer.ATTACK_STYLE) == 3)
+                            {
+                                damage = (int) Math.round((double) Integer.parseInt(cleansedXpDrop) / 3.6667D);
+                            }
+                            else
+                            {
+                                damage = (int) Math.round((double) Integer.parseInt(cleansedXpDrop) / 3.3334D);
+                            }
+                        }
+                    }
+                }
+                // att, str, def sprite
+                else if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 197 || id == 198 || id == 199))
+                {
+                    if (weaponUsed == 22325 || weaponUsed == 25739 || weaponUsed == 25736 || weaponUsed == 21015) //Don't apply if weapon is scythe
+                    {
+                        return;
+                    }
+
+                    if (client.getVarbitValue(4696) == 0)
+                    {
+                        // checking if casting on long range
+                        if (weaponUsed != 22323 && weaponUsed != 11905 && weaponUsed != 11907 && weaponUsed != 12899 && weaponUsed != 22292 && weaponUsed != 25731) //Powered Staves
+                        {
+                            if (weaponUsed == 12006)
+                            {
+                                if (client.getVar(VarPlayer.ATTACK_STYLE) == 1)
+                                {
+                                    if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 197))
+                                    {
+                                        damage = (int) Math.round(3.0D * (double) Integer.parseInt(cleansedXpDrop) / 4.0D);
+                                    }
+                                }
+                                else
+                                {
+                                    damage = Integer.parseInt(cleansedXpDrop) / 4;
+                                }
+                            }
+                            else
+                            {
+                                damage = Integer.parseInt(cleansedXpDrop) / 4;
+                            }
+                        }
+                        else
+                        {
+                            // :gottago: if barrage
+                            if (client.getLocalPlayer().getAnimation() == 1979)
+                            {
+                                return;
+                            }
+
+                            if (client.getVarbitValue(4696) == 0 && client.getVar(VarPlayer.ATTACK_STYLE) == 3)
+                            {
+                                damage = Integer.parseInt(cleansedXpDrop);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        damage = (int) Math.round((double) Integer.parseInt(cleansedXpDrop) / 5.3333D);
+                    }
+                }
+                // range sprite
+                else if (Arrays.stream(children).skip(1L).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch((id) -> id == 200))
+                {
+                    // :gottago: if chins
+                    if (weaponUsed == 11959)
+                    {
+                        return;
+                    }
+
+                    if (client.getVarbitValue(4696) == 0)
+                    {
+                        damage = (int) ((double) Integer.parseInt(cleansedXpDrop) / 4.0D);
+                    }
+                    else
+                    {
+                        damage = (int) Math.round((double) Integer.parseInt(cleansedXpDrop) / 5.333D);
+                    }
+                }
+
+                addToDamageQueue(damage);
             }
         }
+    }
+
+    /**
+     * should cleanse the XP drop to remove the damage number in parens if the player uses that plugin
+     * @param text the xp drop widget text
+     * @return the base xp drop
+     */
+    private String cleanseXpDrop(String text)
+    {
         if(text.contains("<"))
         {
             if(text.contains("<img=11>"))
@@ -420,211 +579,66 @@ public class DeathIndicatorsPlugin extends Plugin
                 text = text.substring(0, text.indexOf("<"));
             }
         }
-        int damage = -1;
-        int weaponUsed = Objects.requireNonNull(client.getLocalPlayer()).getPlayerComposition().getEquipmentId(KitType.WEAPON);
-        if(client.getLocalPlayer().getAnimation() == 1979) //Barrage
-        {
-            return;
-        }
-        if(Arrays.stream(children).skip(1).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch(id->id == SpriteID.SKILL_MAGIC))
-        {
-            if(weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292 || weaponUsed == 25731)
-            {
-                if(client.getVarbitValue(4696) == 0)
-                {
-                    if (client.getVar(VarPlayer.ATTACK_STYLE) != 3)
-                    {
-                        if(isDamage)
-                        {
-                            damage = Integer.parseInt(text);
-                        }
-                        else
-                        {
-                            damage = (int) (Integer.parseInt(text) / 2.0);
-                        }
-                    }
-                }
-                else
-                {
-                    if(client.getVar(VarPlayer.ATTACK_STYLE) == 3)
-                    {
-                        if(isDamage)
-                        {
-                            damage = (int) (Integer.parseInt(text));
-                        }
-                        else
-                        {
-                            damage = (int) Math.round(Integer.parseInt(text) / 3.6667);
-                        }
-                    }
-                    else
-                    {
-                        if(isDamage)
-                        {
-                            damage = (int) (Integer.parseInt(text));
-                        }
-                        else
-                        {
-                            damage = (int) Math.round(Integer.parseInt(text) / 3.3334);
-                        }
-                    }
-                }
-            }
-        }
-        else if(Arrays.stream(children).skip(1).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch(id->id== SpriteID.SKILL_ATTACK || id == SpriteID.SKILL_STRENGTH || id == SpriteID.SKILL_DEFENCE))
-        {
-            if(weaponUsed == 22325 || weaponUsed == 25739 || weaponUsed == 25736) //Don't apply if weapon is scythe
-            {
-                return;
-            }
-            if(client.getVarbitValue(4696) == 0) //Separate XP Drops
-            {
-                if(weaponUsed == 22323 || weaponUsed == 11905 || weaponUsed == 11907 || weaponUsed == 12899 || weaponUsed == 22292 || weaponUsed == 25731) //Powered Staves
-                {
-                    if(client.getLocalPlayer().getAnimation() == 1979) //Barrage
-                    {
-                        return;
-                    }
-                    if(client.getVarbitValue(4696) == 0) //If separate xp drops, and weapon is mage,
-                    {
-                        if (client.getVar(VarPlayer.ATTACK_STYLE) == 3)
-                        {
-                            if(isDamage)
-                            {
-                                damage = (int) (Integer.parseInt(text));
-                            }
-                            else
-                            {
-                                damage = Integer.parseInt(text);
-                            }
-                        }
-                    }
-                }
-                else if (weaponUsed == 12006)
-                {
-                    if (client.getVar(VarPlayer.ATTACK_STYLE) == 1)
-                    {
-                        if (Arrays.stream(children).skip(1).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch(id -> id == SpriteID.SKILL_ATTACK))
-                        {
-                            if(isDamage)
-                            {
-                                damage = (int) (Integer.parseInt(text));
-                            }
-                            else
-                            {
-                                damage = (int) Math.round(3.0 * Integer.parseInt(text) / 4.0);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if(isDamage)
-                        {
-                            damage = (int) (Integer.parseInt(text));
-                        }
-                        else
-                        {
-                            damage = Integer.parseInt(text) / 4;
-                        }
-                    }
-                } else
-                {
-                    if(isDamage)
-                    {
-                        damage = (int) (Integer.parseInt(text));
-                    }
-                    else
-                    {
-                        damage = Integer.parseInt(text) / 4;
-                    }
-                }
-            }
-            else
-            {
-                if(isDamage)
-                {
-                    damage = (int) (Integer.parseInt(text));
-                }
-                else
-                {
-                    damage = (int) Math.round(Integer.parseInt(text) / 5.3333);
-                }
-            }
-        }
-        else if(Arrays.stream(children).skip(1).filter(Objects::nonNull).mapToInt(Widget::getSpriteId).anyMatch(id->id == SpriteID.SKILL_RANGED))
-        {
-            if(weaponUsed == 11959)
-            {
-                return;
-            }
-            if(client.getVarbitValue(4696) == 0)
-            {
-                if(isDamage)
-                {
-                    damage = (int) (Integer.parseInt(text));
-                }
-                else
-                {
-                    damage = (int) (Integer.parseInt(text) / 4.0);
-                }
-            }
-            else
-            {
-                if(isDamage)
-                {
-                    damage = (int) (Integer.parseInt(text));
-                }
-                else
-                {
-                    damage = (int) Math.round(Integer.parseInt(text) / 5.333);
-                }
-            }
-        }
-        addToDamageQueue(damage);
+        return text;
     }
-
-    private boolean inNylo = false;
 
     @Subscribe
     public void onGameTick(GameTick event)
     {
-        if(!inNylo)
+        if (inRegion(13122))
         {
-            if(inRegion(13122))
+            inNylo = true;
+            partySize = 0;
+            for (int i = 330; i < 335; i++)
             {
-                inNylo = true;
-                partySize = 0;
-                for(int i = 330; i < 335; i++)
+                if (client.getVarcStrValue(i) != null && !client.getVarcStrValue(i).equals(""))
                 {
-                    if(client.getVarcStrValue(i) != null && !client.getVarcStrValue(i).equals(""))
+                    partySize++;
+                }
+            }
+
+            for (NyloQ q : nylos)
+            {
+                if (q.hidden)
+                {
+                    q.hiddenTicks++;
+                    if (q.npc.getHealthRatio() != 0 && q.hiddenTicks > 5)
                     {
-                        partySize++;
+                        q.hiddenTicks = 0;
+                        q.hidden = false;
+                        setHiddenNpc(q.npc, false);
+                        deadNylos.removeIf((x) -> x.equals(q.npc));
                     }
                 }
             }
+
         }
         else
         {
-            if(!inRegion(13122))
+            inNylo = false;
+            if (!hiddenIndices.isEmpty())
             {
-                inNylo = false;
+                List<Integer> newHiddenNpcIndicesList = client.getHiddenNpcIndices();
+                newHiddenNpcIndicesList.removeAll(hiddenIndices);
+                client.setHiddenNpcIndices(newHiddenNpcIndicesList);
+                hiddenIndices.clear();
+            }
+            if (!nylos.isEmpty() || !deadNylos.isEmpty())
+            {
+                nylos.clear();
+                deadNylos.clear();
             }
         }
-
-        for(NyloQ q : nylos)
-        {
-            if(q.hidden)
-            {
-                q.hiddenTicks++;
-                if(q.npc.getHealthRatio() != 0 && q.hiddenTicks > 5)
-                {
-                    q.hiddenTicks = 0;
-                    q.hidden = false;
-                    ClientInterface.setHidden(q.npc, false);
-                    deadNylos.removeIf(x->x.equals(q.npc));
-                }
-            }
-        }
-
     }
+
+    /*@Subscribe
+    private void onClientTick(ClientTick event)
+    {
+        if (client.isMirrored() && !mirrorMode) {
+            overlay.setLayer(OverlayLayer.AFTER_MIRROR);
+            overlayManager.remove(overlay);
+            overlayManager.add(overlay);
+            mirrorMode = true;
+        }
+    }*/
 }

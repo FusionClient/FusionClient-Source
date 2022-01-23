@@ -1,32 +1,41 @@
 package net.runelite.client.plugins.socket.plugins.socketplanks;
 
 import com.google.inject.Provides;
-
-import javax.inject.Inject;
-
-import net.runelite.api.*;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.ItemID;
+import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.*;
+import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.NpcLootReceived;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.StringUtils;
+import org.pf4j.Extension;
 
+import javax.inject.Inject;
+
+@Extension
 @PluginDescriptor(
         name = "Socket - Planks",
         description = "Aint letting these bastards get away with shit",
-        tags = {"cox"},
-	enabledByDefault = false
+        tags = {"cox"}
 )
+@PluginDependency(SocketPlugin.class)
 public class SocketPlanksPlugin extends Plugin {
     @Inject
     private Client client;
@@ -56,6 +65,8 @@ public class SocketPlanksPlugin extends Plugin {
     public int splitTimerDelay = 8;
     public String nameGotPlanks = "";
     public WorldPoint planksDroppedTile = null;
+
+    private boolean mirrorMode;
 
     @Provides
     SocketPlanksConfig provideConfig(ConfigManager configManager) {
@@ -299,4 +310,17 @@ public class SocketPlanksPlugin extends Plugin {
         }
         return seconds;
     }
+
+    /*@Subscribe
+    private void onClientTick(ClientTick event) {
+        if (client.isMirrored() && !mirrorMode) {
+            overlay.setLayer(OverlayLayer.AFTER_MIRROR);
+            overlayManager.remove(overlay);
+            overlayManager.add(overlay);
+            overlayPanel.setLayer(OverlayLayer.AFTER_MIRROR);
+            overlayManager.remove(overlayPanel);
+            overlayManager.add(overlayPanel);
+            mirrorMode = true;
+        }
+    }*/
 }

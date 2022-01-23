@@ -1,6 +1,7 @@
 package net.runelite.client.plugins.socket.plugins.socketbosstimer;
 
 import com.google.common.collect.ImmutableMap;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;

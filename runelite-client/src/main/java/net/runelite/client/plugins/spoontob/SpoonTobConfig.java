@@ -1563,6 +1563,18 @@ public interface SpoonTobConfig extends Config {
     )
     default boolean oldHpThreshold() {return false;}
 
+
+    @ConfigItem(
+            position = 11,
+            keyName = "staminaRequirement",
+            name = "Xarpus - Stamina Requirement",
+            description = "Doesn't let you go to Xarpus if you don't have a stamina potion",
+            section = misc
+    )
+    default boolean staminaRequirement() {
+        return false;
+    }
+
     @ConfigItem(
             position = 66,
             keyName = "verzikTeleportCrystalHelper",

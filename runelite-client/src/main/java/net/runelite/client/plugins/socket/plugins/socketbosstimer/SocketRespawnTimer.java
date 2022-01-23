@@ -1,9 +1,10 @@
 package net.runelite.client.plugins.socket.plugins.socketbosstimer;
 
-import java.awt.image.BufferedImage;
-import java.time.temporal.ChronoUnit;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.overlay.infobox.Timer;
+
+import java.awt.image.BufferedImage;
+import java.time.temporal.ChronoUnit;
 
 class SocketRespawnTimer extends Timer {
 	private final Boss boss;

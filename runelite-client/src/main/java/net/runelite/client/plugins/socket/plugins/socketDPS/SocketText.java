@@ -2,12 +2,13 @@ package net.runelite.client.plugins.socket.plugins.socketDPS;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.commons.text.similarity.JaroWinklerDistance;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class SocketText {
     private static final StringBuilder SB = new StringBuilder(64);

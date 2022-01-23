@@ -1,13 +1,14 @@
 package net.runelite.client.plugins.socket.plugins.socketplanks;
 
-import java.awt.*;
-import javax.inject.Inject;
-
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.Perspective;
 import net.runelite.api.Point;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.*;
+
+import javax.inject.Inject;
+import java.awt.*;
 
 public class SocketPlanksOverlay extends OverlayPanel {
     private final Client client;

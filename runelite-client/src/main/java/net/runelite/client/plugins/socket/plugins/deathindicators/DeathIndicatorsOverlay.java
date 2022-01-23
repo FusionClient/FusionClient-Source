@@ -4,6 +4,7 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 import javax.inject.Inject;
 import java.awt.*;
@@ -13,15 +14,17 @@ public class DeathIndicatorsOverlay extends Overlay
 
     private final DeathIndicatorsConfig config;
     private final DeathIndicatorsPlugin plugin;
+    private final ModelOutlineRenderer modelOutlineRenderer;
 
     @Inject
-    public DeathIndicatorsOverlay(DeathIndicatorsPlugin plugin, DeathIndicatorsConfig config)
+    public DeathIndicatorsOverlay(DeathIndicatorsPlugin plugin, DeathIndicatorsConfig config, ModelOutlineRenderer modelOutlineRenderer)
     {
         setPosition(OverlayPosition.DYNAMIC);
         setPriority(OverlayPriority.HIGH);
         setLayer(OverlayLayer.ABOVE_SCENE);
         this.plugin = plugin;
         this.config = config;
+        this.modelOutlineRenderer = modelOutlineRenderer;
     }
 
     @Override
@@ -31,8 +34,9 @@ public class DeathIndicatorsOverlay extends Overlay
         {
             for (NPC n : plugin.getDeadNylos())
             {
-                Shape objectClickbox = n.getConvexHull();
-                renderPoly(graphics, Color.red, objectClickbox);
+                //Shape objectClickbox = n.getConvexHull();
+                //renderPoly(graphics, Color.red, objectClickbox);
+                this.modelOutlineRenderer.drawOutline(n, 2, Color.red, 4);
             }
         }
         /*if(plugin.getMaidenNPC() != null && config.maidenMarkers())

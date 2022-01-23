@@ -24,14 +24,6 @@
  */
 package net.runelite.client.plugins.socket;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +31,6 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.EventBus;
-import static net.runelite.client.plugins.socket.SocketPlugin.PASSWORD_SALT;
 import net.runelite.client.plugins.socket.hash.AES256;
 import net.runelite.client.plugins.socket.hash.SHA256;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
@@ -49,6 +40,17 @@ import net.runelite.client.plugins.socket.packet.SocketMembersUpdate;
 import net.runelite.client.plugins.socket.packet.SocketPlayerJoin;
 import net.runelite.client.plugins.socket.packet.SocketPlayerLeave;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import static net.runelite.client.plugins.socket.SocketPlugin.PASSWORD_SALT;
 
 /**
  * Represents an instance of a socket connection to the server.
@@ -389,6 +391,10 @@ public class SocketConnection implements Runnable
      */
     private void logMessage(SocketLog level, String message)
     {
+        if (config.disableChatMessages())
+        {
+            return;
+        }
         this.clientThread.invoke(() -> this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", level.getPrefix() + message, null));
     }
 }

@@ -1,20 +1,19 @@
 package net.runelite.client.plugins.socket.plugins.playerindicatorsextended;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import javax.inject.Inject;
-
+import net.runelite.api.Point;
 import net.runelite.api.*;
 import net.runelite.api.clan.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ChatIconManager;
-import net.runelite.client.plugins.playerindicators.PlayerNameLocation;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.OverlayUtil;
 import net.runelite.client.util.Text;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class PlayerIndicatorsExtendedOverlay extends Overlay {
     private final Client client;

@@ -23,5 +23,26 @@ public interface DeathIndicatorsConfig extends Config
     )
     default boolean hideNylo() { return true;}
 
+    /*@ConfigItem(
+            position = 2,
+            keyName = "maidenMarkers",
+            name = "Maiden Markers",
+            description = "Maiden Outline"
+    )
+    default boolean maidenMarkers()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+			position = 3,
+			keyName = "maidenProc",
+			name = "Maiden Procs",
+			description = "Shows when Maiden will proc"
+	)
+	default boolean maidenProc()
+	{
+		return true;
+	}*/
 
 }

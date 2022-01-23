@@ -75,8 +75,8 @@ public interface PlayerStatusConfig extends Config {
             name = "Show Vengeance Active",
             description = "Show players with an active vengeance."
     )
-    default boolean showVengeanceActive() {
-        return false;
+    default vengeMode showVengeanceActive() {
+        return vengeMode.OFF;
     }
 
     @ConfigItem(
@@ -121,6 +121,16 @@ public interface PlayerStatusConfig extends Config {
 
     @ConfigItem(
             position = 9,
+            keyName = "showDivines",
+            name = "Show Divine Potions",
+            description = "Show players who drank a divine potion."
+    )
+    default boolean showDivines() {
+        return false;
+    }
+
+    @ConfigItem(
+            position = 10,
             keyName = "getStatsRefreshRate",
             name = "Stats Refresh Rate",
             description = "The amount of ticks to wait in-between each stat request. I wouldn't touch this variable."
@@ -130,7 +140,7 @@ public interface PlayerStatusConfig extends Config {
     }
 
     @ConfigItem(
-            position = 10,
+            position = 11,
             keyName = "showPlayerHealth",
             name = "Show Team Health",
             description = "Show player's health level."
@@ -140,7 +150,7 @@ public interface PlayerStatusConfig extends Config {
     }
 
     @ConfigItem(
-            position = 11,
+            position = 12,
             keyName = "showPlayerPrayer",
             name = "Show Team Prayer",
             description = "Show player's prayer level."
@@ -150,7 +160,7 @@ public interface PlayerStatusConfig extends Config {
     }
 
     @ConfigItem(
-            position = 12,
+            position = 13,
             keyName = "showPlayerRunEnergy",
             name = "Show Team Run Energy",
             description = "Show player's run energy level."
@@ -160,7 +170,7 @@ public interface PlayerStatusConfig extends Config {
     }
 
     @ConfigItem(
-            position = 13,
+            position = 14,
             keyName = "showPlayerSpecial",
             name = "Show Team Special",
             description = "Show player's special attack bar level."
@@ -170,7 +180,15 @@ public interface PlayerStatusConfig extends Config {
     }
 
     @ConfigItem(
-            position = 14,
+            position = 15,
+            keyName = "showPlayerWhiteList",
+            name = "Status Whitelist",
+            description = "List the players you want to have displayed on screen. <br>Seperate names with a comma and leave box empty to display everyone in socket."
+    )
+    default String showPlayerWhiteList() {return "";}
+
+    @ConfigItem(
+            position = 16,
             keyName = "showSpecXfer",
             name = "Show Energy Transfer",
             description = "Show players who can use energy transfer."
@@ -180,7 +198,7 @@ public interface PlayerStatusConfig extends Config {
     }
 
     @ConfigItem(
-            position = 15,
+            position = 17,
             keyName = "specXferList",
             name = "Energy Transfer List",
             description = "List for who you want the energy transfer icon to show on."
@@ -190,7 +208,7 @@ public interface PlayerStatusConfig extends Config {
     @Range(max = 100, min = 0)
     @Units("%")
     @ConfigItem(
-            position = 17,
+            position = 18,
             keyName = "specThreshold",
             name = "Spec Threshold",
             description = "The % or under at which you want the energy transfer icon to show on people in socket."
@@ -201,7 +219,10 @@ public interface PlayerStatusConfig extends Config {
     }
 
     enum xferIconMode {
-        OFF, LIST, ALL;
+        OFF, LIST, ALL
+    }
 
+    enum vengeMode {
+        OFF, SOCKET, ALL
     }
 }

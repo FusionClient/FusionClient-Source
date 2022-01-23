@@ -1,14 +1,8 @@
 package net.runelite.client.plugins.socket.plugins.socketbosstimer;
 
 import com.google.inject.Provides;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import javax.inject.Inject;
-
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.NPC;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.client.Notifier;
@@ -17,22 +11,33 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.ui.overlay.infobox.InfoBox;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ColorUtil;
+import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+
+@Extension
 @PluginDescriptor(
-	name = "Socket - Boss Timers",
-	description = "Show boss spawn timer overlays. Zhuri made the multiple worlds possible. I just made it socket.",
-	tags = {"combat", "pve", "overlay", "spawn"},
-	enabledByDefault = false
+		name = "Socket - Boss Timers",
+		description = "Show boss spawn timer overlays.",
+		tags = {"combat", "pve", "overlay", "spawn"}
 )
+@PluginDependency(SocketPlugin.class)
 public class SocketBossTimersPlugin extends Plugin {
 	private static final Logger log = LoggerFactory.getLogger(SocketBossTimersPlugin.class);
 

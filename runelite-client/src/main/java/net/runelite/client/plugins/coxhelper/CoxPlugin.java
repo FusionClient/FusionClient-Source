@@ -70,7 +70,8 @@ import org.pf4j.Extension;
 	name = "Cox Helper",
 	enabledByDefault = false,
 	description = "All-in-one plugin for cox (OPENRS Version)",
-	tags = {"CoX", "chamber", "xeric", "helper"}
+	tags = {"CoX", "chamber", "xeric", "helper"},
+	hidden = true
 
 )
 @Slf4j

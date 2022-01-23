@@ -1,18 +1,20 @@
 package net.runelite.client.plugins.socket.plugins.socketdefence;
 
 import com.google.common.collect.ImmutableSet;
-import net.runelite.api.Point;
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.NPC;
+import net.runelite.api.NPCComposition;
+import net.runelite.api.Perspective;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
-
-import net.runelite.client.plugins.socket.plugins.ModelOutlineRenderer;
-import net.runelite.client.ui.overlay.*;
+import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.ui.overlay.OverlayPanel;
+import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.OverlayPriority;
+import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.*;
-import java.util.Objects;
 import java.util.Set;
 
 @Singleton
@@ -37,52 +39,57 @@ public class SocketDefenceOverlay extends OverlayPanel
     }
 
     @Override
-    public Dimension render(Graphics2D graphics)
-    {
+    public Dimension render(Graphics2D graphics){
         if (config.corpChally() != SocketDefenceConfig.CorpTileMode.OFF) {
-            for (NPC npc : this.client.getNpcs()) {
-                if(npc.getName() != null && npc.getName().toLowerCase().equals("corporeal beast")) {
+            for (NPC npc : client.getNpcs()) {
+                if (npc.getName() != null && npc.getName().equalsIgnoreCase("corporeal beast")) {
                     Color color = Color.RED;
 
                     if (plugin.bossDef >= 0 && plugin.bossDef <= 10) {
                         color = Color.GREEN;
                     }
+                    
                     if (config.corpChally() == SocketDefenceConfig.CorpTileMode.AREA) {
                         renderAreaOverlay(graphics, npc, color);
-                        continue;
-                    }
-                    if (this.config.corpChally() == SocketDefenceConfig.CorpTileMode.TILE) {
+                    } else if (config.corpChally() == SocketDefenceConfig.CorpTileMode.TILE) {
                         NPCComposition npcComp = npc.getComposition();
                         int size = npcComp.getSize();
                         LocalPoint lp = npc.getLocalLocation();
-                        Polygon tilePoly = Perspective.getCanvasTileAreaPoly(this.client, lp, size);
+                        Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, lp, size);
                         renderPoly(graphics, color, tilePoly);
-                        continue;
-                    }
-                    if (this.config.corpChally() == SocketDefenceConfig.CorpTileMode.HULL) {
+                    } else if (config.corpChally() == SocketDefenceConfig.CorpTileMode.HULL) {
                         Shape objectClickbox = npc.getConvexHull();
                         if (objectClickbox != null) {
                             graphics.setStroke(new BasicStroke(config.corpChallyThicc()));
                             graphics.setColor(color);
                             graphics.draw(objectClickbox);
                         }
-                        continue;
-                    }
-                    if (this.config.corpChally() == SocketDefenceConfig.CorpTileMode.TRUE_LOCATION) {
+                    } else if (config.corpChally() == SocketDefenceConfig.CorpTileMode.TRUE_LOCATION) {
                         int size = 1;
                         NPCComposition composition = npc.getTransformedComposition();
                         if (composition != null)
                             size = composition.getSize();
-                        LocalPoint lp = LocalPoint.fromWorld(this.client, npc.getWorldLocation());
+                        LocalPoint lp = LocalPoint.fromWorld(client, npc.getWorldLocation());
                         if (lp != null) {
                             lp = new LocalPoint(lp.getX() + size * 128 / 2 - 64, lp.getY() + size * 128 / 2 - 64);
-                            Polygon tilePoly = Perspective.getCanvasTileAreaPoly(this.client, lp, size);
+                            Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, lp, size);
                             renderPoly(graphics, color, tilePoly);
                         }
-                        continue;
+                    }else if (config.corpChally() == SocketDefenceConfig.CorpTileMode.OUTLINE)
+                        modelOutlineRenderer.drawOutline(npc, config.corpChallyThicc(), color, config.corpGlow());
+                }
+            }
+        }
+
+        if (config.vulnOutline() && plugin.vulnHit) {
+            for (NPC npc : client.getNpcs()) {
+                if (npc.getName() != null && npc.getName().equalsIgnoreCase(plugin.boss)) {
+                    Shape objectClickbox = npc.getConvexHull();
+                    if (objectClickbox != null) {
+                        graphics.setStroke(new BasicStroke(2));
+                        graphics.setColor(config.vulnColor());
+                        graphics.draw(objectClickbox);
                     }
-                    if (this.config.corpChally() == SocketDefenceConfig.CorpTileMode.OUTLINE)
-                        this.modelOutlineRenderer.drawOutline((Actor) npc, 2, color);
                 }
             }
         }

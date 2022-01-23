@@ -45,6 +45,7 @@ public interface SocketHealingConfig extends Config {
         return 75;
     }
 
+    @Alpha
     @ConfigItem(position = 8, keyName = "greenZoneColor", name = "High Hp Color", description = "Sets the color the high hp is set to")
     default Color greenZoneColor() {
         return Color.GREEN;
@@ -56,11 +57,13 @@ public interface SocketHealingConfig extends Config {
         return 50;
     }
 
+    @Alpha
     @ConfigItem(position = 10, keyName = "orangeZoneColor", name = "Middle Hp Color", description = "Sets the color the middle hp range is set to")
     default Color orangeZoneColor() {
         return Color.ORANGE;
     }
 
+    @Alpha
     @ConfigItem(position = 11, keyName = "redZoneColor", name = "Low Hp Color", description = "Sets the color the lower hp range is set to")
     default Color redZoneColor() { return Color.RED; }
 
@@ -70,38 +73,71 @@ public interface SocketHealingConfig extends Config {
         return 255;
     }
 
-    @ConfigItem(position = 13, keyName = "highlightHull", name = "Highlight Hull", description = "Configures whether or not selected players should be highlighted by hull")
+    @Range(max = 5, min = 1)
+    @ConfigItem(position = 13, keyName = "hpThiCC", name = "Highlight Width", description = "Sets the width for the highlight styles. (Max 5, Min 1)")
+    default int hpThiCC() {
+        return 2;
+    }
+
+    @ConfigItem(position = 14, keyName = "highlightHull", name = "Highlight Hull", description = "Configures whether or not selected players should be highlighted by hull", disabledBy = "highlightOutline")
     default boolean highlightHull() {
         return true;
     }
 
-    @ConfigItem(position = 14, keyName = "highlightOutline", name = "Highlight Outline", description = "Configures whether or not selected players outlines should be highlighted")
-    default boolean highlightOutline() {
+    @ConfigItem(position = 15, keyName = "highlightOutline", name = "Highlight Outline", description = "Configures whether or not selected players outlines should be highlighted", disabledBy = "highlightHull")
+    default boolean highlightOutline() {return false;}
+
+    @Range(max = 4, min = 0)
+    @ConfigItem(position = 16, keyName = "glow", name = "Outline Glow", description = "Sets the glow for the outline highlight style. (Max 4, Min 0)")
+    default int glow() {
+        return 4;
+    }
+
+    @ConfigItem(position = 17, keyName = "separateOpactiy", name = "Use Color Opacity", description = "Toggles whether each hp threshold has a different opacity set by the color, or if they all use the Highlight Opacity config")
+    default boolean separateOpactiy() {
         return false;
     }
 
-    @ConfigItem(position = 15, keyName = "displayHealth", name = "Display Health On All Players*", description = "Turns off the hp displayed. Will still allow you to highlight custom players.")
+    @ConfigItem(position = 18, keyName = "displayHealth", name = "Display Health On All Players*", description = "Turns off the hp displayed. Will still allow you to highlight custom players.")
     default boolean displayHealth() {
         return true;
     }
 
-    @ConfigItem(
-            position = 16,
-            keyName = "highlightPlayerNames",
-            name = "Highlighted Player Names",
-            description = "Names listed here will be added to hull highlight list"
-    )
+    @ConfigItem(position = 19, keyName = "highlightPlayerNames", name = "Highlighted Player Names", description = "Names listed here will be added to hull highlight list")
     default String highlightedPlayerNames() { return ""; }
 
-    @ConfigItem(
-            position = 17,
-            keyName = "hpPlayerNames",
-            name = "Display Health On Players",
-            description = "Names listed here will be added to the display hp list"
-    )
+    @ConfigItem(position = 20, keyName = "hpPlayerNames", name = "Display Health On Players", description = "Names listed here will be added to the display hp list")
     default String hpPlayerNames() { return ""; }
 
-    public enum SocketFontType {
+    @ConfigItem(position = 21, keyName = "hpMenu", name = "Show Hp In Menu", description = "Shows the amount of hp players have in the right click menu")
+    default boolean hpMenu() { return false; }
+
+    @ConfigItem(position = 22, keyName = "showName", name = "Show Name in Overlay", description = "Shows the name of the player next to their hp")
+    default boolean showName() { return false; }
+
+    @ConfigItem(position = 23, keyName = "dontShowHp", name = "Dont Show HP Threshold", description = "Don't display overlay if their hp is at or above a threshold")
+    default boolean dontShowHp() { return false; }
+
+    @Range(min = 0, max = 121)
+    @ConfigItem(position = 24, keyName = "dontShowHpThreshold", name = "HP Threshold", description = "Set the threshold to not display hp overlay at",
+            hidden = true, unhide = "dontShowHp")
+    default int dontShowHpThreshold() { return 100; }
+
+    @ConfigItem(position = 25, keyName = "dontShowHpMode", name = "Dont Show HP Mode", description = "Don't display overlay if their hp is at or above a threshold",
+            hidden = true, unhide = "dontShowHp")
+    default DontShowHpMode dontShowHpMode() { return DontShowHpMode.BOTH; }
+
+    @ConfigItem(position = 26, keyName = "setHighestPriority", name = "Set Highest Priority", description = "Displays overlays above widgets(Bank, inventory, teleport menus)<br>Must turn plugin off and on to work")
+    default boolean setHighestPriority() { return false; }
+
+    /*@ConfigItem(position = 25, keyName = "healOtherMES", name = "Heal Other MES", description = "Prioritizes the lowest hp player in socket for heal other")
+    default boolean healOtherMES() { return false; }*/
+
+    enum SocketFontType {
         REGULAR, BOLD, SMALL, CUSTOM;
+    }
+
+    enum DontShowHpMode {
+        OUTLINE, TEXT, BOTH
     }
 }

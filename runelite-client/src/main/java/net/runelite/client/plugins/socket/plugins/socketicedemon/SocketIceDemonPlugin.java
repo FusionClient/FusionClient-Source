@@ -1,10 +1,6 @@
 package net.runelite.client.plugins.socket.plugins.socketicedemon;
 
 import com.google.inject.Provides;
-
-import java.util.*;
-import javax.inject.Inject;
-
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
@@ -14,21 +10,28 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.socket.SocketPlugin;
 import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.plugins.socket.plugins.socketicedemon.util.Raids1Util;
 import net.runelite.client.ui.overlay.OverlayManager;
+import org.pf4j.Extension;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+@Extension
 @PluginDescriptor(
         name = "Socket - Ice Demon",
         description = "Socket ice demon",
-        tags = {"xeric", "iceDemon", "chambers", "cox", "socket"},
-	enabledByDefault = false
-)
+        tags = {"xeric", "iceDemon", "chambers", "cox", "socket"}
+        )
+@PluginDependency(SocketPlugin.class)
 public class SocketIceDemonPlugin extends Plugin {
     @Inject
     private Client client;
@@ -89,6 +92,8 @@ public class SocketIceDemonPlugin extends Plugin {
     public SocketIceDemonPlugin() {
         this.roomtype = -1;
     }
+
+	private boolean mirrorMode;
 
     @Provides
     SocketIceDemonConfig getConfig(ConfigManager configManager) {
@@ -478,5 +483,15 @@ public class SocketIceDemonPlugin extends Plugin {
             }
         }
     }
+
+	/*@Subscribe
+	private void onClientTick(ClientTick event) {
+		if (client.isMirrored() && !mirrorMode) {
+			overlay.setLayer(OverlayLayer.AFTER_MIRROR);
+			panelOverlay.setLayer(OverlayLayer.AFTER_MIRROR);
+			mirrorMode = true;
+		}
+	}*/
+
 }
 

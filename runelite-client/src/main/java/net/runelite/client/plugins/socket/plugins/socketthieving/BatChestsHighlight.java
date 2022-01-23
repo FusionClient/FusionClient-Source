@@ -1,16 +1,15 @@
 package net.runelite.client.plugins.socket.plugins.socketthieving;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.util.Arrays;
-import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.Tile;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.util.Arrays;
 
 public class BatChestsHighlight extends Overlay {
     private Client client;
