@@ -125,7 +125,7 @@ public class OneClickThievingPlugin extends Plugin {
 
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event) {
-		if (this.config.clickOverride() && event.getMenuOption().equals("One Click Pickpocket")) {
+		if (this.config.clickOverride() && event.getMenuOption().equals("Pickpocket")) {
 			NPC npc = (NPC)(new NPCQuery()).idEquals(new int[]{this.config.npcID()}).result(this.client).nearestTo(this.client.getLocalPlayer());
 			if (npc == null) {
 				this.sendGameMessage("Npc not found please change the id");
