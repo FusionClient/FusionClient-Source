@@ -145,7 +145,6 @@ public class HydraExtraOverlay extends Overlay {
                     if (hpLeft <= 83) {
                         textColor = Color.RED;
                     }
-                    System.out.println(hpLeft);
                     String text = String.valueOf(hpLeft);
                     net.runelite.api.Point textLoc = plugin.hydra.getNpc().getCanvasTextLocation(graphics, text, 75);
                     if (textLoc != null) {
