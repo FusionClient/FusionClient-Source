@@ -30,6 +30,7 @@ plugins {
 repositories {
     mavenCentral()
     maven(url = "https://raw.githubusercontent.com/casesos/hosting/master")
+    maven(url = "https://raw.githubusercontent.com/open-osrs/hosting/master")
 }
 
 dependencies {
