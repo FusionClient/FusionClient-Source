@@ -272,8 +272,14 @@ public interface SpoonNexConfig extends Config {
 	)
 	default boolean forWhy(){ return false; }
 
-
-
+	/*@ConfigItem(
+			keyName = "spellbookCheck",
+			name = "Are you on Arceuus",
+			description = "Dumb dumb",
+			position = 99
+	)
+	default boolean spellbookCheck(){ return false; }
+*/
 	enum MageHighlightMode {
 		OFF, ARROW, TILE, BOTH
 	}

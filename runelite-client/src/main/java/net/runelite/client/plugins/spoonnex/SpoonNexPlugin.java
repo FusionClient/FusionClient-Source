@@ -7,6 +7,10 @@ import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.api.queries.NPCQuery;
+import net.runelite.api.util.Text;
+import net.runelite.api.widgets.WidgetID;
+import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.WidgetType;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -520,6 +524,20 @@ public class SpoonNexPlugin extends Plugin {
 		return Altar != null && Banker == null;
 	}
 
+/*	@Subscribe
+	public void onMenuEntryAdded(MenuEntryAdded event) {
+
+		if (client.getWidget(WidgetID.MAGIC_TAB = 64) == null)
+			return;
+		String target = Text.removeTags(event.getTarget()).toLowerCase();
+		MenuEntry[] entries = client.getMenuEntries();
+		if (!config.spellbookCheck() || !target.contains("Ancient Barrier") || client.getWidget(WidgetInfo.FIXED_VIEWPORT_MAGIC_TAB).contains(1711)
+				|| client.getWidget(WidgetInfo.FIXED_VIEWPORT_MAGIC_TAB).contains(1711) ) {
+			return;
+		} client.setMenuEntries(Arrays.copyOf(entries, entries.length - 1));
+	}
+
+*/
 
 	public String ticksToTime(int ticks) {
 		int min = ticks / 100;

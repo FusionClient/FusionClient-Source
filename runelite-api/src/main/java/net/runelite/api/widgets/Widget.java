@@ -1095,4 +1095,6 @@ public interface Widget
 	 * Sets the Y padding between widgets, mainly for inventory items
 	 */
 	void setPaddingY(int val);
+//
+//	boolean contains(int i);
 }
