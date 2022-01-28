@@ -44,6 +44,19 @@ public class VerzikOverlay extends RoomOverlay {
                 }
             }
 
+            if (verzik.verzikPhase == Verzik.Phase.PHASE1 && config.deletePillars()) {
+                for (WorldPoint pillar : this.verzik.pillarLocations) {
+                    int size = 1;
+                    int thick_size = 1;
+                    size = 3 * thick_size;
+                    Polygon tilePoly;
+                    LocalPoint lp;
+                    if ((lp = LocalPoint.fromWorld(client, pillar.dx(0).dy(0))) != null
+                            && (tilePoly = getCanvasTileAreaPoly(client, lp = new LocalPoint(lp.getX() - thick_size * 128, lp.getY() - thick_size * 128), size, false)) != null)
+                        renderPoly(graphics, (verzik.getVerzikTicksUntilAttack() == 13) ? Color.GREEN : Color.orange, tilePoly);
+                }
+            }
+
             if (config.verzikMelee() != SpoonTobConfig.meleeTileMode.OFF) {
                 int size = 1;
                 NPCComposition composition = verzik.getVerzikNPC().getTransformedComposition();
@@ -65,35 +78,35 @@ public class VerzikOverlay extends RoomOverlay {
                     }
                 }
             }
-			
-			if(config.verzikTankTarget() && verzik.verzikPhase == Verzik.Phase.PHASE3){
-				if(verzik.getVerzikNPC() != null && verzik.getVerzikNPC().getInteracting() != null){
-					Actor actor = verzik.getVerzikNPC().getInteracting();
+
+            if(config.verzikTankTarget() && verzik.verzikPhase == Verzik.Phase.PHASE3){
+                if(verzik.getVerzikNPC() != null && verzik.getVerzikNPC().getInteracting() != null){
+                    Actor actor = verzik.getVerzikNPC().getInteracting();
                     Polygon tilePoly = getCanvasTileAreaPoly(client, actor.getLocalLocation(), 1, false);
                     if (tilePoly != null) {
                         renderPoly(graphics, config.p3AggroColor(), tilePoly);
                     }
-				}
-			}
+                }
+            }
 
             if (config.showVerzikNados() != SpoonTobConfig.nadoMode.OFF && verzik.verzikPhase == Verzik.Phase.PHASE3) {
-				if (config.showVerzikNados() == SpoonTobConfig.nadoMode.ALL) {
-					for(NPC nado : client.getNpcs()){
+                if (config.showVerzikNados() == SpoonTobConfig.nadoMode.ALL) {
+                    for(NPC nado : client.getNpcs()){
                         if (Verzik.NADO_IDS.contains(nado.getId())){
-							if (config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TILE){
-								renderNpcOverlay(graphics, nado, config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
-							} else if (config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TRUE_LOCATION){
-								renderNpcTLOverlay(graphics, nado, config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
-							}
-						}
-					}
-				}else if (config.showVerzikNados() == SpoonTobConfig.nadoMode.PERSONAL && verzik.getPersonalNado() != null) {
-					if(config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TILE){
-						renderNpcOverlay(graphics, verzik.getPersonalNado(), config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
-					}else if(config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TRUE_LOCATION){
-						renderNpcTLOverlay(graphics, verzik.getPersonalNado(), config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
-					}
-				}
+                            if (config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TILE){
+                                renderNpcOverlay(graphics, nado, config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
+                            } else if (config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TRUE_LOCATION){
+                                renderNpcTLOverlay(graphics, nado, config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
+                            }
+                        }
+                    }
+                }else if (config.showVerzikNados() == SpoonTobConfig.nadoMode.PERSONAL && verzik.getPersonalNado() != null) {
+                    if(config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TILE){
+                        renderNpcOverlay(graphics, verzik.getPersonalNado(), config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
+                    }else if(config.showVerzikNadoStyle() == SpoonTobConfig.nadoStyle.TRUE_LOCATION){
+                        renderNpcTLOverlay(graphics, verzik.getPersonalNado(), config.showVerzikNadoColor(), 2, config.showVerzikNadoColor().getAlpha(), config.verzikNadoOpacity());
+                    }
+                }
             }
 
             if(config.raveNados() != SpoonTobConfig.raveNadoMode.OFF && verzik.verzikPhase == Verzik.Phase.PHASE3 && verzik.raveNadoColors.size() > 0){
@@ -122,7 +135,7 @@ public class VerzikOverlay extends RoomOverlay {
                         graphics.fillPolygon(poly);
                     }
                 }
-			}
+            }
 
             if ((config.showVerzikYellows() == SpoonTobConfig.verzikYellowsMode.YELLOW
                     || (config.showVerzikYellows() == SpoonTobConfig.verzikYellowsMode.GROUPS && verzik.yellowGroups.size() == 0)) && verzik.yellowsOut) {
@@ -153,8 +166,8 @@ public class VerzikOverlay extends RoomOverlay {
                     }
                 }
             }
-			
-			if (config.showVerzikRocks() && verzik.verzikPhase == Verzik.Phase.PHASE1) {
+
+            if (config.showVerzikRocks() && verzik.verzikPhase == Verzik.Phase.PHASE1) {
                 for (GraphicsObject object : client.getGraphicsObjects()) {
                     if (object.getId() == 1436) {
                         LocalPoint lp = object.getLocation();
@@ -371,8 +384,8 @@ public class VerzikOverlay extends RoomOverlay {
                     } else {
                         size = 3;
                     }
-                Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, interacting.getLocalLocation(), size);
-                renderPolygon(graphics, tilePoly, Color.GREEN);
+                    Polygon tilePoly = Perspective.getCanvasTileAreaPoly(client, interacting.getLocalLocation(), size);
+                    renderPolygon(graphics, tilePoly, Color.GREEN);
                 }
 
                 if(config.displayGreenBallTicks()) {
@@ -414,13 +427,13 @@ public class VerzikOverlay extends RoomOverlay {
             graphics.fill(polygon);
         }
     }
-	
-	private void renderTargetOverlay(Graphics2D graphics, NPC actor, Color color){
-		Shape objectClickbox = actor.getConvexHull();
 
-		if (objectClickbox != null){
-			graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 50));
-			graphics.fill(actor.getConvexHull());
-		}
-	}
+    private void renderTargetOverlay(Graphics2D graphics, NPC actor, Color color){
+        Shape objectClickbox = actor.getConvexHull();
+
+        if (objectClickbox != null){
+            graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 50));
+            graphics.fill(actor.getConvexHull());
+        }
+    }
 }

@@ -343,7 +343,8 @@ public class Sotetseg extends Room {
             return;
         String target = Text.removeTags(event.getTarget()).toLowerCase();
         MenuEntry[] entries = client.getMenuEntries();
-        if (config.staminaRequirement() && target.contains("formidable passage") && !client.getItemContainer(InventoryID.INVENTORY).contains(12625))
+        if (((config.stamReq() == SpoonTobConfig.stamReqMode.XARPUS || config.stamReq() == SpoonTobConfig.stamReqMode.BOTH) && config.stamReq() != SpoonTobConfig.stamReqMode.OFF)
+                && target.contains("formidable passage") && !client.getItemContainer(InventoryID.INVENTORY).contains(12625))
             client.setMenuEntries(Arrays.copyOf(entries, entries.length - 1));
     }
 

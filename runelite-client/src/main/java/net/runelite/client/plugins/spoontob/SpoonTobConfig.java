@@ -299,8 +299,8 @@ public interface SpoonTobConfig extends Config {
             description = "When hovering over Maiden's clickbox it will display her max hits for:<br>No Prayer<br>Prayer<br>Elysian Spirit Shield",
             section = maiden
     )
-    default boolean maidenMaxHit() {
-        return false;
+    default MaidenMaxHitTTMode maidenMaxHit() {
+        return MaidenMaxHitTTMode.OFF;
     }
 
     @ConfigItem(
@@ -465,8 +465,8 @@ public interface SpoonTobConfig extends Config {
     default int bloatStompWidth() {
         return 1;
     }
-	
-	@ConfigItem(
+
+    @ConfigItem(
             position = 12,
             keyName = "bloatReverseNotifier",
             name = "Bloat Turn",
@@ -1043,7 +1043,7 @@ public interface SpoonTobConfig extends Config {
         return false;
     }
 
-	@Range(max = 100)
+    @Range(max = 100)
     @ConfigItem(
             position = 13,
             keyName = "sheeshVolume",
@@ -1116,7 +1116,7 @@ public interface SpoonTobConfig extends Config {
         return new Color(106, 61, 255);
     }
 
-	@Alpha
+    @Alpha
     @ConfigItem(
             position = 6,
             keyName = "p3AggroColor",
@@ -1127,8 +1127,8 @@ public interface SpoonTobConfig extends Config {
     default Color p3AggroColor() {
         return Color.RED;
     }
-	
-	@ConfigItem(
+
+    @ConfigItem(
             position = 7,
             keyName = "verzikTankTarget",
             name = "Verzik Tank Target",
@@ -1274,8 +1274,8 @@ public interface SpoonTobConfig extends Config {
     default nadoMode showVerzikNados() {
         return nadoMode.OFF;
     }
-	
-	@ConfigItem(
+
+    @ConfigItem(
             position = 21,
             keyName = "showVerzikNadoStyle",
             name = "Tornado Style",
@@ -1349,8 +1349,8 @@ public interface SpoonTobConfig extends Config {
     default int verzikRangeAttacksFill() {
         return 20;
     }
-	
-	@ConfigItem(
+
+    @ConfigItem(
             position = 28,
             keyName = "showVerzikRocks",
             name = "Show HM Verzik Rocks",
@@ -1446,6 +1446,18 @@ public interface SpoonTobConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            position = 37,
+            keyName = "deletePillars",
+            name = "Delete Pillars",
+            description = "Delete the pillars at verzik, replacing them with tile outlines <br> " +
+                    "Turns green on tick 13",
+            section = verzik
+    )
+    default boolean deletePillars() {
+        return false;
+    }
+
     //------------------------------------------------------------//
     // Misc
     //------------------------------------------------------------//
@@ -1534,8 +1546,8 @@ public interface SpoonTobConfig extends Config {
 
     @ConfigItem(
             position = 8,
-            keyName = "swapTobBuys", 
-            name = "Swap value with buy 1", 
+            keyName = "swapTobBuys",
+            name = "Swap value with buy 1",
             description = "Swap value and buy 1 on tob chest items",
             section = misc
     )
@@ -1555,6 +1567,17 @@ public interface SpoonTobConfig extends Config {
 
     @ConfigItem(
             position = 10,
+            keyName = "stamReq",
+            name = "Stamina Requirement",
+            description = "Doesn't let you go to the next room if you don't have a stamina potion",
+            section = misc
+    )
+    default stamReqMode stamReq() {
+        return stamReqMode.OFF;
+    }
+
+    @ConfigItem(
+            position = 11,
             keyName = "oldHpThreshold",
             name = "Old HP Colors",
             description = "Changes HP overlays from a gradual change to set colors <br>" +
@@ -1562,18 +1585,6 @@ public interface SpoonTobConfig extends Config {
             section = misc
     )
     default boolean oldHpThreshold() {return false;}
-
-
-    @ConfigItem(
-            position = 11,
-            keyName = "staminaRequirement",
-            name = "Xarpus - Stamina Requirement",
-            description = "Doesn't let you go to Xarpus if you don't have a stamina potion",
-            section = misc
-    )
-    default boolean staminaRequirement() {
-        return false;
-    }
 
     @ConfigItem(
             position = 66,
@@ -1615,8 +1626,8 @@ public interface SpoonTobConfig extends Config {
     default boolean fuckBluelite() {
         return false;
     }
-	
-	@ConfigItem(
+
+    @ConfigItem(
             keyName = "raveNylo",
             name = "Rave Nylos",
             description = "Fucking crab rave",
@@ -1626,8 +1637,8 @@ public interface SpoonTobConfig extends Config {
     default boolean raveNylo() {
         return false;
     }
-	
-	@ConfigItem(
+
+    @ConfigItem(
             keyName = "raveNados",
             name = "Rave Nados",
             description = "Just incase you cant fucking see it",
@@ -1727,6 +1738,27 @@ public interface SpoonTobConfig extends Config {
 
     enum maidenBloodsMode{
         OFF, CAST, ATTACK, BOTH
+    }
+
+    public enum MaidenMaxHitTTMode {
+        OFF("Off"),
+        REGULAR("Regular"),
+        ELY("Elysian"),
+        BOTH("Both");
+
+        private final String name;
+
+        public String toString() {
+            return this.name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        private MaidenMaxHitTTMode(String name) {
+            this.name = name;
+        }
     }
 
     public enum MaidenMaxHit {
@@ -1902,6 +1934,10 @@ public interface SpoonTobConfig extends Config {
 
     enum instancerTimerMode {
         OFF, OVERHEAD, OVERLAY
+    }
+
+    enum stamReqMode {
+        OFF, NYLO, XARPUS, BOTH
     }
 
     enum lootReminderMode {
