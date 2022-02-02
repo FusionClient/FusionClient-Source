@@ -28,7 +28,7 @@ import java.util.*;
 
 @Extension
 @PluginDescriptor(
-		name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Nex",
+		name = "[F] Nex",
 		description = "<html><font color=#FFDD00>Made by: SpoonLite",
 		tags = {"Nex", "gwd", "Spoon", "Ancient"},
 		enabledByDefault = false

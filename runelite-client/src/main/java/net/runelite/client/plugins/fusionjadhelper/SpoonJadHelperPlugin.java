@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 @PluginDescriptor(
         name = "[F] Jad Helper",
-        description = "Help",
+        description = "<html><font color=#FFDD00>Help",
         tags = {"six jad", "spoon", "jad", "fight caves", "inferno"},
         enabledByDefault = false)
 

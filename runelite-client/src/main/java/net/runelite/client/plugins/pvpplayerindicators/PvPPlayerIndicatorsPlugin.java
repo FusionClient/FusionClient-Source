@@ -48,7 +48,7 @@ import static net.runelite.api.FriendsChatRank.UNRANKED;
 import static net.runelite.api.MenuAction.MENU_ACTION_DEPRIORITIZE_OFFSET;
 
 @PluginDescriptor(
-		name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Player Indicators",
+		name = "[F] Player Indicators",
 		description = "Highlight players on-screen and/or on the minimap.<br><html><font color=#FFDD00>Credit: SpoonLite/Steroid",
 		tags = {"highlight", "minimap", "overlay", "players"},
 		conflicts = "Player Indicators"

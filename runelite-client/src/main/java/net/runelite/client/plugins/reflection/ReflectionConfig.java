@@ -85,7 +85,7 @@ public interface ReflectionConfig extends Config {
             position = 3
     )
     default Color pluginSwitcherOnColor() {
-        return new Color(37, 197, 79);
+        return new Color(243, 255, 0);
     }
 
     @Alpha
@@ -95,7 +95,6 @@ public interface ReflectionConfig extends Config {
             description = "Default is Fusion color",
             position = 4
     )
-    default Color pluginStarOnColor() {
-        return new Color(37, 197, 79);
+    default Color pluginStarOnColor() { return new Color(243, 255, 0);
     }
 }

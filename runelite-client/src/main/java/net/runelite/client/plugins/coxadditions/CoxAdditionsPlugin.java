@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.*;
 
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Cox Additions",
+	name = "[F] Cox Additions",
 	description = "Additional plugins for the Chambers of Xeric <br><html><font color=#FFDD00> Made by: SpoonLite",
 	tags = {"xeric", "olm", "chambers", "cox"},
 	enabledByDefault = false

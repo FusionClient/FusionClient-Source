@@ -43,7 +43,7 @@ import javax.inject.Inject;
 @Extension
 @Slf4j
 @PluginDescriptor(
-        name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Low Detail",
+        name = "[F] Low Detail",
         description = "Turns off at bloat",
         tags = {"memory", "usage", "ground", "decorations", "bloat"},
         enabledByDefault = false

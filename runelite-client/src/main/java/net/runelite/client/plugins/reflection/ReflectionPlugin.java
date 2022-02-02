@@ -62,7 +62,7 @@ import java.util.List;
 
 @Extension
 @PluginDescriptor(
-        name = "Reflection",
+        name = "[F] Reflection",
         description = "Changes the client name, image, and color scheme. By default will be Fusion",
         tags = {"config", "rewriter", "reflection"},
         enabledByDefault = false

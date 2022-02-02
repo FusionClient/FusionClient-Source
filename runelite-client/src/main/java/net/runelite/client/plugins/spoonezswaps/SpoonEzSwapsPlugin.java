@@ -46,7 +46,7 @@ import static com.google.common.base.Predicates.equalTo;
 
 @Extension
 @PluginDescriptor(
-		name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Ez Swaps",
+		name = "[F] Ez Swaps",
 		enabledByDefault = false,
 		description = "A shit ton of menu entry swapper stuff.",
 		tags = {"pickpocket", "equipped items", "inventory", "items", "equip", "construction", "spoon", "ez", "skilling", "pvm", "custom", "swapper"}
