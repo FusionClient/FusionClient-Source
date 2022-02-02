@@ -25,7 +25,7 @@ public interface PlayerStatusExtendedConfig extends Config {
 
     @ConfigItem(keyName = "exemptPl", name = "Exempt players", description = "Names of players whose leech messages will be ignored", position = 4)
     default String ePlayers() {
-        return "McNeill, Azotize, Kourend";
+        return "CU inthe NT";
     }
 
     public enum Where {

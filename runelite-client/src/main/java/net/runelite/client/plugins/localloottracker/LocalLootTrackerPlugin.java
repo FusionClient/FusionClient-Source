@@ -29,6 +29,7 @@ import net.runelite.http.api.loottracker.LootRecordType;
 import org.pf4j.Extension;
 import javax.inject.Inject;
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalIconFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

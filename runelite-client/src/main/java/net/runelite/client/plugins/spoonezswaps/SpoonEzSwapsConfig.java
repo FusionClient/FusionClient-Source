@@ -190,7 +190,7 @@ public interface SpoonEzSwapsConfig extends Config
 	)
 	default String customDrop()
 	{
-		return "iron ore, blisterwood log, redwood log, empty plant pot, leaping trout, leaping salmon, leaping sturgeon, sandstone (1kg), sandstone (2kg), sandstone (5kg), sandstone (10kg), granite (500g), granite (2kg), granite (5kg)";
+		return "iron ore, blisterwood log, empty plant pot, leaping trout, leaping salmon, leaping sturgeon, sandstone (1kg), sandstone (2kg), sandstone (5kg), sandstone (10kg), granite (500g), granite (2kg), granite (5kg)";
 	}
 
 	//------------------------------------------------------------//
