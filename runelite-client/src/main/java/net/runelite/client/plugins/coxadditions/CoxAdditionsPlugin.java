@@ -2,43 +2,10 @@ package net.runelite.client.plugins.coxadditions;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.inject.Provides;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import javax.inject.Inject;
-import javax.sound.sampled.Clip;
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.GameState;
-import net.runelite.api.GraphicsObject;
-import net.runelite.api.InventoryID;
-import net.runelite.api.MenuEntry;
-import net.runelite.api.NPC;
-import net.runelite.api.Player;
-import net.runelite.api.VarPlayer;
-import net.runelite.api.Varbits;
+import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.ActorDeath;
-import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.ClientTick;
-import net.runelite.api.events.GameObjectDespawned;
-import net.runelite.api.events.GameObjectSpawned;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.GraphicsObjectCreated;
-import net.runelite.api.events.ItemContainerChanged;
-import net.runelite.api.events.MenuEntryAdded;
-import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.NpcChanged;
-import net.runelite.api.events.NpcDespawned;
-import net.runelite.api.events.NpcSpawned;
-import net.runelite.api.events.ProjectileMoved;
-import net.runelite.api.events.VarbitChanged;
+import net.runelite.api.events.*;
 import net.runelite.api.kit.KitType;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -47,18 +14,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.coxadditions.overlays.CoxAdditionsOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.CoxItemOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.InstanceTimerOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.MeatTreeCycleOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.OlmHpPanelOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.OlmOrbOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.OlmOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.OlmSideOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.OrbPrayerTabOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.ShortcutOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.VanguardCycleOverlay;
-import net.runelite.client.plugins.coxadditions.overlays.VespEnhanceOverlay;
+import net.runelite.client.plugins.coxadditions.overlays.*;
 import net.runelite.client.plugins.coxadditions.utils.HealingPoolInfo;
 import net.runelite.client.plugins.coxadditions.utils.ShamanInfo;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -67,10 +23,16 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.sound.sampled.Clip;
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] Cox Additions",
-	description = "Additional plugins for the Chambers of Xeric <br> Made by: SpoonLite",
-	tags = {"xeric", "olm", "chambers", "cox", "spoon"},
+	name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Cox Additions",
+	description = "Additional plugins for the Chambers of Xeric <br><html><font color=#FFDD00> Made by: SpoonLite",
+	tags = {"xeric", "olm", "chambers", "cox"},
 	enabledByDefault = false
 )
 public class CoxAdditionsPlugin extends Plugin {
@@ -90,7 +52,7 @@ public class CoxAdditionsPlugin extends Plugin {
 	@Inject
 	private CoxAdditionsOverlay overlay;
 	@Inject
-	private VespEnhanceOverlay vespEnahnceOverlay;
+	private VespEnhanceOverlay vespEnhanceOverlay;
 	@Inject
 	private VanguardCycleOverlay vanguardCycleOverlay;
 	@Inject
@@ -359,7 +321,7 @@ public class CoxAdditionsPlugin extends Plugin {
 		this.highlightShortcuts = this.config.highlightShortcuts();
 		this.overlayManager.add(this.overlay);
 		this.overlayManager.add(this.olmOverlay);
-		this.overlayManager.add(this.vespEnahnceOverlay);
+		this.overlayManager.add(this.vespEnhanceOverlay);
 		this.overlayManager.add(this.vanguardCycleOverlay);
 		this.overlayManager.add(this.shortcutOverlay);
 		this.overlayManager.add(this.orbOverlay);
@@ -376,7 +338,7 @@ public class CoxAdditionsPlugin extends Plugin {
 		this.eventBus.unregister((Object)this);
 		this.overlayManager.remove(this.overlay);
 		this.overlayManager.remove(this.olmOverlay);
-		this.overlayManager.remove(this.vespEnahnceOverlay);
+		this.overlayManager.remove(this.vespEnhanceOverlay);
 		this.overlayManager.remove(this.vanguardCycleOverlay);
 		this.overlayManager.remove(this.shortcutOverlay);
 		this.overlayManager.remove(this.orbOverlay);

@@ -38,7 +38,6 @@ import net.runelite.client.game.ChatIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.pvpplayerindicators.utils.PvpUtil;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
 
@@ -46,11 +45,11 @@ import javax.inject.Inject;
 import java.awt.*;
 
 import static net.runelite.api.FriendsChatRank.UNRANKED;
-import static net.runelite.api.MenuAction.*;
+import static net.runelite.api.MenuAction.MENU_ACTION_DEPRIORITIZE_OFFSET;
 
 @PluginDescriptor(
-		name = "<html><font color=#FFDD00>[F] Player Indicators",
-		description = "Highlight players on-screen and/or on the minimap.<br>Credit: SpoonLite/Steroid",
+		name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Player Indicators",
+		description = "Highlight players on-screen and/or on the minimap.<br><html><font color=#FFDD00>Credit: SpoonLite/Steroid",
 		tags = {"highlight", "minimap", "overlay", "players"},
 		conflicts = "Player Indicators"
 )

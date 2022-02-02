@@ -7,22 +7,13 @@
 package net.runelite.client.plugins.externals.oneclick;
 
 import com.google.inject.Provides;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.MenuEntryAdded;
-import net.runelite.api.events.MenuOpened;
-import net.runelite.api.events.MenuOptionClicked;
-import net.runelite.api.events.WidgetPressed;
+import net.runelite.api.events.*;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -36,11 +27,15 @@ import net.runelite.client.plugins.externals.oneclick.Comparables.misc.Healer;
 import net.runelite.client.plugins.externals.oneclick.Comparables.skilling.Spell;
 import org.pf4j.Extension;
 
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+
 @Extension
 @PluginDescriptor(
 		name = "One Click",
 		description = "OP One Click methods.",
-		tags = "ganom",
+		tags = "one click, noob",
 		enabledByDefault = false
 )
 @Getter

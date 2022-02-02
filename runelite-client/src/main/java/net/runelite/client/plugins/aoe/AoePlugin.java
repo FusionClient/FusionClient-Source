@@ -11,7 +11,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.pf4j.Extension;
@@ -26,9 +25,9 @@ import java.util.*;
 
 @Extension
 @PluginDescriptor(
-	name = "<html><font color=#FFDD00>[F] AoE Warnings",
+	name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> AoE Warnings",
 	enabledByDefault = false,
-	description = "Shows the final destination for AoE Attack projectiles.Credit <br>Credit: SpoonLite",
+	description = "Shows the final destination for AoE Attack projectiles.<br><html><font color=#FFDD00>Made by: SpoonLite",
 	tags = {"bosses", "combat", "pve", "overlay"}
 )
 public class AoePlugin extends Plugin

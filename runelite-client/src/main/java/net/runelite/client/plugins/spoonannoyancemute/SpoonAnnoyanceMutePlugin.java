@@ -45,7 +45,7 @@ import java.util.List;
 
 @Extension
 @PluginDescriptor(
-        name = "<html><font color=#FFDD00>[F] Annoyance Mute",
+        name = "[F] Annoyance Mute",
         description = "Selectively mute annoying game sounds<br>Credit: SpoonLite",
         tags = {"sound", "volume", "mute", "hub", "brooklyn", "pet", "stomp"},
         enabledByDefault = false

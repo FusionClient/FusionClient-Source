@@ -25,14 +25,10 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.menuentryswapper.Swap;
 import net.runelite.client.plugins.spoonezswaps.config.*;
-import net.runelite.client.plugins.spoonezswaps.util.AbstractComparableEntry;
 import net.runelite.client.plugins.spoonezswaps.util.CustomSwaps;
 import net.runelite.client.plugins.spoonezswaps.util.MinionData;
-import net.runelite.client.plugins.spoontob.SpoonTobConfig;
 import net.runelite.client.ui.overlay.OverlayManager;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.pf4j.Extension;
 
 import javax.inject.Inject;
@@ -50,7 +46,7 @@ import static com.google.common.base.Predicates.equalTo;
 
 @Extension
 @PluginDescriptor(
-		name = "<html><font color=#FFDD00>[F] Ez Swaps",
+		name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Ez Swaps",
 		enabledByDefault = false,
 		description = "A shit ton of menu entry swapper stuff.",
 		tags = {"pickpocket", "equipped items", "inventory", "items", "equip", "construction", "spoon", "ez", "skilling", "pvm", "custom", "swapper"}

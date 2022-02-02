@@ -26,7 +26,6 @@ import net.runelite.client.plugins.spoontob.rooms.Xarpus.Xarpus;
 import net.runelite.client.plugins.spoontob.util.CustomGameObject;
 import net.runelite.client.plugins.spoontob.util.TheatreInputListener;
 import net.runelite.client.plugins.spoontob.util.TheatreRegions;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.Text;
 import org.apache.commons.lang3.ArrayUtils;
@@ -37,8 +36,8 @@ import java.util.List;
 import java.util.*;
 
 @PluginDescriptor(
-        name = "<html><font color=#FFDD00>[F] Theatre",
-        description = "Pretty much everything useful for Tob in 1 plugin<br>Made by: SpoonLite",
+        name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Theatre",
+        description = "Pretty much everything useful for Tob in 1 plugin<br><html><font color=#FFDD00>Made by: SpoonLite",
         tags = {"theatre, raids", "tob", "maiden", "bloat", "nylo", "sotetseg", "xarpus", "verzik", "steroids", "additions", "spoon"},
         enabledByDefault = false
 )

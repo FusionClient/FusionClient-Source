@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Caps Lock13
  * Copyright (c) 2021 BikkusLite
  * Copyright (c) 2022 SpoonLite
+ * Copyright (c) 2022 Fusion
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +43,7 @@ import javax.inject.Inject;
 @Extension
 @Slf4j
 @PluginDescriptor(
-        name = "<html><font color=#FFDD00>[F] Low Detail",
+        name = "<html><font color=#FFDD00>[F]<html><font color=#FFFFFF> Low Detail",
         description = "Turns off at bloat",
         tags = {"memory", "usage", "ground", "decorations", "bloat"},
         enabledByDefault = false
