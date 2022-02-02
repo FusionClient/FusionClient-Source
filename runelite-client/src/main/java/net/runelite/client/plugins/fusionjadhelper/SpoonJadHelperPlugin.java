@@ -6,12 +6,14 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.events.*;
+import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.NpcSpawned;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.Text;
 
@@ -19,7 +21,9 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.util.ArrayList;
 
-@PluginDescriptor(name = "[F] Jad Helper", description = "Help",
+@PluginDescriptor(
+        name = "[F] Jad Helper",
+        description = "Help",
         tags = {"six jad", "spoon", "jad", "fight caves", "inferno"},
         enabledByDefault = false)
 

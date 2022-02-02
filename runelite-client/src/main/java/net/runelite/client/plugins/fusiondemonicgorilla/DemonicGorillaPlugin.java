@@ -9,7 +9,6 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 import javax.inject.Inject;
@@ -17,7 +16,11 @@ import javax.inject.Singleton;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@PluginDescriptor(name = "[F] Demonic Gorillas", description = "Count demonic gorilla attacks and display their next possible attack styles", tags = {"combat", "overlay", "pve", "pvm"})
+@PluginDescriptor(
+        name = "[F] Demonic Gorillas",
+        description = "Count demonic gorilla attacks and display their next possible attack styles",
+        tags = {"combat", "overlay", "pve", "pvm"}
+)
 @Singleton
 public class DemonicGorillaPlugin extends Plugin {
     private static final Set<Integer> DEMONIC_PROJECTILES = (Set<Integer>)ImmutableSet.of(Integer.valueOf(1302), Integer.valueOf(1304), Integer.valueOf(856));
