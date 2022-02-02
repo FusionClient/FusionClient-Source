@@ -43,6 +43,7 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -448,21 +449,21 @@ public class SocketWorldHopperPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onPlayerDespawned(PlayerDespawned playerDespawned) {
-        if (!playerDespawned.getPlayer().equals(client.getLocalPlayer())) {
-            SetHopAbility(playerDespawned.getPlayer().getName().toLowerCase(), true);
+    public void onPlayerDespawned(PlayerDespawned event) {
+        if (!event.getPlayer().equals(client.getLocalPlayer()) && event.getPlayer().getName() != null) {
+            SetHopAbility(event.getPlayer().getName().toLowerCase(), true);
         }
     }
 
     @Subscribe
-    public void onPlayerSpawned(PlayerSpawned playerSpawned) {
-        if (!playerSpawned.getPlayer().equals(client.getLocalPlayer())) {
-            SetHopAbility(playerSpawned.getPlayer().getName().toLowerCase(), false);
+    public void onPlayerSpawned(PlayerSpawned event) {
+        if (!event.getPlayer().equals(client.getLocalPlayer()) && event.getPlayer().getName() != null) {
+            SetHopAbility(event.getPlayer().getName().toLowerCase(), false);
         }
     }
 
     void SetHopAbility(String name, boolean enabled) {
-        if (!name.isEmpty() && (name.equals(config.getHopperName().toLowerCase()) || name.equals(config.getHopperName2().toLowerCase()))) {
+        if (!name.isEmpty() && (name.equalsIgnoreCase(config.getHopperName().trim()) || name.equalsIgnoreCase(config.getHopperName2().trim()))) {
             logOutNotifTick = enabled ? client.getTickCount() : -1;
             allowHopping = enabled;
         }
@@ -534,7 +535,7 @@ public class SocketWorldHopperPlugin extends Plugin {
         log.debug("Fetching worlds");
         WorldResult worldResult = worldService.getWorlds();
         if (worldResult != null) {
-            worldResult.getWorlds().sort(Comparator.comparingInt(World::getId));
+            worldResult.getWorlds().sort(Comparator.comparingInt(net.runelite.http.api.worlds.World::getId));
             this.worldResult = worldResult;
             lastFetch = Instant.now();
             updateList();

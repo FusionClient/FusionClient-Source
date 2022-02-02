@@ -265,6 +265,21 @@ public interface SpoonNexConfig extends Config {
 	default boolean olmPTSD(){ return false; }
 
 	@ConfigItem(
+			keyName = "SetInputName",
+			name = "Set Input Name",
+			description = "Set Input of nex instance name",
+			position = 11
+	)
+	default String setInputName() {return "";}
+
+	@ConfigItem(
+			keyName = "shouldSetInput",
+			name = "Should Set Input",
+			description = "Set Input of nex instance name",
+			position = 12
+	)
+	default boolean getShouldSetInput() {return false;}
+	@ConfigItem(
 			keyName = "forWhy",
 			name = "Just fuck me up right good",
 			description = "For why?",

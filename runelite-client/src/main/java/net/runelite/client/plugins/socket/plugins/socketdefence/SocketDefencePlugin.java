@@ -1,10 +1,8 @@
 package net.runelite.client.plugins.socket.plugins.socketdefence;
 
 import com.google.inject.Provides;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
 import net.runelite.api.kit.KitType;
 import net.runelite.api.widgets.Widget;
@@ -23,16 +21,13 @@ import net.runelite.client.plugins.socket.packet.SocketBroadcastPacket;
 import net.runelite.client.plugins.socket.packet.SocketMembersUpdate;
 import net.runelite.client.plugins.socket.packet.SocketReceivePacket;
 import net.runelite.client.plugins.socket.packet.SocketShutdown;
-import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.ColorUtil;
 import org.pf4j.Extension;
 
 import javax.inject.Inject;
-import javax.sound.sampled.*;
 import java.awt.*;
-import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -269,17 +264,14 @@ public class SocketDefencePlugin extends Plugin {
                 }
 
                 if (animation == 1816 && boss.equalsIgnoreCase("sotetseg") && (isInOverWorld() || isInUnderWorld())) {
+                    infoBoxManager.removeInfoBox(box);
                     bossDef = 250;
                 }
             }
         }
 
-        if (event.getActor() instanceof NPC) {
-            NPC npc = (NPC) event.getActor();
-            String name = npc.getName();
-            if (name != null && name.equalsIgnoreCase("pestilent bloat")) {
-                bloatDown = npc.getAnimation() == 8082;
-            }
+        if (event.getActor() instanceof NPC && event.getActor().getName() != null && event.getActor().getName().equalsIgnoreCase("pestilent bloat")) {
+            bloatDown = event.getActor().getAnimation() == 8082;
         }
     }
 
@@ -368,6 +360,8 @@ public class SocketDefencePlugin extends Plugin {
                 if (boss.equals("") || bossDef == -1 || !boss.equals(bossName)) {
                     switch (bossName) {
                         case "Abyssal Sire":
+                        case "Sotetseg":
+                        case "General Graardor":
                             bossDef = 250;
                             break;
                         case "Callisto":
@@ -377,15 +371,14 @@ public class SocketDefencePlugin extends Plugin {
                             bossDef = 110;
                             break;
                         case "Chaos Elemental":
+                        case "K'ril Tsutsaroth":
                             bossDef = 270;
                             break;
                         case "Corporeal Beast":
                             bossDef = 310;
                             break;
-                        case "General Graardor":
-                            bossDef = 250;
-                            break;
                         case "Giant Mole":
+                        case "The Maiden of Sugadinti":
                             bossDef = 200;
                             break;
                         case "Kalphite Queen":
@@ -393,9 +386,6 @@ public class SocketDefencePlugin extends Plugin {
                             break;
                         case "King Black Dragon":
                             bossDef = 240;
-                            break;
-                        case "K'ril Tsutsaroth":
-                            bossDef = 270;
                             break;
                         case "Sarachnis":
                             bossDef = 150;
@@ -407,17 +397,11 @@ public class SocketDefencePlugin extends Plugin {
                         case "Vet'ion Reborn":
                             bossDef = 395;
                             break;
-                        case "The Maiden of Sugadinti":
-                            bossDef = 200;
-                            break;
                         case "Pestilent Bloat":
                             bossDef = 100;
                             break;
                         case "Nylocas Vasilias":
                             bossDef = 50;
-                            break;
-                        case "Sotetseg":
-                            bossDef = 250;
                             break;
                         case "Xarpus":
                             if (hmXarpus) {
@@ -458,9 +442,7 @@ public class SocketDefencePlugin extends Plugin {
                             bossDef -= 10;
                         }
                     } else {
-                        if (boss.equals("Corporeal Beast")) {
-                            bossDef -= hit * 2;
-                        } else if (isInBloat() && boss.equals("Pestilent Bloat") && !bloatDown) {
+                        if (boss.equals("Corporeal Beast") || (isInBloat() && boss.equals("Pestilent Bloat") && !bloatDown)) {
                             bossDef -= hit * 2;
                         } else {
                             bossDef -= hit;

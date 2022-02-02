@@ -28,40 +28,10 @@
 package net.runelite.client.plugins.gauntletextended;
 
 import com.google.inject.Provides;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
-import net.runelite.api.Actor;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.GameState;
-import net.runelite.api.HeadIcon;
-import net.runelite.api.NPC;
-import net.runelite.api.NpcID;
-import net.runelite.api.NullNpcID;
-import net.runelite.api.ObjectID;
-import net.runelite.api.Player;
-import net.runelite.api.Projectile;
-import net.runelite.api.ProjectileID;
-import net.runelite.api.SoundEffectID;
-import net.runelite.api.events.ActorDeath;
-import net.runelite.api.events.AnimationChanged;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.GameObjectDespawned;
-import net.runelite.api.events.GameObjectSpawned;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.NpcDespawned;
-import net.runelite.api.events.NpcSpawned;
-import net.runelite.api.events.ProjectileSpawned;
-import net.runelite.api.events.VarbitChanged;
-import net.runelite.api.events.WidgetLoaded;
+import net.runelite.api.*;
+import net.runelite.api.events.*;
 import net.runelite.api.queries.GameObjectQuery;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
@@ -71,27 +41,26 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.gauntletextended.entity.Demiboss;
-import net.runelite.client.plugins.gauntletextended.entity.Hunllef;
-import net.runelite.client.plugins.gauntletextended.entity.Missile;
-import net.runelite.client.plugins.gauntletextended.entity.Resource;
-import net.runelite.client.plugins.gauntletextended.entity.Tornado;
-import net.runelite.client.plugins.gauntletextended.overlay.Overlay;
-import net.runelite.client.plugins.gauntletextended.overlay.OverlayGauntlet;
-import net.runelite.client.plugins.gauntletextended.overlay.OverlayHunllef;
-import net.runelite.client.plugins.gauntletextended.overlay.OverlayPrayerBox;
-import net.runelite.client.plugins.gauntletextended.overlay.OverlayPrayerWidget;
-import net.runelite.client.plugins.gauntletextended.overlay.OverlayTimer;
+import net.runelite.client.plugins.gauntletextended.entity.*;
+import net.runelite.client.plugins.gauntletextended.overlay.*;
 import net.runelite.client.plugins.gauntletextended.resource.ResourceManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Extension
 @PluginDescriptor(
 	name = "Gauntlet Extended",
 	enabledByDefault = false,
 	description = "All-in-one plugin for the Gauntlet.",
-	tags = {"gauntlet"}
+	tags = {"gauntlet"},
+	hidden = true
 )
 @Singleton
 public class GauntletExtendedPlugin extends Plugin
