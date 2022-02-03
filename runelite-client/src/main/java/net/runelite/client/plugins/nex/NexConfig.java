@@ -189,9 +189,7 @@ public interface NexConfig extends Config {
             name = "True Tile Range",
             description = "nex true tile"
     )
-    default boolean showTrueTile() {
-        return false;
-    }
+    default boolean showTrueTile() { return false; }
 
     @ConfigItem(
             keyName = "SetInputName",

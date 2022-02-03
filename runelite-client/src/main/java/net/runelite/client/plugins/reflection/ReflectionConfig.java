@@ -39,7 +39,7 @@ public interface ReflectionConfig extends Config {
             name = "Change Icon",
             keyName = "changeIcon",
             description = "Change the client icon. " +
-                    "<br>If you want a custom icon, put a picture named 'icon.png' in your .Fusion folder",
+                    "<br>If you want a custom icon, put a picture named 'icon.png' in your .fusion folder",
             position = -1
     )
     default boolean changeIcon() {

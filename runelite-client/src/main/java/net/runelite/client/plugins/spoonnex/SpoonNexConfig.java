@@ -184,10 +184,10 @@ public interface SpoonNexConfig extends Config {
 	default boolean invulnerableTicks(){ return false; }
 
 	@ConfigItem(
-		keyName = "mageHighlight",
-		name = "Mage Highlight",
-		description = "Highlight the currently active ancient mage",
-		position = 2
+			keyName = "mageHighlight",
+			name = "Mage Highlight",
+			description = "Highlight the currently active ancient mage",
+			position = 2
 	)
 	default MageHighlightMode mageHighlight(){ return MageHighlightMode.OFF; }
 
@@ -257,14 +257,6 @@ public interface SpoonNexConfig extends Config {
 	default boolean prayerHelper() { return false; }
 
 	@ConfigItem(
-			keyName = "olmPTSD",
-			name = "Olm PTSD",
-			description = "Makes Smoke phase a little more familiar",
-			position = 97
-	)
-	default boolean olmPTSD(){ return false; }
-
-	@ConfigItem(
 			keyName = "SetInputName",
 			name = "Set Input Name",
 			description = "Set Input of nex instance name",
@@ -279,6 +271,25 @@ public interface SpoonNexConfig extends Config {
 			position = 12
 	)
 	default boolean getShouldSetInput() {return false;}
+
+	@ConfigItem(
+			keyName = "showTenTile",
+			name = "Ten Tile Range",
+			description = "range of nex's sight",
+			position = 13
+	)
+	default boolean showTenTile() {
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "olmPTSD",
+			name = "Olm PTSD",
+			description = "Makes Smoke phase a little more familiar",
+			position = 97
+	)
+	default boolean olmPTSD(){ return false; }
+
 	@ConfigItem(
 			keyName = "forWhy",
 			name = "Just fuck me up right good",
@@ -287,14 +298,6 @@ public interface SpoonNexConfig extends Config {
 	)
 	default boolean forWhy(){ return false; }
 
-	/*@ConfigItem(
-			keyName = "spellbookCheck",
-			name = "Are you on Arceuus",
-			description = "Dumb dumb",
-			position = 99
-	)
-	default boolean spellbookCheck(){ return false; }
-*/
 	enum MageHighlightMode {
 		OFF, ARROW, TILE, BOTH
 	}
