@@ -14,12 +14,6 @@ package net.runelite.client.plugins.pvptools;
 import com.openosrs.client.ui.overlay.components.table.TableComponent;
 import com.openosrs.client.ui.overlay.components.table.TableElement;
 import com.openosrs.client.ui.overlay.components.table.TableRow;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.util.Arrays;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.Varbits;
 import net.runelite.api.WorldType;
@@ -28,6 +22,11 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;
 import org.apache.commons.lang3.ArrayUtils;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.awt.*;
+import java.util.Arrays;
 
 @Singleton
 public class PlayerCountOverlay extends Overlay
@@ -44,7 +43,7 @@ public class PlayerCountOverlay extends Overlay
 		this.plugin = plugin;
 		this.config = config;
 		this.client = client;
-		setLayer(OverlayLayer.AFTER_MIRROR);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 		setPriority(OverlayPriority.HIGHEST);
 		setPosition(OverlayPosition.TOP_LEFT);
 		setPreferredPosition(OverlayPosition.TOP_LEFT);
