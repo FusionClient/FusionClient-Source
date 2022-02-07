@@ -24,18 +24,13 @@
 
 package net.runelite.client.plugins.pileindicators;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.util.List;
+import net.runelite.api.Actor;
+import net.runelite.client.ui.overlay.*;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import net.runelite.api.Actor;
-import net.runelite.client.ui.overlay.Overlay;
-import net.runelite.client.ui.overlay.OverlayLayer;
-import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
-import net.runelite.client.ui.overlay.OverlayUtil;
+import java.awt.*;
+import java.util.List;
 
 @Singleton
 public class PileIndicatorsOverlay extends Overlay
@@ -49,7 +44,7 @@ public class PileIndicatorsOverlay extends Overlay
 		super(plugin);
 		this.plugin = plugin;
 		this.config = config;
-		setLayer(OverlayLayer.AFTER_MIRROR);
+		setLayer(OverlayLayer.UNDER_WIDGETS);
 		setPosition(OverlayPosition.DYNAMIC);
 		setPriority(OverlayPriority.HIGH);
 	}

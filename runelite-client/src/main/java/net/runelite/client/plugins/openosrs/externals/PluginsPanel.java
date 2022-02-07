@@ -1,47 +1,20 @@
 package net.runelite.client.plugins.openosrs.externals;
 
-import net.runelite.client.plugins.OPRSExternalPluginManager;
+import com.fplugins.fExternalPluginManager;
 import com.google.gson.JsonSyntaxException;
 import com.openosrs.client.events.OPRSPluginChanged;
 import com.openosrs.client.events.OPRSRepositoryChanged;
-import net.runelite.client.util.DeferredDocumentChangedListener;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
-import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
-import static net.runelite.api.util.Text.DISTANCE;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.plugins.OPRSExternalPluginManager;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.ui.components.IconTextField;
 import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
+import net.runelite.client.util.DeferredDocumentChangedListener;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.SwingUtil;
 import org.pf4j.VersionManager;
@@ -49,6 +22,19 @@ import org.pf4j.update.PluginInfo;
 import org.pf4j.update.UpdateManager;
 import org.pf4j.update.UpdateRepository;
 import org.pf4j.update.VerifyException;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+
+import static net.runelite.api.util.Text.DISTANCE;
 
 @Slf4j
 public class PluginsPanel extends JPanel
@@ -63,18 +49,18 @@ public class PluginsPanel extends JPanel
 	static
 	{
 		final BufferedImage addIcon =
-			ImageUtil.recolorImage(
-				ImageUtil.loadImageResource(PluginsPanel.class, "add_icon.png"), ColorScheme.BRAND_BLUE
-			);
+				ImageUtil.recolorImage(
+						ImageUtil.loadImageResource(PluginsPanel.class, "add_icon.png"), ColorScheme.BRAND_BLUE
+				);
 		ADD_ICON = new ImageIcon(addIcon);
 		ADD_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(addIcon, 0.53f));
 
 		final BufferedImage deleteImg =
-			ImageUtil.recolorImage(
-				ImageUtil.resizeCanvas(
-					ImageUtil.loadImageResource(PluginsPanel.class, "delete_icon.png"), 14, 14
-				), ColorScheme.BRAND_BLUE
-			);
+				ImageUtil.recolorImage(
+						ImageUtil.resizeCanvas(
+								ImageUtil.loadImageResource(PluginsPanel.class, "delete_icon.png"), 14, 14
+						), ColorScheme.BRAND_BLUE
+				);
 		DELETE_ICON = new ImageIcon(deleteImg);
 		DELETE_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(deleteImg, 0.53f));
 
@@ -169,7 +155,12 @@ public class PluginsPanel extends JPanel
 		repositories.add("All");
 		for (UpdateRepository updateRepository : this.updateManager.getRepositories())
 		{
-			repositories.add(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", ""));
+			System.out.println("Update repository" + updateRepository.getUrl().toString());
+			if (updateRepository.getUrl().toString().contains("9InchHog")) {
+				repositories.add(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/FusionClient/plugin-release/master/", "Fusion Plugins").replace("https://gitlab.com/", "").replace("/-/rawrelease/", ""));
+			} else {
+				repositories.add(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", "").replace("https://gitlab.com/", "").replace("/-/rawrelease/", ""));
+			}
 		}
 
 		return repositories;
@@ -214,7 +205,7 @@ public class PluginsPanel extends JPanel
 		for (String term : searchTerms)
 		{
 			if (Arrays.stream(pluginTerms).noneMatch((t) -> t.contains(term) ||
-				DISTANCE.apply(t, term) > 0.9))
+					DISTANCE.apply(t, term) > 0.9))
 			{
 				return true;
 			}
@@ -289,17 +280,17 @@ public class PluginsPanel extends JPanel
 		if (externalPluginChanged.isAdded())
 		{
 			externalBox = Arrays.stream(
-				availablePluginsPanel.getComponents()
+					availablePluginsPanel.getComponents()
 			).filter(extBox ->
-				extBox instanceof ExternalBox && ((ExternalBox) extBox).pluginInfo.id.equals(pluginId)
+					extBox instanceof ExternalBox && ((ExternalBox) extBox).pluginInfo.id.equals(pluginId)
 			).findFirst();
 		}
 		else
 		{
 			externalBox = Arrays.stream(
-				installedPluginsPanel.getComponents()
+					installedPluginsPanel.getComponents()
 			).filter(extBox ->
-				extBox instanceof ExternalBox && ((ExternalBox) extBox).pluginInfo.id.equals(pluginId)
+					extBox instanceof ExternalBox && ((ExternalBox) extBox).pluginInfo.id.equals(pluginId)
 			).findFirst();
 		}
 
@@ -368,8 +359,9 @@ public class PluginsPanel extends JPanel
 				String filter = String.valueOf(filterComboBox.getSelectedItem());
 				for (UpdateRepository updateRepository : updateManager.getRepositories())
 				{
-					if (filter.equals(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", "")) &&
-						pluginInfo.getRepositoryId().equals(updateRepository.getId()))
+					if ((filter.equals(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", "").replace("https://gitlab.com/", "").replace("/-/rawrelease/", ""))
+							|| filter.equals(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/FusionClient/plugin-release/master/", "Fusion Plugins")))
+							&& pluginInfo.getRepositoryId().equals(updateRepository.getId()))
 					{
 						filtered = false;
 					}
@@ -409,8 +401,8 @@ public class PluginsPanel extends JPanel
 		for (PluginInfo pluginInfo : availablePluginsList)
 		{
 			if (pluginInfo.releases
-				.stream()
-				.noneMatch((pluginRelease) -> versionManager.checkVersionConstraint(externalPluginManager.getExternalPluginManager().getSystemVersion(), pluginRelease.requires)))
+					.stream()
+					.noneMatch((pluginRelease) -> versionManager.checkVersionConstraint(externalPluginManager.getExternalPluginManager().getSystemVersion(), pluginRelease.requires)))
 			{
 				continue;
 			}
@@ -426,8 +418,9 @@ public class PluginsPanel extends JPanel
 				String filter = String.valueOf(filterComboBox.getSelectedItem());
 				for (UpdateRepository updateRepository : updateManager.getRepositories())
 				{
-					if (filter.equals(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", "")) &&
-						pluginInfo.getRepositoryId().equals(updateRepository.getId()))
+					if ((filter.equals(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", "").replace("https://gitlab.com/", "").replace("/-/rawrelease/", ""))
+							|| filter.equals(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/FusionClient/plugin-release/master/", "Fusion Plugins")))
+							&& pluginInfo.getRepositoryId().equals(updateRepository.getId()))
 					{
 						filtered = false;
 					}
@@ -495,6 +488,10 @@ public class PluginsPanel extends JPanel
 							protected void done()
 							{
 
+								if (pluginInfo.provider.equals(fExternalPluginManager.FUSION))
+								{
+									externalPluginManager.fDisablePlugin(pluginInfo.id);
+								}
 								boolean status = false;
 								try
 								{
@@ -530,6 +527,10 @@ public class PluginsPanel extends JPanel
 						protected void done()
 						{
 
+							if (pluginInfo.provider.equals(fExternalPluginManager.FUSION))
+							{
+								externalPluginManager.fEnablePlugin(pluginInfo.id);
+							}
 							boolean status = false;
 							try
 							{
@@ -584,7 +585,7 @@ public class PluginsPanel extends JPanel
 			try
 			{
 				SwingUtil.syncExec(() ->
-					JOptionPane.showMessageDialog(ClientUI.getFrame(), pluginInfo.name + " could not be installed, the hash could not be verified.", "Error!", JOptionPane.ERROR_MESSAGE));
+						JOptionPane.showMessageDialog(ClientUI.getFrame(), pluginInfo.name + " could not be installed, the hash could not be verified.", "Error!", JOptionPane.ERROR_MESSAGE));
 			}
 			catch (InvocationTargetException | InterruptedException ignored)
 			{

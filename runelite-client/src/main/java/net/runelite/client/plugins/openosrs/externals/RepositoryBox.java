@@ -1,27 +1,22 @@
 package net.runelite.client.plugins.openosrs.externals;
 
-import net.runelite.client.plugins.OPRSExternalPluginManager;
 import com.openosrs.client.ui.JMultilineLabel;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.util.Optional;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
+import net.runelite.client.plugins.OPRSExternalPluginManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
 import org.pf4j.update.PluginInfo;
 import org.pf4j.update.UpdateRepository;
+
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.Optional;
 
 public class RepositoryBox extends JPanel
 {
@@ -116,7 +111,7 @@ public class RepositoryBox extends JPanel
 			titleActions.add(support, BorderLayout.WEST);
 		}
 
-		if (!name.equals("OpenOSRS") && !name.equals("Plugin-Hub"))
+		if (!name.equals("OpenOSRS") && !name.equals("Plugin-Hub") && !name.equals("Fusion"))
 		{
 			JLabel install = new JLabel();
 			install.setIcon(DELETE_ICON);
@@ -171,9 +166,17 @@ public class RepositoryBox extends JPanel
 	{
 		if (url.contains("githubusercontent"))
 		{
-			url = url.replace("raw.githubusercontent", "github").replace("/master/", "");
+			if (url.contains("FusionClient")) {
+				url = url.replace("https://raw.githubusercontent.com/FusionClient/plugin-release/master/", "Fusion Plugins");
+			} else {
+				url = url.replace("raw.githubusercontent", "github").replace("/master/", "");
+			}
 		}
 
+		if (url.contains("gitlab"))
+		{
+			url = url.replace("https://gitlab.com/", "").replace("/-/raw/master/release/", "");
+		}
 		return url;
 	}
 }

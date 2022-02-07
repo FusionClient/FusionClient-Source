@@ -1,11 +1,6 @@
 package net.runelite.client.plugins.betterprofiles;
 
 import com.google.inject.Provides;
-import java.awt.image.BufferedImage;
-import java.security.GeneralSecurityException;
-import java.util.concurrent.ScheduledExecutorService;
-import javax.inject.Inject;
-import javax.swing.SwingUtilities;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.callback.ClientThread;
@@ -21,6 +16,12 @@ import net.runelite.client.util.ImageUtil;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.security.GeneralSecurityException;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Extension
 @PluginDescriptor(
@@ -51,7 +52,7 @@ public class BetterProfilesPlugin extends Plugin {
 		this.panel = (BetterProfilesPanel)this.injector.getInstance(BetterProfilesPanel.class);
 		this.panel.init();
 		BufferedImage icon = ImageUtil.getResourceStreamFromClass(this.getClass(), "profiles_icon.png");
-		this.navButton = NavigationButton.builder().tooltip("Profiles").icon(icon).priority(2).panel(this.panel).build();
+		this.navButton = NavigationButton.builder().tooltip("Profiles").icon(icon).priority(8).panel(this.panel).build();
 		this.clientToolbar.addNavigation(this.navButton);
 	}
 

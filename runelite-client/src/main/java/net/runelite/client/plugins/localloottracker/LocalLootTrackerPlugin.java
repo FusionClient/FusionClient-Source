@@ -27,23 +27,11 @@ import net.runelite.client.plugins.loottracker.LootReceived;
 import net.runelite.client.plugins.loottracker.LootTrackerPlugin;
 import net.runelite.http.api.loottracker.LootRecordType;
 import org.pf4j.Extension;
+
 import javax.inject.Inject;
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalIconFactory;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.*;
+import java.lang.reflect.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +42,8 @@ import java.util.Collection;
 @PluginDescriptor(
 		name = "[F] Loot Tracker (local)",
 		description = "Local data storage extension to loot tracker plugin",
-		tags = {"loot", "local", "track"}
+		tags = {"loot", "local", "track"},
+		enabledByDefault = true
 )
 
 @Slf4j
