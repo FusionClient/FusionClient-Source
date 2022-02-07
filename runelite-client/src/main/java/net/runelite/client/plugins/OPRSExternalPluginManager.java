@@ -24,51 +24,20 @@
  */
 package net.runelite.client.plugins;
 
+import com.fplugins.fExternalPluginManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.Graphs;
 import com.google.common.graph.MutableGraph;
-import com.google.inject.Binder;
-import com.google.inject.CreationException;
-import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.*;
 import com.openosrs.client.OpenOSRS;
-import static com.openosrs.client.OpenOSRS.EXTERNALPLUGIN_DIR;
-import static com.openosrs.client.OpenOSRS.SYSTEM_API_VERSION;
 import com.openosrs.client.config.OpenOSRSConfig;
 import com.openosrs.client.events.OPRSPluginChanged;
 import com.openosrs.client.events.OPRSRepositoryChanged;
 import com.openosrs.client.ui.OpenOSRSSplashScreen;
 import com.openosrs.client.util.Groups;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.swing.JOptionPane;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,22 +52,43 @@ import net.runelite.client.events.ExternalPluginsChanged;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.util.SwingUtil;
 import org.jgroups.Message;
-import org.pf4j.DefaultPluginManager;
-import org.pf4j.DependencyResolver;
 import org.pf4j.PluginDependency;
-import org.pf4j.PluginRuntimeException;
-import org.pf4j.PluginWrapper;
+import org.pf4j.*;
 import org.pf4j.update.DefaultUpdateRepository;
 import org.pf4j.update.PluginInfo;
 import org.pf4j.update.UpdateManager;
 import org.pf4j.update.UpdateRepository;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.openosrs.client.OpenOSRS.EXTERNALPLUGIN_DIR;
+import static com.openosrs.client.OpenOSRS.SYSTEM_API_VERSION;
 
 @SuppressWarnings("UnstableApiUsage")
 @Slf4j
 @Singleton
 public class OPRSExternalPluginManager
 {
-	public static final String DEFAULT_PLUGIN_REPOS = "";
+	public static final String DEFAULT_PLUGIN_REPOS = "Fusion:https://raw.githubusercontent.com/FusionClient/plugin-release/master/;";
 	static final String DEVELOPMENT_MANIFEST_PATH = "build/tmp/jar/MANIFEST.MF";
 
 	public static ArrayList<ClassLoader> pluginClassLoaders = new ArrayList<>();
@@ -122,14 +112,22 @@ public class OPRSExternalPluginManager
 	@Getter(AccessLevel.PUBLIC)
 	private final Map<String, Map<String, String>> pluginsInfoMap = new HashMap<>();
 	@Inject
+	@Getter(AccessLevel.PUBLIC)
 	private Groups groups;
 	@Getter(AccessLevel.PUBLIC)
 	private UpdateManager updateManager;
+
+	@Inject
+	private fExternalPluginManager fPlugins;
+	public static final Map<String, String> hashedPlugins = new HashMap<>();
+
 	@Inject
 	@Named("safeMode")
 	private boolean safeMode;
 	@Setter
 	boolean isOutdated;
+	@Getter
+	public final ArrayList<String> pluginsPackages = new ArrayList<>();
 
 	public void setupInstance()
 	{
@@ -248,6 +246,7 @@ public class OPRSExternalPluginManager
 				log.error("Could not load plugins", ex);
 			}
 		}
+		fPlugins.fPlugins();
 	}
 
 	public void startExternalUpdateManager()
@@ -809,6 +808,12 @@ public class OPRSExternalPluginManager
 					}}
 				);
 
+				String[] packageName = plugin.getClass().getPackage().toString().split("\\.");
+				if (packageName.length > 4) {
+					pluginsPackages.remove(packageName[4]);
+					pluginsPackages.add(packageName[4]);
+				}
+
 				scannedPlugins.add(plugin);
 			}
 		}
@@ -1203,4 +1208,8 @@ public class OPRSExternalPluginManager
 	{
 		return URLEncoder.encode(s, StandardCharsets.UTF_8);
 	}
+
+	public void fDisablePlugin(String PluginID) { fPlugins.fDisablePlugin(PluginID) ;}
+
+	public void fEnablePlugin(String PluginID) { fPlugins.fEnablePlugin(PluginID); }
 }
