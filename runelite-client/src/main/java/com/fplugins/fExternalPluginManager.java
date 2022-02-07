@@ -26,7 +26,6 @@ package com.fplugins;
 
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
-import com.openosrs.client.config.OpenOSRSConfig;
 import com.openosrs.client.ui.OpenOSRSSplashScreen;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.plugins.MissingDependenciesException;
@@ -36,6 +35,7 @@ import org.pf4j.PluginAlreadyLoadedException;
 import org.pf4j.PluginRuntimeException;
 import org.pf4j.PluginWrapper;
 import org.pf4j.update.PluginInfo;
+import com.openosrs.client.config.OpenOSRSConfig;
 import org.pf4j.update.UpdateRepository;
 
 import javax.inject.Singleton;
@@ -118,7 +118,7 @@ public class fExternalPluginManager
                     if (pluginManager.getGroups() != null && pluginManager.getGroups().getInstanceCount() > 1)
                     {
                         // Do not update when there is more than one client open -> api might contain changes
-                        log.info("Not updating bexternal plugins since there is more than 1 client open");
+                        log.info("Not updating fexternal plugins since there is more than 1 client open");
                     }
                     else
                     {

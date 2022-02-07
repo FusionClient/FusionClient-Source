@@ -21,7 +21,7 @@ import java.util.ArrayList;
         name = "Hide External Manager",
         description = "Removes the OPRS external manager icon",
         tags = {"Spoon", "oprs", "external", "manager"},
-        enabledByDefault = true
+        enabledByDefault = false
 )
 
 @Slf4j

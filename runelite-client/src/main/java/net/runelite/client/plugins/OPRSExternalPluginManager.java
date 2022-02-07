@@ -369,10 +369,7 @@ public class OPRSExternalPluginManager
 		}
 	}
 
-	public void addRepository(String key, URL url)
-	{
-		addRepository(key, url, null);
-	}
+	public void addRepository(String key, URL url) { addRepository(key, url, null); }
 
 	public void addRepository(String key, URL url, String pluginsJson)
 	{
@@ -408,15 +405,9 @@ public class OPRSExternalPluginManager
 		openOSRSConfig.setExternalRepositories(config);
 	}
 
-	public void setWarning(boolean val)
-	{
-		configManager.setConfiguration("openosrs", "warning", val);
-	}
+	public void setWarning(boolean val) { configManager.setConfiguration("openosrs", "warning", val); }
 
-	public boolean getWarning()
-	{
-		return openOSRSConfig.warning();
-	}
+	public boolean getWarning() { return openOSRSConfig.warning(); }
 
 	/**
 	 * This method is a fail safe to ensure that no duplicate
@@ -965,10 +956,7 @@ public class OPRSExternalPluginManager
 		return false;
 	}
 
-	public boolean uninstall(String pluginId)
-	{
-		return uninstall(pluginId, false);
-	}
+	public boolean uninstall(String pluginId) { return uninstall(pluginId, false); }
 
 	public boolean uninstall(String pluginId, boolean skip)
 	{
