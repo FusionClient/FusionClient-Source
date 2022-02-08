@@ -156,7 +156,7 @@ public class PluginsPanel extends JPanel
 		for (UpdateRepository updateRepository : this.updateManager.getRepositories())
 		{
 			System.out.println("Update repository" + updateRepository.getUrl().toString());
-			if (updateRepository.getUrl().toString().contains("9InchHog")) {
+			if (updateRepository.getUrl().toString().contains("Fusion")) {
 				repositories.add(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/FusionClient/plugin-release/master/", "Fusion Plugins").replace("https://gitlab.com/", "").replace("/-/rawrelease/", ""));
 			} else {
 				repositories.add(updateRepository.getUrl().toString().replace("https://raw.githubusercontent.com/", "").replace("/master/", "").replace("https://gitlab.com/", "").replace("/-/rawrelease/", ""));
