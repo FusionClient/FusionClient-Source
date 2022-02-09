@@ -26,13 +26,14 @@
 package net.runelite.client.plugins.entityhider;
 
 import com.google.inject.Provides;
-import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+
+import javax.inject.Inject;
 
 @PluginDescriptor(
 	name = "Entity Hider",
