@@ -285,6 +285,7 @@ public class RuneLite
 		try
 		{
 			final ClientLoader clientLoader = new ClientLoader(okHttpClient, options.valueOf(updateMode), (String) options.valueOf("jav_config"));
+			final RuntimeConfigLoader runtimeConfigLoader = new RuntimeConfigLoader(okHttpClient);
 
 			new Thread(() ->
 			{
@@ -305,6 +306,7 @@ public class RuneLite
 			injector = Guice.createInjector(new RuneLiteModule(
 				okHttpClient,
 				clientLoader,
+				runtimeConfigLoader,
 				developerMode,
 				options.has("safe-mode"),
 				options.valueOf(sessionfile),

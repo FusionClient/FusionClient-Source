@@ -3,11 +3,6 @@ package net.runelite.client.plugins.tmorph;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.UnmodifiableIterator;
 import com.google.inject.Provides;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Player;
@@ -23,6 +18,9 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+
+import javax.inject.Inject;
+import java.util.HashMap;
 
 @PluginDescriptor(
 	name = "[S] WeebMorph",
