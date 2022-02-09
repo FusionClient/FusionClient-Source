@@ -564,7 +564,7 @@ public enum WidgetInfo
 	CLAN_GUEST_LAYER(WidgetID.CLAN_GUEST_GROUP_ID, WidgetID.ClanGuest.LAYER),
 	CLAN_GUEST_HEADER(WidgetID.CLAN_GUEST_GROUP_ID, WidgetID.ClanGuest.HEADER),
 	CLAN_GUEST_MEMBER_LIST(WidgetID.CLAN_GUEST_GROUP_ID, WidgetID.ClanGuest.MEMBERS),
-	
+
 	//OpenOSRS
 	WORLD_MAP_BUTTON_BORDER(WidgetID.MINIMAP_GROUP_ID, WidgetID.Minimap.WORLDMAP_ORB),
 
@@ -934,7 +934,8 @@ public enum WidgetInfo
 
 	POH_TREASURE_CHEST_INVENTORY_CONTAINER(WidgetID.POH_TREASURE_CHEST_INVENTORY_GROUP_ID, 0),
 	;
-    private final int groupId;
+
+	private final int groupId;
 	private final int childId;
 
 	WidgetInfo(int groupId, int childId)
