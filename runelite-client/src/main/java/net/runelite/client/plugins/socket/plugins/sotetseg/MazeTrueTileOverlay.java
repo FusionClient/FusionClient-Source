@@ -22,7 +22,8 @@ public class MazeTrueTileOverlay extends Overlay {
     private final SotetsegOverlay overlay;
 
     @Inject
-    private MazeTrueTileOverlay(Client client, SotetsegConfig config, SotetsegPlugin plugin, SotetsegOverlay overlay) {
+    private MazeTrueTileOverlay(Client client, SotetsegConfig config, SotetsegPlugin plugin, SotetsegOverlay overlay)
+         {
         this.client = client;
         this.config = config;
         this.plugin = plugin;
@@ -30,7 +31,7 @@ public class MazeTrueTileOverlay extends Overlay {
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
         setPriority(OverlayPriority.HIGHEST);
-    }
+        }
 
     public Dimension render(Graphics2D graphics) {
         if (config.trueMaze()) {

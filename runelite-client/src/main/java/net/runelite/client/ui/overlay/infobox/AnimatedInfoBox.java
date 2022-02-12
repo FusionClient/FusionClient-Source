@@ -9,7 +9,8 @@ import java.time.Instant;
 import net.runelite.api.Projectile;
 import net.runelite.client.plugins.Plugin;
 
-public class AnimatedInfoBox extends InfoBox {
+public class AnimatedInfoBox extends InfoBox
+{
 	private Projectile projectile;
 	private int frame_count;
 	private int column_count;
@@ -43,7 +44,8 @@ public class AnimatedInfoBox extends InfoBox {
 		return col;
 	}
 
-	public boolean render() {
+	public boolean render()
+	{
 		return this.projectile.getRemainingCycles() >= 0;
 	}
 
@@ -69,14 +71,16 @@ public class AnimatedInfoBox extends InfoBox {
 		return this._getImage();
 	}
 
-	private BufferedImage _getImage() {
+	private BufferedImage _getImage()
+	{
 		if (this.instant != null && this.tile != null) {
 			long millis = Instant.now().toEpochMilli() - this.instant.toEpochMilli();
 			this.current_frame_count = (int)((float)millis / 41.666668F) % this.frame_count;
 			int x = this.current_frame_count % this.column_count;
 			int y = this.current_frame_count / this.column_count;
 			return this.getImage().getSubimage(x * this.tile.width, y * this.tile.height, this.tile.width, this.tile.height);
-		} else {
+		}
+		else {
 			return this.getImage();
 		}
 	}

@@ -11,10 +11,10 @@ import net.runelite.client.config.ConfigItem;
 public interface LocalLootTrackerConfig extends Config
 {
     @ConfigItem(
-            keyName = "separateByRsn",
-            name = "Separate by RSN",
-            description = "Separate loot records by RSN instead of collection",
-            position = 0
+        keyName = "separateByRsn",
+        name = "Separate by RSN",
+        description = "Separate loot records by RSN instead of collection",
+        position = 0
     )
     default boolean separateByRsn() { return false; }
 }
