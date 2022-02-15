@@ -2131,6 +2131,16 @@ public interface Client extends GameEngine
 	 */
 	void removeFriend(String name);
 
+	/**
+	 * Add player to ignorelist
+	 */
+	void addIgnore(String name);
+
+	/**
+	 * Remove player from ignorelist
+	 */
+	void removeIgnore(String name);
+
 	void setModulus(BigInteger modulus);
 
 	BigInteger getModulus();
