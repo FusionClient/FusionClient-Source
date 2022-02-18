@@ -2408,4 +2408,10 @@ public interface Client extends GameEngine
 	 * @return
 	 */
 	Deque<AmbientSoundEffect> getAmbientSoundEffects();
+
+	default void setLowCpu(boolean enabled) {
+
+	}
 }
+
+
