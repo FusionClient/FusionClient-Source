@@ -2,6 +2,7 @@
  * Copyright (c) 2021, Big Mf Tyler <github.com/losingticks>
  * Copyright (c) 2021, Sundar <https://github.com/Sundar-Gandu>
  * Copyright (c) 2021, BickusDiggus <https://github.com/BickusDiggus>
+ * Copyright (c) 2022, Casesos <https://github.com/Casesos>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.reflection;
+package net.runelite.client.plugins.hideexternalmanager;
 
 import com.google.inject.Provides;
 import joptsimple.internal.Strings;
@@ -63,8 +64,8 @@ import java.util.List;
 @Extension
 @PluginDescriptor(
         name = "[F] Reflection",
-        description = "Changes the client name, image, and color scheme. By default will be Fusion",
-        tags = {"config", "rewriter", "reflection"},
+        description = "Changes the client name, image, and color scheme. <br> Hide External Manager",
+        tags = {"Fusion", "config", "rewriter", "reflection"},
         enabledByDefault = false
 )
 @PluginDependency(ConfigPlugin.class)
@@ -90,7 +91,7 @@ public class ReflectionPlugin extends Plugin
     @Inject
     private PluginManager pluginManager;
     @Inject
-    private ReflectionConfig config;
+    private HideExternalManagerConfig config;
 
     private static ImageIcon remapImage(BufferedImage image, Color color, boolean restore)
     {
@@ -124,9 +125,9 @@ public class ReflectionPlugin extends Plugin
     }
 
     @Provides
-    ReflectionConfig provideConfig(ConfigManager configManager)
+    HideExternalManagerConfig provideConfig(ConfigManager configManager)
     {
-        return configManager.getConfig(ReflectionConfig.class);
+        return configManager.getConfig(HideExternalManagerConfig.class);
     }
 
     protected void startUp()
@@ -148,7 +149,7 @@ public class ReflectionPlugin extends Plugin
     @Subscribe
     private void onConfigChanged(ConfigChanged event)
     {
-        if (event.getGroup().equalsIgnoreCase("reflection"))
+        if (event.getGroup().equalsIgnoreCase("clienthider"))
         {
             switch (event.getKey())
             {
@@ -227,20 +228,18 @@ public class ReflectionPlugin extends Plugin
         {
             FieldUtils.writeDeclaredField(clientUI, "title", clientTitle, true);
             clientThread.invokeLater(() ->
-            {
-                SwingUtilities.invokeLater(() ->
-                {
-                    try
+                    SwingUtilities.invokeLater(() ->
                     {
-                        MethodUtils.invokeMethod(clientUI, true, "updateFrameConfig", true);
-                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException var2)
-                    {
-                        log.debug("Couldn't invoke 'updateFrameConfig' method in {}", clientUI.getClass());
-                        log.debug("Method Invocation Exception: Message -> {}", var2.getMessage());
-                    }
+                        try
+                        {
+                            MethodUtils.invokeMethod(clientUI, true, "updateFrameConfig", true);
+                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException var2)
+                        {
+                            log.debug("Couldn't invoke 'updateFrameConfig' method in {}", clientUI.getClass());
+                            log.debug("Method Invocation Exception: Message -> {}", var2.getMessage());
+                        }
 
-                });
-            });
+                    }));
         } catch (Exception var5)
         {
             var5.printStackTrace();

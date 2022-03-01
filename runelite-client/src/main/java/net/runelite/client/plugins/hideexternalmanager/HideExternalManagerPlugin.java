@@ -1,3 +1,28 @@
+/*
+ * Copyright (c) 2022, Casesos <https://github.com/Casesos>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package net.runelite.client.plugins.hideexternalmanager;
 
 import com.google.inject.Provides;
@@ -16,12 +41,13 @@ import org.pf4j.Extension;
 import javax.inject.Inject;
 import java.util.ArrayList;
 
-@Extension
+
 @PluginDescriptor(
         name = "Hide External Manager",
         description = "Removes the OPRS external manager icon",
-        tags = {"Spoon", "oprs", "external", "manager"},
-        enabledByDefault = false
+        tags = {"Fusion", "oprs", "external", "manager"},
+        enabledByDefault = false,
+        hidden = true
 )
 
 @Slf4j
@@ -65,7 +91,7 @@ public class HideExternalManagerPlugin extends Plugin
 
     @Subscribe
     private void onConfigChanged(ConfigChanged event) {
-        if (event.getGroup().equalsIgnoreCase("hideManagers")) {
+        if (event.getGroup().equalsIgnoreCase("clienthider")) {
             if (event.getKey().equals("hideOPRS")) {
                 if (config.hideOPRS()) {
                     removeTabs();
@@ -81,14 +107,12 @@ public class HideExternalManagerPlugin extends Plugin
         if (config.hideOPRS()) {
             configManager.setConfiguration("openosrs", "hideOprsManager", true);
         }
-
     }
 
     private void readdTabs(boolean onShutdown)
     {
         if (onShutdown) {
             configManager.setConfiguration("openosrs", "hideOprsManager", false);
-            configManager.setConfiguration("openosrs", "hideSpoonManager", false);
         } else {
             if (!config.hideOPRS()) {
                 configManager.setConfiguration("openosrs", "hideOprsManager", false);
