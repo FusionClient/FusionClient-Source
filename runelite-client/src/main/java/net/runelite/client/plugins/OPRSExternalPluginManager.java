@@ -288,7 +288,7 @@ public class OPRSExternalPluginManager
 				if (id.contains("https://raw.githubusercontent.com/"))
 				{
 					id = "gh:" + id.substring(id.indexOf("https://raw.githubusercontent.com/")).replace("/main", "")
-						.replace("https://raw.githubusercontent.com/", "");
+							.replace("https://raw.githubusercontent.com/", "");
 
 					if (id.endsWith("/"))
 					{
@@ -399,8 +399,8 @@ public class OPRSExternalPluginManager
 	private void saveConfig()
 	{
 		String config = updateManager.getRepositories().stream()
-			.map(r -> r.getId() + "|" + urlToStringEncoded(r.getUrl()))
-			.collect(Collectors.joining(";"));
+				.map(r -> r.getId() + "|" + urlToStringEncoded(r.getUrl()))
+				.collect(Collectors.joining(";"));
 
 		openOSRSConfig.setExternalRepositories(config);
 	}
@@ -464,8 +464,8 @@ public class OPRSExternalPluginManager
 	{
 		OpenOSRSSplashScreen.stage(.66, "Loading external plugins");
 		MutableGraph<Class<? extends Plugin>> graph = GraphBuilder
-			.directed()
-			.build();
+				.directed()
+				.build();
 
 		for (Plugin plugin : plugins)
 		{
@@ -541,30 +541,30 @@ public class OPRSExternalPluginManager
 		{
 			List<Future<?>> curGroup = new ArrayList<>();
 			group.forEach(pluginClazz ->
-				curGroup.add(executorService.submit(() ->
-				{
-					Plugin plugininst;
-					try
+					curGroup.add(executorService.submit(() ->
 					{
-						//noinspection unchecked
-						plugininst = instantiate(scannedPlugins, (Class<Plugin>) pluginClazz, init, initConfig);
-						if (plugininst == null)
+						Plugin plugininst;
+						try
 						{
+							//noinspection unchecked
+							plugininst = instantiate(scannedPlugins, (Class<Plugin>) pluginClazz, init, initConfig);
+							if (plugininst == null)
+							{
+								return;
+							}
+
+							scannedPlugins.add(plugininst);
+						}
+						catch (PluginInstantiationException e)
+						{
+							log.warn("Error instantiating plugin!", e);
 							return;
 						}
 
-						scannedPlugins.add(plugininst);
-					}
-					catch (PluginInstantiationException e)
-					{
-						log.warn("Error instantiating plugin!", e);
-						return;
-					}
+						loaded.getAndIncrement();
 
-					loaded.getAndIncrement();
-
-					OpenOSRSSplashScreen.stage(.67, .75, "Loading external plugins", loaded.get(), scannedPlugins.size());
-				})));
+						OpenOSRSSplashScreen.stage(.67, .75, "Loading external plugins", loaded.get(), scannedPlugins.size());
+					})));
 			curGroup.forEach(future ->
 			{
 				try
@@ -585,17 +585,17 @@ public class OPRSExternalPluginManager
 	private Plugin instantiate(List<Plugin> scannedPlugins, Class<Plugin> clazz, boolean init, boolean initConfig) throws PluginInstantiationException
 	{
 		net.runelite.client.plugins.PluginDependency[] pluginDependencies =
-			clazz.getAnnotationsByType(net.runelite.client.plugins.PluginDependency.class);
+				clazz.getAnnotationsByType(net.runelite.client.plugins.PluginDependency.class);
 		List<Plugin> deps = new ArrayList<>();
 		for (net.runelite.client.plugins.PluginDependency pluginDependency : pluginDependencies)
 		{
 			Optional<net.runelite.client.plugins.Plugin> dependency =
-				Stream.concat(runelitePluginManager.getPlugins().stream(), scannedPlugins.stream())
-					.filter(p -> p.getClass() == pluginDependency.value()).findFirst();
+					Stream.concat(runelitePluginManager.getPlugins().stream(), scannedPlugins.stream())
+							.filter(p -> p.getClass() == pluginDependency.value()).findFirst();
 			if (dependency.isEmpty())
 			{
 				throw new PluginInstantiationException(
-					"Unmet dependency for " + clazz.getSimpleName() + ": " + pluginDependency.value().getSimpleName());
+						"Unmet dependency for " + clazz.getSimpleName() + ": " + pluginDependency.value().getSimpleName());
 			}
 			deps.add(dependency.get());
 		}
@@ -680,7 +680,7 @@ public class OPRSExternalPluginManager
 							runelitePluginManager.add(plugin);
 							runelitePluginManager.startPlugin(plugin);
 							eventBus.post(new OPRSPluginChanged(pluginsMap.get(plugin.getClass().getSimpleName()),
-								plugin, true));
+									plugin, true));
 						}
 						catch (PluginInstantiationException e)
 						{
@@ -780,23 +780,23 @@ public class OPRSExternalPluginManager
 				AtomicReference<String> support = new AtomicReference<>("");
 
 				updateManager.getRepositories().forEach(repository ->
-					repository.getPlugins().forEach((key, value) ->
-					{
-						if (key.equals(pluginId))
+						repository.getPlugins().forEach((key, value) ->
 						{
-							support.set(value.projectUrl);
-						}
-					}));
+							if (key.equals(pluginId))
+							{
+								support.set(value.projectUrl);
+							}
+						}));
 
 				pluginsInfoMap.put(
-					plugin.getClass().getSimpleName(),
-					new HashMap<>()
-					{{
-						put("version", externalPluginManager.getPlugin(pluginId).getDescriptor().getVersion());
-						put("id", externalPluginManager.getPlugin(pluginId).getDescriptor().getPluginId());
-						put("provider", externalPluginManager.getPlugin(pluginId).getDescriptor().getProvider());
-						put("support", support.get());
-					}}
+						plugin.getClass().getSimpleName(),
+						new HashMap<>()
+						{{
+							put("version", externalPluginManager.getPlugin(pluginId).getDescriptor().getVersion());
+							put("id", externalPluginManager.getPlugin(pluginId).getDescriptor().getPluginId());
+							put("provider", externalPluginManager.getPlugin(pluginId).getDescriptor().getProvider());
+							put("support", support.get());
+						}}
 				);
 
 				String[] packageName = plugin.getClass().getPackage().toString().split("\\.");
@@ -912,10 +912,10 @@ public class OPRSExternalPluginManager
 					try
 					{
 						SwingUtil.syncExec(() ->
-							JOptionPane.showMessageDialog(ClientUI.getFrame(),
-								pluginId + " is outdated and cannot be installed",
-								"Installation error",
-								JOptionPane.ERROR_MESSAGE));
+								JOptionPane.showMessageDialog(ClientUI.getFrame(),
+										pluginId + " is outdated and cannot be installed",
+										"Installation error",
+										JOptionPane.ERROR_MESSAGE));
 					}
 					catch (InvocationTargetException | InterruptedException ignored)
 					{
@@ -1060,17 +1060,17 @@ public class OPRSExternalPluginManager
 	public List<PluginWrapper> getDisabledPlugins()
 	{
 		return externalPluginManager.getResolvedPlugins()
-			.stream()
-			.filter(not(externalPluginManager.getStartedPlugins()::contains))
-			.collect(Collectors.toList());
+				.stream()
+				.filter(not(externalPluginManager.getStartedPlugins()::contains))
+				.collect(Collectors.toList());
 	}
 
 	public List<String> getDisabledPluginIds()
 	{
 		return getDisabledPlugins()
-			.stream()
-			.map(PluginWrapper::getPluginId)
-			.collect(Collectors.toList());
+				.stream()
+				.map(PluginWrapper::getPluginId)
+				.collect(Collectors.toList());
 	}
 
 	public List<PluginWrapper> getStartedPlugins()
@@ -1183,13 +1183,13 @@ public class OPRSExternalPluginManager
 	{
 		String s;
 		String path = url.getPath() != null ? Stream.of(url.getPath().split("/"))
-			.map(s2 -> URLEncoder.encode(s2, StandardCharsets.UTF_8)).collect(Collectors.joining("/")) : "";
+				.map(s2 -> URLEncoder.encode(s2, StandardCharsets.UTF_8)).collect(Collectors.joining("/")) : "";
 		return url.getProtocol()
-			+ ':'
-			+ (((s = url.getAuthority()) != null && s.length() > 0) ? "//" + s : "")
-			+ (path)
-			+ (((s = url.getQuery()) != null) ? '?' + urlEncode(s) : "")
-			+ (((s = url.getRef()) != null) ? '#' + urlEncode(s) : "");
+				+ ':'
+				+ (((s = url.getAuthority()) != null && s.length() > 0) ? "//" + s : "")
+				+ (path)
+				+ (((s = url.getQuery()) != null) ? '?' + urlEncode(s) : "")
+				+ (((s = url.getRef()) != null) ? '#' + urlEncode(s) : "");
 	}
 
 	private static String urlEncode(String s)

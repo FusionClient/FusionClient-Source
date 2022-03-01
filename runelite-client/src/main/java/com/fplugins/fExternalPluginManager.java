@@ -50,7 +50,7 @@ public class fExternalPluginManager
     private OPRSExternalPluginManager pluginManager;
     @Inject
     private OpenOSRSConfig config;
-    public static final String FUSION = "Fusion";
+    public static final String FUSION = "Fusion Plugins";
 
     public void fDisablePlugin(String pluginID)
     {

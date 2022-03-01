@@ -1,22 +1,27 @@
 package net.runelite.client.plugins.openosrs.externals;
 
-import com.openosrs.client.ui.JMultilineLabel;
 import net.runelite.client.plugins.OPRSExternalPluginManager;
+import com.openosrs.client.ui.JMultilineLabel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.Optional;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
 import org.pf4j.update.PluginInfo;
 import org.pf4j.update.UpdateRepository;
-
-import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.util.Optional;
 
 public class RepositoryBox extends JPanel
 {
@@ -30,20 +35,20 @@ public class RepositoryBox extends JPanel
 	static
 	{
 		final BufferedImage deleteImg =
-			ImageUtil.recolorImage(
-				ImageUtil.resizeCanvas(
-					ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "delete_icon.png"), 14, 14
-				), ColorScheme.BRAND_BLUE
-			);
+				ImageUtil.recolorImage(
+						ImageUtil.resizeCanvas(
+								ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "delete_icon.png"), 14, 14
+						), ColorScheme.BRAND_BLUE
+				);
 		DELETE_ICON = new ImageIcon(deleteImg);
 		DELETE_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(deleteImg, 0.53f));
 
 		final BufferedImage discordImg =
-			ImageUtil.recolorImage(
-				ImageUtil.resizeCanvas(
-					ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "discord_icon.png"), 14, 14
-				), Color.WHITE
-			);
+				ImageUtil.recolorImage(
+						ImageUtil.resizeCanvas(
+								ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "discord_icon.png"), 14, 14
+						), Color.WHITE
+				);
 		DISCORD_ICON = new ImageIcon(discordImg);
 		DISCORD_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(discordImg, 0.53f));
 	}
@@ -63,8 +68,8 @@ public class RepositoryBox extends JPanel
 		JPanel titleWrapper = new JPanel(new BorderLayout());
 		titleWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		titleWrapper.setBorder(new CompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR),
-			BorderFactory.createLineBorder(ColorScheme.DARKER_GRAY_COLOR)
+				BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR),
+				BorderFactory.createLineBorder(ColorScheme.DARKER_GRAY_COLOR)
 		));
 
 		JLabel title = new JLabel();
@@ -177,6 +182,7 @@ public class RepositoryBox extends JPanel
 		{
 			url = url.replace("https://gitlab.com/", "").replace("/-/raw/master/release/", "");
 		}
+
 		return url;
 	}
 }
