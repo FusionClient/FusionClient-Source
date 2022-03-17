@@ -24,7 +24,13 @@
  */
 package net.runelite.client.callback;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -82,13 +88,12 @@ public class Hooks implements Callbacks
 
 	private static final GameTick GAME_TICK = new GameTick();
 	private static final BeforeRender BEFORE_RENDER = new BeforeRender();
-
-	//Mirror mode
 	private static final DrawFinished drawFinishedEvent = new DrawFinished();
-	private int mouseX = 0;
-	private int mouseY = 0;
-	private final Image cursor = ImageUtil.getResourceStreamFromClass(Hooks.class, "cursor.png");
-
+/*
+	public int mouseX = 0;
+	public int mouseY = 0;
+	public final Image cursor = ImageUtil.loadImageResource(Hooks.class, "cursor.png");
+*/
 	private static Client client;
 	private final OverlayRenderer renderer;
 	private final EventBus eventBus;
@@ -112,7 +117,7 @@ public class Hooks implements Callbacks
 	private boolean shouldProcessGameTick;
 
 	private static MainBufferProvider lastMainBufferProvider;
-	private static Graphics2D lastGraphics;
+	public static Graphics2D lastGraphics;
 
 	/**
 	 * Get the Graphics2D for the MainBufferProvider image
@@ -297,16 +302,16 @@ public class Hooks implements Callbacks
 	@Override
 	public MouseEvent mouseDragged(MouseEvent mouseEvent)
 	{
-		mouseX = mouseEvent.getX();
-		mouseY = mouseEvent.getY();
+//		mouseX = mouseEvent.getX();
+//		mouseY = mouseEvent.getY();
 		return mouseManager.processMouseDragged(mouseEvent);
 	}
 
 	@Override
 	public MouseEvent mouseMoved(MouseEvent mouseEvent)
 	{
-		mouseX = mouseEvent.getX();
-		mouseY = mouseEvent.getY();
+//		mouseX = mouseEvent.getX();
+//		mouseY = mouseEvent.getY();
 		return mouseManager.processMouseMoved(mouseEvent);
 	}
 
@@ -409,7 +414,7 @@ public class Hooks implements Callbacks
 			finalImage = image;
 		}
 
-		if (client.isMirrored())
+/*		if (client.isMirrored())
 		{
 			drawFinishedEvent.image = copy(finalImage);
 			drawFinishedEvent.image.getGraphics().drawImage(cursor, mouseX, mouseY, null);
@@ -418,13 +423,13 @@ public class Hooks implements Callbacks
 
 		try
 		{
-			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
+			renderer.renderOverlayLayer((Graphics2D)finalImage.getGraphics(), OverlayLayer.AFTER_MIRROR);
 		}
 		catch (Exception ex)
 		{
 			log.warn("Error during post-mirror rendering", ex);
 		}
-
+*/
 		// Draw the image onto the game canvas
 		graphics.drawImage(finalImage, 0, 0, client.getCanvas());
 
@@ -438,7 +443,7 @@ public class Hooks implements Callbacks
 	 * @param src
 	 * @return
 	 */
-	private static Image copy(Image src)
+	public static Image copy(Image src)
 	{
 		final int width = src.getWidth(null);
 		final int height = src.getHeight(null);
@@ -458,21 +463,6 @@ public class Hooks implements Callbacks
 		try
 		{
 			renderer.renderOverlayLayer(graphics2d, OverlayLayer.ABOVE_SCENE);
-		}
-		catch (Exception ex)
-		{
-			log.warn("Error during overlay rendering", ex);
-		}
-	}
-
-	public void drawMirror()
-	{
-		MainBufferProvider bufferProvider = (MainBufferProvider) client.getBufferProvider();
-		Graphics2D graphics2d = getGraphics(bufferProvider);
-
-		try
-		{
-			renderer.renderOverlayLayer(graphics2d, OverlayLayer.AFTER_MIRROR);
 		}
 		catch (Exception ex)
 		{

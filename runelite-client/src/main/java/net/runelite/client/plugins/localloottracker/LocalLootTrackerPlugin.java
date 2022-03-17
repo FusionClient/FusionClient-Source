@@ -53,7 +53,9 @@ import java.util.Collection;
 @PluginDescriptor(
         name = "Loot Tracker (local)",
         description = "Local data storage extension to loot tracker plugin",
-        tags = { "loot", "local", "track"}
+        tags = { "loot", "local", "track"},
+        enabledByDefault = false
+
 )
 
 @Slf4j

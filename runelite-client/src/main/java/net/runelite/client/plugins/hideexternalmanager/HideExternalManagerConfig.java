@@ -50,64 +50,63 @@ public interface HideExternalManagerConfig extends Config {
             description = "Change the client icon. " +
                     "<br>If you want a custom icon, put a picture named 'icon.png' in your .fusion folder",
             position = 1
-        )
-        default boolean changeIcon() {
-            return true;
-        }
-
-        @ConfigItem(
-             name = "Client Title",
-             keyName = "clientTitle",
-             description = "",
-             position = 2
-        )
-        default String getClientTitle() {
-            return "Fusion";
-        }
-
-        @ConfigItem(
-                name = "Discord App ID",
-                keyName = "discordAppId",
-                description = "",
-                position = 3
-        )
-        default String getDiscordAppId() {
-            return "409416265891971072";
-        }
-
-
-        @ConfigItem(
-                name = "Plugin Title Color",
-                keyName = "pluginTitleColor",
-                description = "",
-                position = 4
-        )
-        default Color pluginTitleColor() {
-            return Color.WHITE;
-        }
-
-
-        @ConfigItem(
-                name = "Plugin Toggled Color",
-                keyName = "pluginSwitcherOnColor",
-                description = "Default is Fusion color",
-                position = 5
-        )
-        default Color pluginSwitcherOnColor() {
-            return new Color(243, 255, 0);
-        }
-
-
-        @ConfigItem(
-                name = "Plugin Favorited Color",
-                keyName = "pluginStarOnColor",
-                description = "Default is Fusion color",
-                position = 6
-        )
-        default Color pluginStarOnColor() {
-            return new Color(243, 255, 0);
-        }
-
+    )
+    default boolean changeIcon() {
+        return true;
     }
 
+    @ConfigItem(
+            name = "Client Title",
+            keyName = "clientTitle",
+            description = "",
+            position = 2
+    )
+    default String getClientTitle() {
+        return "Fusion";
+    }
+
+    @ConfigItem(
+            name = "Discord App ID",
+            keyName = "discordAppId",
+            description = "",
+            position = 3
+    )
+    default String getDiscordAppId() {
+        return "409416265891971072";
+    }
+
+
+    @ConfigItem(
+            name = "Plugin Title Color",
+            keyName = "pluginTitleColor",
+            description = "",
+            position = 4
+    )
+    default Color pluginTitleColor() {
+        return Color.WHITE;
+    }
+
+
+    @ConfigItem(
+            name = "Plugin Toggled Color",
+            keyName = "pluginSwitcherOnColor",
+            description = "Default is Fusion color",
+            position = 5
+    )
+    default Color pluginSwitcherOnColor() {
+        return new Color(243, 255, 0);
+    }
+
+
+    @ConfigItem(
+            name = "Plugin Favorited Color",
+            keyName = "pluginStarOnColor",
+            description = "Default is Fusion color",
+            position = 6
+    )
+    default Color pluginStarOnColor() {
+        return new Color(243, 255, 0);
+    }
+
+}
 

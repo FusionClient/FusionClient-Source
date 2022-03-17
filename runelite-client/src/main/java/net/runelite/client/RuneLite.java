@@ -100,7 +100,8 @@ import org.slf4j.LoggerFactory;
 @Slf4j
 public class RuneLite
 {
-	public static final File RUNELITE_DIR = new File(System.getProperty("user.home"), ".Fusion");
+	public static final String FUSION = ".Fusion";
+	public static final File RUNELITE_DIR = new File(System.getProperty("user.home"), FUSION);
 	public static final File CACHE_DIR = new File(RUNELITE_DIR, "cache");
 	public static final File PLUGINS_DIR = new File(RUNELITE_DIR, "plugin-hub");
 	public static final File PROFILES_DIR = new File(RUNELITE_DIR, "profiles");
@@ -178,40 +179,40 @@ public class RuneLite
 		parser.accepts("safe-mode", "Disables external plugins and the GPU plugin");
 		parser.accepts("insecure-skip-tls-verification", "Disables TLS verification");
 		parser.accepts("jav_config", "jav_config url")
-			.withRequiredArg()
-			.defaultsTo(RuneLiteProperties.getJavConfig());
+				.withRequiredArg()
+				.defaultsTo(RuneLiteProperties.getJavConfig());
 
 		final ArgumentAcceptingOptionSpec<File> sessionfile = parser.accepts("sessionfile", "Use a specified session file")
-			.withRequiredArg()
-			.withValuesConvertedBy(new ConfigFileConverter())
-			.defaultsTo(DEFAULT_SESSION_FILE);
+				.withRequiredArg()
+				.withValuesConvertedBy(new ConfigFileConverter())
+				.defaultsTo(DEFAULT_SESSION_FILE);
 
 		final ArgumentAcceptingOptionSpec<String> proxyInfo = parser
-			.accepts("proxy")
-			.withRequiredArg().ofType(String.class);
+				.accepts("proxy")
+				.withRequiredArg().ofType(String.class);
 
 		final ArgumentAcceptingOptionSpec<Integer> worldInfo = parser
-			.accepts("world")
-			.withRequiredArg().ofType(Integer.class);
+				.accepts("world")
+				.withRequiredArg().ofType(Integer.class);
 
 		final ArgumentAcceptingOptionSpec<File> configfile = parser.accepts("config", "Use a specified config file")
-			.withRequiredArg()
-			.withValuesConvertedBy(new ConfigFileConverter())
-			.defaultsTo(DEFAULT_CONFIG_FILE);
+				.withRequiredArg()
+				.withValuesConvertedBy(new ConfigFileConverter())
+				.defaultsTo(DEFAULT_CONFIG_FILE);
 
 		final ArgumentAcceptingOptionSpec<ClientUpdateCheckMode> updateMode = parser
-			.accepts("rs", "Select client type")
-			.withRequiredArg()
-			.ofType(ClientUpdateCheckMode.class)
-			.defaultsTo(ClientUpdateCheckMode.AUTO)
-			.withValuesConvertedBy(new EnumConverter<ClientUpdateCheckMode>(ClientUpdateCheckMode.class)
-			{
-				@Override
-				public ClientUpdateCheckMode convert(String v)
+				.accepts("rs", "Select client type")
+				.withRequiredArg()
+				.ofType(ClientUpdateCheckMode.class)
+				.defaultsTo(ClientUpdateCheckMode.AUTO)
+				.withValuesConvertedBy(new EnumConverter<ClientUpdateCheckMode>(ClientUpdateCheckMode.class)
 				{
-					return super.convert(v.toUpperCase());
-				}
-			});
+					@Override
+					public ClientUpdateCheckMode convert(String v)
+					{
+						return super.convert(v.toUpperCase());
+					}
+				});
 
 		parser.accepts("help", "Show this text").forHelp();
 		OptionSet options = parser.parse(args);
@@ -298,19 +299,19 @@ public class RuneLite
 			PROFILES_DIR.mkdirs();
 
 			log.info("OpenOSRS {} (RuneLite version {}, launcher version {}) starting up, args: {}",
-				OpenOSRS.SYSTEM_VERSION, RuneLiteProperties.getVersion() == null ? "unknown" : RuneLiteProperties.getVersion(),
-				RuneLiteProperties.getLauncherVersion(), args.length == 0 ? "none" : String.join(" ", args));
+					OpenOSRS.SYSTEM_VERSION, RuneLiteProperties.getVersion() == null ? "unknown" : RuneLiteProperties.getVersion(),
+					RuneLiteProperties.getLauncherVersion(), args.length == 0 ? "none" : String.join(" ", args));
 
 			final long start = System.currentTimeMillis();
 
 			injector = Guice.createInjector(new RuneLiteModule(
-				okHttpClient,
-				clientLoader,
-				runtimeConfigLoader,
-				developerMode,
-				options.has("safe-mode"),
-				options.valueOf(sessionfile),
-				options.valueOf(configfile)));
+					okHttpClient,
+					clientLoader,
+					runtimeConfigLoader,
+					developerMode,
+					options.has("safe-mode"),
+					options.valueOf(sessionfile),
+					options.valueOf(configfile)));
 
 			injector.getInstance(RuneLite.class).start();
 
@@ -323,8 +324,8 @@ public class RuneLite
 		{
 			log.error("Failure during startup", e);
 			SwingUtilities.invokeLater(() ->
-				new FatalErrorDialog("OpenOSRS has encountered an unexpected error during startup.")
-					.open());
+					new FatalErrorDialog("OpenOSRS has encountered an unexpected error during startup.")
+							.open());
 		}
 		finally
 		{
@@ -459,8 +460,8 @@ public class RuneLite
 			final File file;
 
 			if (Paths.get(fileName).isAbsolute()
-				|| fileName.startsWith("./")
-				|| fileName.startsWith(".\\"))
+					|| fileName.startsWith("./")
+					|| fileName.startsWith(".\\"))
 			{
 				file = new File(fileName);
 			}
@@ -532,30 +533,30 @@ public class RuneLite
 	static OkHttpClient buildHttpClient(boolean insecureSkipTlsVerification)
 	{
 		OkHttpClient.Builder builder = new OkHttpClient.Builder()
-			.pingInterval(30, TimeUnit.SECONDS)
-			.addNetworkInterceptor(chain ->
-			{
-				Request userAgentRequest = chain.request()
-					.newBuilder()
-					.header("User-Agent", USER_AGENT)
-					.build();
-				return chain.proceed(userAgentRequest);
-			})
-			// Setup cache
-			.cache(new Cache(new File(CACHE_DIR, "okhttp"), MAX_OKHTTP_CACHE_SIZE))
-			.addNetworkInterceptor(chain ->
-			{
-				// This has to be a network interceptor so it gets hit before the cache tries to store stuff
-				Response res = chain.proceed(chain.request());
-				if (res.code() >= 400 && "GET".equals(res.request().method()))
+				.pingInterval(30, TimeUnit.SECONDS)
+				.addNetworkInterceptor(chain ->
 				{
-					// if the request 404'd we don't want to cache it because its probably temporary
-					res = res.newBuilder()
-						.header("Cache-Control", "no-store")
-						.build();
-				}
-				return res;
-			});
+					Request userAgentRequest = chain.request()
+							.newBuilder()
+							.header("User-Agent", USER_AGENT)
+							.build();
+					return chain.proceed(userAgentRequest);
+				})
+				// Setup cache
+				.cache(new Cache(new File(CACHE_DIR, "okhttp"), MAX_OKHTTP_CACHE_SIZE))
+				.addNetworkInterceptor(chain ->
+				{
+					// This has to be a network interceptor so it gets hit before the cache tries to store stuff
+					Response res = chain.proceed(chain.request());
+					if (res.code() >= 400 && "GET".equals(res.request().method()))
+					{
+						// if the request 404'd we don't want to cache it because its probably temporary
+						res = res.newBuilder()
+								.header("Cache-Control", "no-store")
+								.build();
+					}
+					return res;
+				});
 
 		if (insecureSkipTlsVerification || RuneLiteProperties.isInsecureSkipTlsVerification())
 		{
@@ -610,7 +611,7 @@ public class RuneLite
 	private static void copyJagexCache()
 	{
 		Path from = Paths.get(System.getProperty("user.home"), "jagexcache");
-		Path to = Paths.get(System.getProperty("user.home"),  "jagexcache");
+		Path to = Paths.get(System.getProperty("user.home"), FUSION, "jagexcache");
 		if (Files.exists(to) || !Files.exists(from))
 		{
 			return;
