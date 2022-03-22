@@ -43,6 +43,7 @@ import net.runelite.api.geometry.SimplePolygon;
 import net.runelite.api.model.Jarvis;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A utility class containing methods to help with conversion between
@@ -681,7 +682,7 @@ public class Perspective
 	 * @param point       the coordinate of the tile
 	 * @return the clickable area of the model
 	 */
-	@Nullable
+	@Deprecated(since = "4.20.4", forRemoval = true)
 	public static Shape getClickbox(@Nonnull Client client, Model model, int orientation, LocalPoint point)
 	{
 		if (model == null)
@@ -692,6 +693,31 @@ public class Perspective
 		int x = point.getX();
 		int y = point.getY();
 		int z = getTileHeight(client, point, client.getPlane());
+
+		return getClickbox(client, model, orientation, x, y, z);
+	}
+
+	/**
+	 * You don't want this. Use {@link //TileObject#getClickbox()} instead.
+	 * <p>
+	 * Get the on-screen clickable area of {@code model} as though it's for the
+	 * object on the tile at ({@code localX}, {@code localY}) and rotated to
+	 * angle {@code orientation}.
+	 * @param client      the game client
+	 * @param model       the model to calculate a clickbox for
+	 * @param orientation the orientation of the model (0-2048, where 0 is north)
+	 * @param x           x coord in local space
+	 * @param z           y coord in local space
+	 * @return the clickable area of the model
+	 */
+	@Nullable
+	@ApiStatus.Internal
+	public static Shape getClickbox(@Nonnull Client client, Model model, int orientation, int x, int y, int z)
+	{
+		if (model == null)
+		{
+			return null;
+		}
 
 		SimplePolygon bounds = calculateAABB(client, model, orientation, x, y, z);
 
