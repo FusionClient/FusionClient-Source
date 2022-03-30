@@ -26,8 +26,8 @@ public final class Canvas extends java.awt.Canvas {
 
 	@ObfuscatedName("v")
 	@ObfuscatedSignature(
-		descriptor = "(B)V",
-		garbageValue = "-64"
+			descriptor = "(B)V",
+			garbageValue = "-64"
 	)
 	public static void method391() {
 		while (true) {
@@ -46,8 +46,8 @@ public final class Canvas extends java.awt.Canvas {
 
 	@ObfuscatedName("v")
 	@ObfuscatedSignature(
-		descriptor = "(I)[Lqv;",
-		garbageValue = "929937877"
+			descriptor = "(I)[Lqv;",
+			garbageValue = "929937877"
 	)
 	static PrivateChatMode[] method389() {
 		return new PrivateChatMode[]{PrivateChatMode.field4738, PrivateChatMode.field4739, PrivateChatMode.field4740}; // L: 11
@@ -55,8 +55,8 @@ public final class Canvas extends java.awt.Canvas {
 
 	@ObfuscatedName("v")
 	@ObfuscatedSignature(
-		descriptor = "(Llq;B)V",
-		garbageValue = "8"
+			descriptor = "(Llq;B)V",
+			garbageValue = "8"
 	)
 	public static void method390(AbstractArchive var0) {
 		ParamComposition.ParamDefinition_archive = var0; // L: 21
@@ -64,8 +64,8 @@ public final class Canvas extends java.awt.Canvas {
 
 	@ObfuscatedName("u")
 	@ObfuscatedSignature(
-		descriptor = "([BIILgs;[Lgf;I)V",
-		garbageValue = "-1948278943"
+			descriptor = "([BIILgs;[Lgf;I)V",
+			garbageValue = "-1948278943"
 	)
 	static final void method388(byte[] var0, int var1, int var2, Scene var3, CollisionMap[] var4) {
 		Buffer var5 = new Buffer(var0); // L: 289
@@ -106,7 +106,7 @@ public final class Canvas extends java.awt.Canvas {
 						var19 = var4[var18];
 					}
 
-					WorldMapIcon_1.method4556(var12, var16, var17, var6, var15, var14, var3, var19); // L: 313
+					WorldMapIcon_1.addObjects(var12, var16, var17, var6, var15, var14, var3, var19); // L: 313
 				}
 			}
 		}

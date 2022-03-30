@@ -143,12 +143,15 @@ import static net.runelite.mixins.CameraMixin.STANDARD_PITCH_MAX;
 import static net.runelite.mixins.CameraMixin.STANDARD_PITCH_MIN;
 import net.runelite.rs.api.RSAbstractArchive;
 import net.runelite.rs.api.RSArchive;
+import net.runelite.rs.api.RSBuffer;
 import net.runelite.rs.api.RSChatChannel;
 import net.runelite.rs.api.RSClanChannel;
 import net.runelite.rs.api.RSClient;
+import net.runelite.rs.api.RSCollisionMap;
 import net.runelite.rs.api.RSDualNode;
 import net.runelite.rs.api.RSEnumComposition;
 import net.runelite.rs.api.RSEvictingDualNodeHashTable;
+import net.runelite.rs.api.RSFloorOverlayDefinition;
 import net.runelite.rs.api.RSFriendSystem;
 import net.runelite.rs.api.RSIndexedSprite;
 import net.runelite.rs.api.RSInterfaceParent;
@@ -240,8 +243,8 @@ public abstract class RSClientMixin implements RSClient
 
 	@Inject
 	private final Cache<Integer, RSEnumComposition> enumCache = CacheBuilder.newBuilder()
-		.maximumSize(64)
-		.build();
+			.maximumSize(64)
+			.build();
 
 	@Inject
 	private static boolean printMenuActions;
@@ -1045,12 +1048,12 @@ public abstract class RSClientMixin implements RSClient
 			}
 
 			MenuEntryAdded menuEntryAdded = new MenuEntryAdded(
-				menuOption,
-				menuTarget,
-				menuOpcode,
-				menuIdentifier,
-				menuArgument1,
-				menuArgument2
+					menuOption,
+					menuTarget,
+					menuOpcode,
+					menuIdentifier,
+					menuArgument1,
+					menuArgument2
 			);
 			client.getCallbacks().post(menuEntryAdded);
 
@@ -1271,10 +1274,10 @@ public abstract class RSClientMixin implements RSClient
 		{
 			Skill updatedSkill = possibleSkills[idx];
 			StatChanged statChanged = new StatChanged(
-				updatedSkill,
-				client.getSkillExperience(updatedSkill),
-				client.getRealSkillLevel(updatedSkill),
-				client.getBoostedSkillLevel(updatedSkill)
+					updatedSkill,
+					client.getSkillExperience(updatedSkill),
+					client.getRealSkillLevel(updatedSkill),
+					client.getBoostedSkillLevel(updatedSkill)
 			);
 			client.getCallbacks().post(statChanged);
 		}
@@ -1295,10 +1298,10 @@ public abstract class RSClientMixin implements RSClient
 		if (skillIdx >= 0 && skillIdx < skills.length - 1)
 		{
 			StatChanged statChanged = new StatChanged(
-				skills[skillIdx],
-				client.getSkillExperiences()[skillIdx],
-				client.getRealSkillLevels()[skillIdx],
-				client.getBoostedSkillLevels()[skillIdx]
+					skills[skillIdx],
+					client.getSkillExperiences()[skillIdx],
+					client.getRealSkillLevels()[skillIdx],
+					client.getBoostedSkillLevels()[skillIdx]
 			);
 			client.getCallbacks().post(statChanged);
 		}
@@ -1310,7 +1313,7 @@ public abstract class RSClientMixin implements RSClient
 	{
 		// Reset the menu opcode
 		MenuAction[] playerActions = {PLAYER_FIRST_OPTION, PLAYER_SECOND_OPTION, PLAYER_THIRD_OPTION, PLAYER_FOURTH_OPTION,
-			PLAYER_FIFTH_OPTION, PLAYER_SIXTH_OPTION, PLAYER_SEVENTH_OPTION, PLAYER_EIGTH_OPTION};
+				PLAYER_FIFTH_OPTION, PLAYER_SIXTH_OPTION, PLAYER_SEVENTH_OPTION, PLAYER_EIGTH_OPTION};
 		if (idx >= 0 && idx < playerActions.length)
 		{
 			MenuAction playerAction = playerActions[idx];
@@ -1696,17 +1699,17 @@ public abstract class RSClientMixin implements RSClient
 		if (printMenuActions)
 		{
 			client.getLogger().info(
-				"|MenuAction|: MenuOption={} MenuTarget={} Id={} Opcode={}/{} Param0={} Param1={} CanvasX={} CanvasY={}",
-				menuOptionClicked.getMenuOption(), menuOptionClicked.getMenuTarget(), menuOptionClicked.getId(),
-				menuOptionClicked.getMenuAction(), opcode + (decremented ? 2000 : 0),
-				menuOptionClicked.getParam0(), menuOptionClicked.getParam1(), canvasX, canvasY
+					"|MenuAction|: MenuOption={} MenuTarget={} Id={} Opcode={}/{} Param0={} Param1={} CanvasX={} CanvasY={}",
+					menuOptionClicked.getMenuOption(), menuOptionClicked.getMenuTarget(), menuOptionClicked.getId(),
+					menuOptionClicked.getMenuAction(), opcode + (decremented ? 2000 : 0),
+					menuOptionClicked.getParam0(), menuOptionClicked.getParam1(), canvasX, canvasY
 			);
 		}
 
 		copy$menuAction(menuOptionClicked.getParam0(), menuOptionClicked.getParam1(),
-			menuOptionClicked.getMenuAction() == UNKNOWN ? opcode : menuOptionClicked.getMenuAction().getId(),
-			menuOptionClicked.getId(), menuOptionClicked.getMenuOption(), menuOptionClicked.getMenuTarget(),
-			canvasX, canvasY);
+				menuOptionClicked.getMenuAction() == UNKNOWN ? opcode : menuOptionClicked.getMenuAction().getId(),
+				menuOptionClicked.getId(), menuOptionClicked.getMenuOption(), menuOptionClicked.getMenuTarget(),
+				canvasX, canvasY);
 	}
 
 	@Override
@@ -1858,8 +1861,8 @@ public abstract class RSClientMixin implements RSClient
 			widget.setRenderY(renderY);
 
 			if (widget.getType() == WidgetType.RECTANGLE && renderX == client.getViewportXOffset() && renderY == client.getViewportYOffset()
-				&& widget.getWidth() == client.getViewportWidth() && widget.getHeight() == client.getViewportHeight()
-				&& widget.getOpacity() > 0 && widget.isFilled() && widget.getFillMode().getOrdinal() == 0 && client.isGpu())
+					&& widget.getWidth() == client.getViewportWidth() && widget.getHeight() == client.getViewportHeight()
+					&& widget.getOpacity() > 0 && widget.isFilled() && widget.getFillMode().getOrdinal() == 0 && client.isGpu())
 			{
 				int tc = widget.getTextColor();
 				int alpha = widget.getOpacity() & 0xFF;
@@ -2171,7 +2174,7 @@ public abstract class RSClientMixin implements RSClient
 		if (client.getSpellSelected())
 		{
 			return ((hideFriendCastOptions && p.isFriended()) || (hideClanmateCastOptions && p.isFriendsChatMember()))
-				&& !unhiddenCasts.contains(client.getSelectedSpellName().replaceAll("<[^>]*>", "").toLowerCase());
+					&& !unhiddenCasts.contains(client.getSelectedSpellName().replaceAll("<[^>]*>", "").toLowerCase());
 		}
 
 		return ((hideFriendAttackOptions && p.isFriended()) || (hideClanmateAttackOptions && p.isFriendsChatMember()));
@@ -2880,5 +2883,65 @@ public abstract class RSClientMixin implements RSClient
 
 		return modelData.newModelData(modelData, true, true, true, true);
 	}
-}
 
+	@Inject
+	public static RSFloorOverlayDefinition loadFloorOverlay(int var0)
+	{
+		RSFloorOverlayDefinition var1 = (RSFloorOverlayDefinition) client.getFloorOverlayDefinitionCache().get(var0);
+
+		if (var1 == null)
+		{
+			byte[] var2 = client.getFloorOverlayDefinitionArchive().loadData(4, var0);
+			var1 = client.newFloorOverlayDefinition();
+			if (var2 != null)
+			{
+				RSBuffer var3 = client.newBuffer(var2);
+				var1.decode(var3, var0);
+			}
+
+			var1.postDecode();
+			client.getFloorOverlayDefinitionCache().put((RSDualNode) var1, (long) var0);
+		}
+
+		return var1;
+	}
+
+	@Copy("addObjects")
+	@Replace("addObjects")
+	@SuppressWarnings("InfiniteRecursion")
+	public static void copy$addObjects(int var0, int var1, int var2, int var3, int var4, int var5, RSScene var6, RSCollisionMap var7)
+	{
+		boolean resetLowMemory = false;
+
+		byte tileSetting = client.getTileSettings()[var0][var1][var2];
+
+		if (client.isLowMemory())
+		{
+			byte[] var10000 = client.getTileSettings()[var0][var1];
+			var10000[var2] &= -17;
+			if (var5 == 22)
+			{
+				int TileOverlay = client.getTileOverlays()[var0][var1][var2] & 255;
+
+				if (TileOverlay > 0)
+				{
+					RSFloorOverlayDefinition floorOverlayDefinition = loadFloorOverlay(TileOverlay - 1);
+					if (floorOverlayDefinition.getTexture() < 0 && floorOverlayDefinition.getPrimaryRgb() == 16711935)
+					{
+						client.setLowMemory(false);
+						resetLowMemory = true;
+					}
+				}
+			}
+		}
+
+		copy$addObjects(var0, var1, var2, var3, var4, var5, var6, var7);
+
+		client.getTileSettings()[var0][var1][var2] = tileSetting;
+
+		if (resetLowMemory)
+		{
+			client.setLowMemory(true);
+		}
+	}
+}

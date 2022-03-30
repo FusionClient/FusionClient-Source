@@ -10,49 +10,49 @@ import net.runelite.rs.ScriptOpcodes;
 public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 	@ObfuscatedName("sb")
 	@ObfuscatedSignature(
-		descriptor = "Laa;"
+			descriptor = "Laa;"
 	)
 	@Export("pcmStreamMixer")
 	static PcmStreamMixer pcmStreamMixer;
 	@ObfuscatedName("v")
 	@ObfuscatedGetter(
-		intValue = -460630695
+			intValue = -460630695
 	)
 	@Export("objectDefId")
 	final int objectDefId;
 	@ObfuscatedName("o")
 	@ObfuscatedSignature(
-		descriptor = "Lhc;"
+			descriptor = "Lhc;"
 	)
 	@Export("region")
 	final WorldMapRegion region;
 	@ObfuscatedName("h")
 	@ObfuscatedGetter(
-		intValue = 308451519
+			intValue = 308451519
 	)
 	@Export("element")
 	int element;
 	@ObfuscatedName("g")
 	@ObfuscatedSignature(
-		descriptor = "Liw;"
+			descriptor = "Liw;"
 	)
 	@Export("label")
 	WorldMapLabel label;
 	@ObfuscatedName("l")
 	@ObfuscatedGetter(
-		intValue = 1213792301
+			intValue = 1213792301
 	)
 	@Export("subWidth")
 	int subWidth;
 	@ObfuscatedName("n")
 	@ObfuscatedGetter(
-		intValue = -1841576609
+			intValue = -1841576609
 	)
 	@Export("subHeight")
 	int subHeight;
 
 	@ObfuscatedSignature(
-		descriptor = "(Lko;Lko;ILhc;)V"
+			descriptor = "(Lko;Lko;ILhc;)V"
 	)
 	WorldMapIcon_1(Coord var1, Coord var2, int var3, WorldMapRegion var4) {
 		super(var1, var2); // L: 17
@@ -63,8 +63,8 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("v")
 	@ObfuscatedSignature(
-		descriptor = "(I)V",
-		garbageValue = "-58815243"
+			descriptor = "(I)V",
+			garbageValue = "-58815243"
 	)
 	@Export("init")
 	void init() {
@@ -84,8 +84,8 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("o")
 	@ObfuscatedSignature(
-		descriptor = "(I)I",
-		garbageValue = "2078584239"
+			descriptor = "(I)I",
+			garbageValue = "2078584239"
 	)
 	@Export("getElement")
 	public int getElement() {
@@ -94,8 +94,8 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("h")
 	@ObfuscatedSignature(
-		descriptor = "(I)Liw;",
-		garbageValue = "-2105037058"
+			descriptor = "(I)Liw;",
+			garbageValue = "-2105037058"
 	)
 	@Export("getLabel")
 	WorldMapLabel getLabel() {
@@ -104,8 +104,8 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("g")
 	@ObfuscatedSignature(
-		descriptor = "(I)I",
-		garbageValue = "388705804"
+			descriptor = "(I)I",
+			garbageValue = "388705804"
 	)
 	@Export("getSubWidth")
 	int getSubWidth() {
@@ -114,8 +114,8 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("l")
 	@ObfuscatedSignature(
-		descriptor = "(B)I",
-		garbageValue = "-54"
+			descriptor = "(B)I",
+			garbageValue = "-54"
 	)
 	@Export("getSubHeight")
 	int getSubHeight() {
@@ -124,10 +124,11 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("k")
 	@ObfuscatedSignature(
-		descriptor = "(IIIIIILgs;Lgf;I)V",
-		garbageValue = "-1640512620"
+			descriptor = "(IIIIIILgs;Lgf;I)V",
+			garbageValue = "-1640512620"
 	)
-	static final void method4556(int var0, int var1, int var2, int var3, int var4, int var5, Scene var6, CollisionMap var7) {
+	@Export("addObjects")
+	static final void addObjects(int var0, int var1, int var2, int var3, int var4, int var5, Scene var6, CollisionMap var7) {
 		if (!Client.isLowDetail || (Tiles.Tiles_renderFlags[0][var1][var2] & 2) != 0 || (Tiles.Tiles_renderFlags[var0][var1][var2] & 16) == 0) { // L: 355 356 357
 			if (var0 < Tiles.Tiles_minPlane) { // L: 360
 				Tiles.Tiles_minPlane = var0;
@@ -513,8 +514,8 @@ public class WorldMapIcon_1 extends AbstractWorldMapIcon {
 
 	@ObfuscatedName("aj")
 	@ObfuscatedSignature(
-		descriptor = "(ILbo;ZI)I",
-		garbageValue = "694250385"
+			descriptor = "(ILbo;ZI)I",
+			garbageValue = "694250385"
 	)
 	static int method4559(int var0, Script var1, boolean var2) {
 		int var3;

@@ -9,7 +9,7 @@ import net.runelite.mapping.ObfuscatedSignature;
 public final class Tiles {
 	@ObfuscatedName("sy")
 	@ObfuscatedGetter(
-		intValue = 1069541605
+			intValue = 1069541605
 	)
 	static int field996;
 	@ObfuscatedName("v")
@@ -20,7 +20,7 @@ public final class Tiles {
 	static byte[][][] Tiles_renderFlags;
 	@ObfuscatedName("h")
 	@ObfuscatedGetter(
-		intValue = -367367905
+			intValue = -367367905
 	)
 	@Export("Tiles_minPlane")
 	static int Tiles_minPlane;
@@ -49,13 +49,13 @@ public final class Tiles {
 	static final int[] field993;
 	@ObfuscatedName("t")
 	@ObfuscatedGetter(
-		intValue = 468499867
+			intValue = 468499867
 	)
 	@Export("rndHue")
 	static int rndHue;
 	@ObfuscatedName("i")
 	@ObfuscatedGetter(
-		intValue = -2107967973
+			intValue = -2107967973
 	)
 	@Export("rndLightness")
 	static int rndLightness;
@@ -76,8 +76,8 @@ public final class Tiles {
 
 	@ObfuscatedName("h")
 	@ObfuscatedSignature(
-		descriptor = "(IIB)Lba;",
-		garbageValue = "0"
+			descriptor = "(IIB)Lba;",
+			garbageValue = "0"
 	)
 	@Export("Messages_getByChannelAndID")
 	static Message Messages_getByChannelAndID(int var0, int var1) {
@@ -87,7 +87,7 @@ public final class Tiles {
 
 	@ObfuscatedName("r")
 	@ObfuscatedSignature(
-		descriptor = "([BIIIIIIILgs;[Lgf;)V"
+			descriptor = "([BIIIIIIILgs;[Lgf;)V"
 	)
 	static final void method2006(byte[] var0, int var1, int var2, int var3, int var4, int var5, int var6, int var7, Scene var8, CollisionMap[] var9) {
 		Buffer var10 = new Buffer(var0); // L: 321
@@ -130,7 +130,7 @@ public final class Tiles {
 							var25 = var9[var24];
 						}
 
-						WorldMapIcon_1.method4556(var1, var22, var23, var11, var20 + var7 & 3, var19, var8, var25); // L: 347
+						WorldMapIcon_1.addObjects(var1, var22, var23, var11, var20 + var7 & 3, var19, var8, var25); // L: 347
 					}
 				}
 			}
@@ -139,8 +139,8 @@ public final class Tiles {
 
 	@ObfuscatedName("km")
 	@ObfuscatedSignature(
-		descriptor = "(II)V",
-		garbageValue = "-373872413"
+			descriptor = "(II)V",
+			garbageValue = "-373872413"
 	)
 	static final void method2040(int var0) {
 		var0 = Math.min(Math.max(var0, 0), 255); // L: 11359
