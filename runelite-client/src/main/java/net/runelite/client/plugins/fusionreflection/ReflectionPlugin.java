@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.hideexternalmanager;
+package net.runelite.client.plugins.fusionreflection;
 
 import com.google.inject.Provides;
 import joptsimple.internal.Strings;
@@ -92,6 +92,8 @@ public class ReflectionPlugin extends Plugin
     private PluginManager pluginManager;
     @Inject
     private HideExternalManagerConfig config;
+    @Inject
+    private ConfigManager configManager;
 
     private static ImageIcon remapImage(BufferedImage image, Color color, boolean restore)
     {
@@ -136,6 +138,7 @@ public class ReflectionPlugin extends Plugin
         updateClientTitle(false);
         updateDiscordAppID(false);
         updatePluginListResourceImages(false);
+        removeTabs(config.hideOPRS());
     }
 
     protected void shutDown()
@@ -144,12 +147,15 @@ public class ReflectionPlugin extends Plugin
         updateClientTitle(true);
         updateDiscordAppID(true);
         updatePluginListResourceImages(true);
+        readdTabs(true);
+
     }
 
     @Subscribe
     private void onConfigChanged(ConfigChanged event)
     {
         if (event.getGroup().equalsIgnoreCase("clienthider"))
+                if (event.getKey().equals("hideOPRS"))
         {
             switch (event.getKey())
             {
@@ -167,6 +173,14 @@ public class ReflectionPlugin extends Plugin
                 case "pluginSwitcherOnColor":
                     updatePluginListResourceImages(false);
                     break;
+                case "hideOPRS":
+                    removeTabs(config.hideOPRS());
+                case "hideOprsManager":
+                    readdTabs(false);
+                    break;
+                case "devTools":
+
+
             }
         }
     }
@@ -347,7 +361,26 @@ public class ReflectionPlugin extends Plugin
             {
                 log.debug("Exception Message -> {}", e.getMessage());
             }
+        }
+    }
 
+
+    private void removeTabs(boolean b)
+    {
+        if (config.hideOPRS()) {
+            configManager.setConfiguration("openosrs", "hideOprsManager", true);
+        }
+
+    }
+
+    private void readdTabs(boolean onShutdown)
+    {
+        if (onShutdown) {
+            configManager.setConfiguration("openosrs", "hideOprsManager", false);
+        } else {
+            if (!config.hideOPRS()) {
+                configManager.setConfiguration("openosrs", "hideOprsManager", false);
+            }
         }
     }
 }

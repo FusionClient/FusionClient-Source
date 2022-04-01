@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.hideexternalmanager;
+package net.runelite.client.plugins.fusionreflection;
 
 
 import net.runelite.client.config.Config;
@@ -40,9 +40,7 @@ public interface HideExternalManagerConfig extends Config {
             name = "Hide OPRS External Manager",
             description = "Hides the OPRS external manager."
     )
-    default boolean hideOPRS() {
-        return false;
-    }
+    default boolean hideOPRS() { return false; }
 
     @ConfigItem(
             name = "Change Icon",
