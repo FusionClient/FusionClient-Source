@@ -201,8 +201,8 @@ public class InfoPanel extends PluginPanel
 
 		actionsContainer.add(buildLinkPanel(GITHUB_ICON, "Report an issue or", "make a suggestion", githubLink));
 		actionsContainer.add(buildLinkPanel(DISCORD_ICON, "Talk to us on our", "Discord server", discordInvite));
-		actionsContainer.add(buildLinkPanel(PATREON_ICON, "Become a patron to", "help support OpenOSRS", patreonLink));
-		actionsContainer.add(buildLinkPanel(WIKI_ICON, "Information about", "RuneLite and plugins", wikiLink));
+		//actionsContainer.add(buildLinkPanel(PATREON_ICON, "Become a patron to", "help support OpenOSRS", patreonLink));
+		//actionsContainer.add(buildLinkPanel(WIKI_ICON, "Information about", "RuneLite and plugins", wikiLink));
 
 		add(versionPanel, BorderLayout.NORTH);
 		add(actionsContainer, BorderLayout.CENTER);
@@ -309,9 +309,9 @@ public class InfoPanel extends PluginPanel
 		else
 		{
 			emailLabel.setContentType("text/html");
-			emailLabel.setText("<a href=\"" + RUNELITE_LOGIN + "\">Sign in</a> to sync settings to the cloud.");
+			/*emailLabel.setText("<a href=\"" + RUNELITE_LOGIN + "\">Sign in</a> to sync settings to the cloud.");
 			loggedLabel.setText("Not signed in");
-			actionsContainer.remove(syncPanel);
+			actionsContainer.remove(syncPanel); */
 		}
 	}
 
