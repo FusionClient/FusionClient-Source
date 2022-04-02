@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
+ * Copyright (c) 2021, Jonathan Rousseau <https://github.com/JoRouss>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,17 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.ws;
+package net.runelite.client.plugins.party.messages;
 
 import lombok.Data;
-
-import java.awt.image.BufferedImage;
-import java.util.UUID;
+import net.runelite.http.api.ws.messages.party.PartyMemberMessage;
 
 @Data
-public class PartyMember
+public class CharacterNameUpdate extends PartyMemberMessage
 {
-	private final UUID memberId;
-	private final String name;
-	private BufferedImage avatar;
+	private final String characterName;
 }

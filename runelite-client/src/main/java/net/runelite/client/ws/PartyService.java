@@ -27,14 +27,6 @@ package net.runelite.client.ws;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,15 +38,20 @@ import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.PartyChanged;
-import net.runelite.client.util.Text;
 import net.runelite.client.events.PartyMemberAvatar;
+import net.runelite.client.util.Text;
+import net.runelite.http.api.ws.messages.party.*;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import static net.runelite.client.util.Text.JAGEX_PRINTABLE_CHAR_MATCHER;
-import net.runelite.http.api.ws.messages.party.Join;
-import net.runelite.http.api.ws.messages.party.Part;
-import net.runelite.http.api.ws.messages.party.PartyChatMessage;
-import net.runelite.http.api.ws.messages.party.UserJoin;
-import net.runelite.http.api.ws.messages.party.UserPart;
-import net.runelite.http.api.ws.messages.party.UserSync;
 
 @Slf4j
 @Singleton

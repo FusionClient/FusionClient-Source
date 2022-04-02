@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
+ * Copyright (c) 2019, Tomas Slusny <slusnucky@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,17 +22,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.ws;
+package net.runelite.client.plugins.party.data;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import net.runelite.api.coords.WorldPoint;
 
-import java.awt.image.BufferedImage;
-import java.util.UUID;
+import java.awt.*;
 
-@Data
-public class PartyMember
+@RequiredArgsConstructor
+@Getter
+@Setter
+public class PartyTilePingData
 {
-	private final UUID memberId;
-	private final String name;
-	private BufferedImage avatar;
+	private final WorldPoint point;
+	private final Color color;
+	private int alpha = 255;
 }

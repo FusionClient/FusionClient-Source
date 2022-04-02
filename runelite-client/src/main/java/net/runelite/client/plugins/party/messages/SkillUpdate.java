@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
+ * Copyright (c) 2019, Tomas Slusny <slusnucky@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,17 +22,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.ws;
+package net.runelite.client.plugins.party.messages;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.runelite.api.Skill;
+import net.runelite.http.api.ws.messages.party.PartyMemberMessage;
 
-import java.awt.image.BufferedImage;
-import java.util.UUID;
-
-@Data
-public class PartyMember
+@AllArgsConstructor
+@Getter
+public class SkillUpdate extends PartyMemberMessage
 {
-	private final UUID memberId;
-	private final String name;
-	private BufferedImage avatar;
+	private final Skill skill;
+	private final int value;
+	private final int max;
 }

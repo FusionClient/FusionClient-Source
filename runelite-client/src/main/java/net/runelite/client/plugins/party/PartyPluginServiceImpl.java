@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
+ * Copyright (c) 2019, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,17 +22,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.ws;
+package net.runelite.client.plugins.party;
 
-import lombok.Data;
+import net.runelite.client.plugins.party.data.PartyData;
 
-import java.awt.image.BufferedImage;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.UUID;
 
-@Data
-public class PartyMember
+@Singleton
+public class PartyPluginServiceImpl implements PartyPluginService
 {
-	private final UUID memberId;
-	private final String name;
-	private BufferedImage avatar;
+	private final PartyPlugin plugin;
+
+	@Inject
+	private PartyPluginServiceImpl(final PartyPlugin plugin)
+	{
+
+		this.plugin = plugin;
+	}
+
+	@Override
+	public PartyData getPartyData(UUID memberId)
+	{
+		return plugin.getPartyData(memberId);
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
+ * Copyright (c) 2019, Tomas Slusny <slusnucky@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,17 +22,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.ws;
+package net.runelite.client.plugins.party;
 
-import lombok.Data;
+import net.runelite.api.Point;
+import net.runelite.api.coords.WorldPoint;
+import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
+import net.runelite.client.util.ImageUtil;
+import net.runelite.client.ws.PartyMember;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.UUID;
 
-@Data
-public class PartyMember
+public class PartyWorldMapPoint extends WorldMapPoint
 {
-	private final UUID memberId;
-	private final String name;
-	private BufferedImage avatar;
+	private static final BufferedImage ARROW = ImageUtil.loadImageResource(PartyWorldMapPoint.class, "/util/clue_arrow.png");
+
+	private BufferedImage partyImage;
+	private final PartyMember member;
+
+	public PartyWorldMapPoint(WorldPoint worldPoint, PartyMember member)
+	{
+		super(worldPoint, null);
+		this.member = member;
+		this.setSnapToEdge(true);
+		this.setJumpOnClick(true);
+		this.setName(member.getName());
+		this.setImagePoint(new Point(
+			ARROW.getWidth() / 2,
+			ARROW.getHeight()));
+	}
+
+	@Override
+	public BufferedImage getImage()
+	{
+		if (partyImage == null && member != null && member.getAvatar() != null)
+		{
+			partyImage = new BufferedImage(ARROW.getWidth(), ARROW.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics g = partyImage.getGraphics();
+			g.drawImage(ARROW, 0, 0, null);
+			g.drawImage(ImageUtil.resizeImage(member.getAvatar(), 28, 28), 2, 2, null);
+		}
+
+		return partyImage;
+	}
 }

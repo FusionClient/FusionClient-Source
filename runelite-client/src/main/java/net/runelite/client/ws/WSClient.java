@@ -26,13 +26,6 @@ package net.runelite.client.ws;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.RuneLite;
@@ -41,12 +34,15 @@ import net.runelite.http.api.ws.WebsocketGsonFactory;
 import net.runelite.http.api.ws.WebsocketMessage;
 import net.runelite.http.api.ws.messages.Handshake;
 import net.runelite.http.api.ws.messages.party.PartyMessage;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
+import okhttp3.*;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Singleton
