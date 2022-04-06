@@ -24,12 +24,11 @@
  */
 package net.runelite.client.plugins.party.data;
 
+import java.awt.Color;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.runelite.api.coords.WorldPoint;
-
-import java.awt.*;
 
 @RequiredArgsConstructor
 @Getter

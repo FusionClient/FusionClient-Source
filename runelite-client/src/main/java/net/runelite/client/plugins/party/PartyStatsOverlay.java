@@ -25,6 +25,14 @@
  */
 package net.runelite.client.plugins.party;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Map;
+import java.util.UUID;
+import javax.inject.Inject;
 import net.runelite.api.MenuAction;
 import net.runelite.client.plugins.party.data.PartyData;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
@@ -34,11 +42,6 @@ import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.ProgressBarComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 import net.runelite.client.ws.PartyService;
-
-import javax.inject.Inject;
-import java.awt.*;
-import java.util.Map;
-import java.util.UUID;
 
 public class PartyStatsOverlay extends OverlayPanel
 {

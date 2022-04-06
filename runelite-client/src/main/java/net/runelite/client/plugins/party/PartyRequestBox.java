@@ -24,6 +24,15 @@
  */
 package net.runelite.client.plugins.party;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.FontManager;
@@ -33,18 +42,14 @@ import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.SwingUtil;
 import net.runelite.discord.DiscordRPC;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-
-public class PartyRequestBox extends JPanel
+class PartyRequestBox extends JPanel
 {
 	private static final ImageIcon CONFIRM_ICON = new ImageIcon(ImageUtil.loadImageResource(PartyPlugin.class, "confirm_icon.png"));
 	private static final ImageIcon CONFIRM_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(ImageUtil.bufferedImageFromImage(CONFIRM_ICON.getImage()), 0.54f));
 	private static final ImageIcon CANCEL_ICON = new ImageIcon(ImageUtil.loadImageResource(PartyPlugin.class, "cancel_icon.png"));
 	private static final ImageIcon CANCEL_HOVER_ICON = new ImageIcon(ImageUtil.alphaOffset(ImageUtil.bufferedImageFromImage(CANCEL_ICON.getImage()), 0.6f));
 
-	public PartyRequestBox(final PartyPlugin plugin, final JComponent panel, String userId, String userName)
+	PartyRequestBox(final PartyPlugin plugin, final JComponent panel, String userId, String userName)
 	{
 		setLayout(new BorderLayout());
 		setBorder(new EmptyBorder(5, 0, 0, 0));

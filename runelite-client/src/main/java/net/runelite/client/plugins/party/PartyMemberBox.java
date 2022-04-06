@@ -25,6 +25,19 @@
 
 package net.runelite.client.plugins.party;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.client.plugins.party.data.PartyData;
@@ -35,12 +48,7 @@ import net.runelite.client.ui.components.MouseDragEventForwarder;
 import net.runelite.client.ui.components.ProgressBar;
 import net.runelite.client.util.ImageUtil;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-
-public class PartyMemberBox extends JPanel
+class PartyMemberBox extends JPanel
 {
 	private static final Color HP_FG = new Color(0, 146, 54, 230);
 	private static final Color HP_BG = new Color(102, 15, 16, 230);
@@ -62,7 +70,7 @@ public class PartyMemberBox extends JPanel
 
 	private boolean avatarSet;
 
-	public PartyMemberBox(final PartyConfig config, final JComponent panel, final PartyData memberPartyData)
+	PartyMemberBox(final PartyConfig config, final JComponent panel, final PartyData memberPartyData)
 	{
 		this.config = config;
 		this.memberPartyData = memberPartyData;
@@ -145,7 +153,7 @@ public class PartyMemberBox extends JPanel
 		update();
 	}
 
-	public void update()
+	void update()
 	{
 		// Avatar
 		if (!avatarSet && memberPartyData.getMember().getAvatar() != null)

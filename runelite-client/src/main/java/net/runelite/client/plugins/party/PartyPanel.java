@@ -48,7 +48,7 @@ import net.runelite.client.ui.components.DragAndDropReorderPane;
 import net.runelite.client.ui.components.PluginErrorPanel;
 import net.runelite.client.ws.PartyService;
 
-public class PartyPanel extends PluginPanel
+class PartyPanel extends PluginPanel
 {
 	private static final String BTN_CREATE_TEXT = "Create party";
 	private static final String BTN_LEAVE_TEXT = "Leave party";
@@ -134,9 +134,9 @@ public class PartyPanel extends PluginPanel
 			{
 				// Leave party
 				final int result = JOptionPane.showOptionDialog(startButton,
-						"Are you sure you want to leave the party?",
-						"Leave party?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-						null, new String[]{"Yes", "No"}, "No");
+					"Are you sure you want to leave the party?",
+					"Leave party?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+					null, new String[]{"Yes", "No"}, "No");
 
 				if (result == JOptionPane.YES_OPTION)
 				{
@@ -155,13 +155,13 @@ public class PartyPanel extends PluginPanel
 			if (!party.isInParty())
 			{
 				String s = (String) JOptionPane.showInputDialog(
-						joinPartyButton,
-						"Please enter the party id:",
-						"Party Id",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						null,
-						"");
+					joinPartyButton,
+					"Please enter the party id:",
+					"Party Id",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					null,
+					"");
 
 				if (s == null)
 				{
@@ -175,7 +175,7 @@ public class PartyPanel extends PluginPanel
 				catch (IllegalArgumentException ex)
 				{
 					JOptionPane.showMessageDialog(joinPartyButton, "You have entered an invalid party id.", "Invalid Party Id",
-							JOptionPane.ERROR_MESSAGE);
+						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -191,9 +191,9 @@ public class PartyPanel extends PluginPanel
 				catch (IllegalArgumentException ex)
 				{
 					JOptionPane.showMessageDialog(rejoinPartyButton,
-							"Failed to join your previous party, create a new party or join a new one.",
-							"Failed to Join Party",
-							JOptionPane.ERROR_MESSAGE);
+						"Failed to join your previous party, create a new party or join a new one.",
+						"Failed to Join Party",
+						JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -213,7 +213,7 @@ public class PartyPanel extends PluginPanel
 		updateParty();
 	}
 
-	public void updateParty()
+	void updateParty()
 	{
 		remove(noPartyPanel);
 		remove(partyEmptyPanel);
@@ -233,7 +233,7 @@ public class PartyPanel extends PluginPanel
 		}
 	}
 
-	public void addMember(PartyData partyData)
+	void addMember(PartyData partyData)
 	{
 		if (!memberBoxes.containsKey(partyData.getMember().getMemberId()))
 		{
@@ -245,7 +245,7 @@ public class PartyPanel extends PluginPanel
 		updateParty();
 	}
 
-	public void removeAllMembers()
+	void removeAllMembers()
 	{
 		memberBoxes.forEach((key, value) -> memberBoxPanel.remove(value));
 		memberBoxPanel.revalidate();
@@ -253,7 +253,7 @@ public class PartyPanel extends PluginPanel
 		updateParty();
 	}
 
-	public void removeMember(UUID memberId)
+	void removeMember(UUID memberId)
 	{
 		final PartyMemberBox memberBox = memberBoxes.remove(memberId);
 
@@ -266,7 +266,7 @@ public class PartyPanel extends PluginPanel
 		updateParty();
 	}
 
-	public void updateMember(UUID userId)
+	void updateMember(UUID userId)
 	{
 		final PartyMemberBox memberBox = memberBoxes.get(userId);
 
@@ -276,12 +276,12 @@ public class PartyPanel extends PluginPanel
 		}
 	}
 
-	public void updateAll()
+	void updateAll()
 	{
 		memberBoxes.forEach((key, value) -> value.update());
 	}
 
-	public void addRequest(String userId, String userName)
+	void addRequest(String userId, String userName)
 	{
 		PartyRequestBox partyRequestBox = new PartyRequestBox(plugin, requestBoxPanel, userId, userName);
 		requestBoxes.put(userId, partyRequestBox);
@@ -289,14 +289,14 @@ public class PartyPanel extends PluginPanel
 		requestBoxPanel.revalidate();
 	}
 
-	public void removeAllRequests()
+	void removeAllRequests()
 	{
 		requestBoxes.forEach((key, value) -> requestBoxPanel.remove(value));
 		requestBoxPanel.revalidate();
 		requestBoxes.clear();
 	}
 
-	public void removeRequest(String userId)
+	void removeRequest(String userId)
 	{
 		final PartyRequestBox requestBox = requestBoxes.remove(userId);
 

@@ -24,23 +24,22 @@
  */
 package net.runelite.client.plugins.party;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import net.runelite.api.Point;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.ws.PartyMember;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
-public class PartyWorldMapPoint extends WorldMapPoint
+class PartyWorldMapPoint extends WorldMapPoint
 {
 	private static final BufferedImage ARROW = ImageUtil.loadImageResource(PartyWorldMapPoint.class, "/util/clue_arrow.png");
 
 	private BufferedImage partyImage;
 	private final PartyMember member;
 
-	public PartyWorldMapPoint(WorldPoint worldPoint, PartyMember member)
+	PartyWorldMapPoint(WorldPoint worldPoint, PartyMember member)
 	{
 		super(worldPoint, null);
 		this.member = member;

@@ -25,14 +25,13 @@
  */
 package net.runelite.client.plugins.party.data;
 
+import java.awt.Color;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.ws.PartyMember;
-
-import java.awt.*;
 
 @Setter
 @Getter

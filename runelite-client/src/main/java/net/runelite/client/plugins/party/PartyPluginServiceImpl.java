@@ -24,11 +24,10 @@
  */
 package net.runelite.client.plugins.party;
 
-import net.runelite.client.plugins.party.data.PartyData;
-
+import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.UUID;
+import net.runelite.client.plugins.party.data.PartyData;
 
 @Singleton
 public class PartyPluginServiceImpl implements PartyPluginService

@@ -24,6 +24,12 @@
  */
 package net.runelite.client.plugins.party;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.util.Iterator;
+import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.coords.LocalPoint;
@@ -32,11 +38,7 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
 
-import javax.inject.Inject;
-import java.awt.*;
-import java.util.Iterator;
-
-public class PartyPingOverlay extends Overlay
+class PartyPingOverlay extends Overlay
 {
 	private final Client client;
 	private final PartyPlugin plugin;

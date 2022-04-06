@@ -35,10 +35,10 @@ public interface PartyConfig extends Config
 	String GROUP = "party";
 
 	@ConfigItem(
-			keyName = "pings",
-			name = "Pings",
-			description = "Enables party pings (shift + left-click)",
-			position = 1
+		keyName = "pings",
+		name = "Pings",
+		description = "Enables party pings (shift + left-click)",
+		position = 1
 	)
 	default boolean pings()
 	{
@@ -46,10 +46,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "sounds",
-			name = "Sound on ping",
-			description = "Enables sound notification on party ping",
-			position = 2
+		keyName = "sounds",
+		name = "Sound on ping",
+		description = "Enables sound notification on party ping",
+		position = 2
 	)
 	default boolean sounds()
 	{
@@ -57,10 +57,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "messages",
-			name = "Join messages",
-			description = "Enables members join/leave game messages",
-			position = 3
+		keyName = "messages",
+		name = "Join messages",
+		description = "Enables members join/leave game messages",
+		position = 3
 	)
 	default boolean messages()
 	{
@@ -68,10 +68,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "recolorNames",
-			name = "Recolor names",
-			description = "Recolor party members names based on unique color hash",
-			position = 4
+		keyName = "recolorNames",
+		name = "Recolor names",
+		description = "Recolor party members names based on unique color hash",
+		position = 4
 	)
 	default boolean recolorNames()
 	{
@@ -79,10 +79,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "autoOverlay",
-			name = "Auto overlay",
-			description = "Automatically add an overlay with player data when a member joins",
-			position = 5
+		keyName = "autoOverlay",
+		name = "Auto overlay",
+		description = "Automatically add an overlay with player data when a member joins",
+		position = 5
 	)
 	default boolean autoOverlay()
 	{
@@ -90,10 +90,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "includeSelf",
-			name = "Include yourself",
-			description = "Shows yourself in the panel as part of the party",
-			position = 6
+		keyName = "includeSelf",
+		name = "Include yourself",
+		description = "Shows yourself in the panel as part of the party",
+		position = 6
 	)
 	default boolean includeSelf()
 	{
@@ -101,10 +101,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "previousPartyId",
-			name = "",
-			description = "",
-			hidden = true
+		keyName = "previousPartyId",
+		name = "",
+		description = "",
+		hidden = true
 	)
 	default String previousPartyId()
 	{
@@ -112,10 +112,10 @@ public interface PartyConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "previousPartyId",
-			name = "",
-			description = "",
-			hidden = true
+		keyName = "previousPartyId",
+		name = "",
+		description = "",
+		hidden = true
 	)
 	void setPreviousPartyId(String id);
 }

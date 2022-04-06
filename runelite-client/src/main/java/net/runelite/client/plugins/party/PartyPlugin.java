@@ -95,10 +95,10 @@ import net.runelite.http.api.ws.messages.party.UserPart;
 import net.runelite.http.api.ws.messages.party.UserSync;
 
 @PluginDescriptor(
-		name = "Party",
-		configName = "PartyPlugin2",
-		description = "Party management and basic info",
-		enabledByDefault = false
+	name = "Party",
+	configName = "PartyPlugin2",
+	description = "Party management and basic info",
+	enabledByDefault = false
 )
 public class PartyPlugin extends Plugin
 {
@@ -173,11 +173,11 @@ public class PartyPlugin extends Plugin
 		final BufferedImage icon = ImageUtil.loadImageResource(PartyPlugin.class, "panel_icon.png");
 
 		navButton = NavigationButton.builder()
-				.tooltip("Party")
-				.icon(icon)
-				.priority(9)
-				.panel(panel)
-				.build();
+			.tooltip("Party")
+			.icon(icon)
+			.priority(9)
+			.panel(panel)
+			.build();
 
 		clientToolbar.addNavigation(navButton);
 
@@ -221,14 +221,14 @@ public class PartyPlugin extends Plugin
 	public void onOverlayMenuClicked(OverlayMenuClicked event)
 	{
 		if (event.getEntry().getMenuAction() == MenuAction.RUNELITE_OVERLAY &&
-				event.getEntry().getTarget().equals("Party") &&
-				event.getEntry().getOption().equals("Leave"))
+			event.getEntry().getTarget().equals("Party") &&
+			event.getEntry().getOption().equals("Leave"))
 		{
 			leaveParty();
 		}
 	}
 
-	public void leaveParty()
+	void leaveParty()
 	{
 		party.changeParty(null);
 
@@ -238,14 +238,14 @@ public class PartyPlugin extends Plugin
 		}
 
 		final String leaveMessage = new ChatMessageBuilder()
-				.append(ChatColorType.HIGHLIGHT)
-				.append("You have left the party.")
-				.build();
+			.append(ChatColorType.HIGHLIGHT)
+			.append("You have left the party.")
+			.build();
 
 		chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(leaveMessage)
-				.build());
+			.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
+			.runeLiteFormattedMessage(leaveMessage)
+			.build());
 	}
 
 	@Subscribe
@@ -318,14 +318,14 @@ public class PartyPlugin extends Plugin
 	public void onDiscordJoinRequest(DiscordJoinRequest request)
 	{
 		final String requestMessage = new ChatMessageBuilder()
-				.append(ChatColorType.HIGHLIGHT)
-				.append("New join request received. Check your Party panel.")
-				.build();
+			.append(ChatColorType.HIGHLIGHT)
+			.append("New join request received. Check your Party panel.")
+			.build();
 
 		chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(requestMessage)
-				.build());
+			.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
+			.runeLiteFormattedMessage(requestMessage)
+			.build());
 
 		String userName = request.getUsername() + "#" + request.getDiscriminator();
 		SwingUtilities.invokeLater(() -> panel.addRequest(request.getUserId(), userName));
@@ -367,8 +367,8 @@ public class PartyPlugin extends Plugin
 	}
 
 	@Schedule(
-			period = 10,
-			unit = ChronoUnit.SECONDS
+		period = 10,
+		unit = ChronoUnit.SECONDS
 	)
 	public void shareLocation()
 	{
@@ -485,15 +485,15 @@ public class PartyPlugin extends Plugin
 		}
 
 		final String joinMessage = new ChatMessageBuilder()
-				.append(ChatColorType.HIGHLIGHT)
-				.append(partyData.getMember().getName())
-				.append(" has joined the party!")
-				.build();
+			.append(ChatColorType.HIGHLIGHT)
+			.append(partyData.getMember().getName())
+			.append(" has joined the party!")
+			.build();
 
 		chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(joinMessage)
-				.build());
+			.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
+			.runeLiteFormattedMessage(joinMessage)
+			.build());
 
 		final PartyMember localMember = party.getLocalMember();
 
@@ -560,15 +560,15 @@ public class PartyPlugin extends Plugin
 			if (config.messages())
 			{
 				final String joinMessage = new ChatMessageBuilder()
-						.append(ChatColorType.HIGHLIGHT)
-						.append(removed.getMember().getName())
-						.append(" has left the party!")
-						.build();
+					.append(ChatColorType.HIGHLIGHT)
+					.append(removed.getMember().getName())
+					.append(" has left the party!")
+					.build();
 
 				chatMessageManager.queue(QueuedMessage.builder()
-						.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-						.runeLiteFormattedMessage(joinMessage)
-						.build());
+					.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
+					.runeLiteFormattedMessage(joinMessage)
+					.build());
 			}
 
 			worldMapManager.remove(removed.getWorldMapPoint());
@@ -667,13 +667,13 @@ public class PartyPlugin extends Plugin
 	private void sendInstructionMessage()
 	{
 		final String helpMessage = new ChatMessageBuilder()
-				.append(ChatColorType.HIGHLIGHT)
-				.append("To leave the party, click \"Leave party\" on the party panel.")
-				.build();
+			.append(ChatColorType.HIGHLIGHT)
+			.append("To leave the party, click \"Leave party\" on the party panel.")
+			.build();
 
 		chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(helpMessage)
-				.build());
+			.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
+			.runeLiteFormattedMessage(helpMessage)
+			.build());
 	}
 }
