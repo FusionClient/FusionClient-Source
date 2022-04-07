@@ -27,9 +27,12 @@ package net.runelite.client;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.jagex.oldscape.pub.OAuthApi;
+import com.jagex.oldscape.pub.OtlTokenResponse;
 import com.openosrs.client.OpenOSRS;
 import com.openosrs.client.game.PlayerManager;
 import com.openosrs.client.ui.OpenOSRSSplashScreen;
@@ -50,6 +53,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -92,6 +96,8 @@ import net.runelite.http.api.RuneLiteAPI;
 import net.runelite.http.api.worlds.World;
 import net.runelite.http.api.worlds.WorldResult;
 import okhttp3.Cache;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -119,6 +125,9 @@ public class RuneLite
 
 	@Inject
 	private net.runelite.client.plugins.PluginManager pluginManager;
+
+	@Inject
+	private OkHttpClient okHttpClient;
 
 	@Inject
 	private ExternalPluginManager externalPluginManager;
@@ -184,40 +193,40 @@ public class RuneLite
 		parser.accepts("safe-mode", "Disables external plugins and the GPU plugin");
 		parser.accepts("insecure-skip-tls-verification", "Disables TLS verification");
 		parser.accepts("jav_config", "jav_config url")
-				.withRequiredArg()
-				.defaultsTo(RuneLiteProperties.getJavConfig());
+			.withRequiredArg()
+			.defaultsTo(RuneLiteProperties.getJavConfig());
 
 		final ArgumentAcceptingOptionSpec<File> sessionfile = parser.accepts("sessionfile", "Use a specified session file")
-				.withRequiredArg()
-				.withValuesConvertedBy(new ConfigFileConverter())
-				.defaultsTo(DEFAULT_SESSION_FILE);
+			.withRequiredArg()
+			.withValuesConvertedBy(new ConfigFileConverter())
+			.defaultsTo(DEFAULT_SESSION_FILE);
 
 		final ArgumentAcceptingOptionSpec<String> proxyInfo = parser
-				.accepts("proxy")
-				.withRequiredArg().ofType(String.class);
+			.accepts("proxy")
+			.withRequiredArg().ofType(String.class);
 
 		final ArgumentAcceptingOptionSpec<Integer> worldInfo = parser
-				.accepts("world")
-				.withRequiredArg().ofType(Integer.class);
+			.accepts("world")
+			.withRequiredArg().ofType(Integer.class);
 
 		final ArgumentAcceptingOptionSpec<File> configfile = parser.accepts("config", "Use a specified config file")
-				.withRequiredArg()
-				.withValuesConvertedBy(new ConfigFileConverter())
-				.defaultsTo(DEFAULT_CONFIG_FILE);
+			.withRequiredArg()
+			.withValuesConvertedBy(new ConfigFileConverter())
+			.defaultsTo(DEFAULT_CONFIG_FILE);
 
 		final ArgumentAcceptingOptionSpec<ClientUpdateCheckMode> updateMode = parser
-				.accepts("rs", "Select client type")
-				.withRequiredArg()
-				.ofType(ClientUpdateCheckMode.class)
-				.defaultsTo(ClientUpdateCheckMode.AUTO)
-				.withValuesConvertedBy(new EnumConverter<ClientUpdateCheckMode>(ClientUpdateCheckMode.class)
+			.accepts("rs", "Select client type")
+			.withRequiredArg()
+			.ofType(ClientUpdateCheckMode.class)
+			.defaultsTo(ClientUpdateCheckMode.AUTO)
+			.withValuesConvertedBy(new EnumConverter<ClientUpdateCheckMode>(ClientUpdateCheckMode.class)
+			{
+				@Override
+				public ClientUpdateCheckMode convert(String v)
 				{
-					@Override
-					public ClientUpdateCheckMode convert(String v)
-					{
-						return super.convert(v.toUpperCase());
-					}
-				});
+					return super.convert(v.toUpperCase());
+				}
+			});
 
 		parser.accepts("help", "Show this text").forHelp();
 		OptionSet options = parser.parse(args);
@@ -290,8 +299,8 @@ public class RuneLite
 
 		try
 		{
-			final ClientLoader clientLoader = new ClientLoader(okHttpClient, options.valueOf(updateMode), (String) options.valueOf("jav_config"));
 			final RuntimeConfigLoader runtimeConfigLoader = new RuntimeConfigLoader(okHttpClient);
+			final ClientLoader clientLoader = new ClientLoader(okHttpClient, options.valueOf(updateMode), runtimeConfigLoader, (String) options.valueOf("jav_config"));
 
 			new Thread(() ->
 			{
@@ -304,19 +313,19 @@ public class RuneLite
 			PROFILES_DIR.mkdirs();
 
 			log.info("OpenOSRS {} (RuneLite version {}, launcher version {}) starting up, args: {}",
-					OpenOSRS.SYSTEM_VERSION, RuneLiteProperties.getVersion() == null ? "unknown" : RuneLiteProperties.getVersion(),
-					RuneLiteProperties.getLauncherVersion(), args.length == 0 ? "none" : String.join(" ", args));
+				OpenOSRS.SYSTEM_VERSION, RuneLiteProperties.getVersion() == null ? "unknown" : RuneLiteProperties.getVersion(),
+				RuneLiteProperties.getLauncherVersion(), args.length == 0 ? "none" : String.join(" ", args));
 
 			final long start = System.currentTimeMillis();
 
 			injector = Guice.createInjector(new RuneLiteModule(
-					okHttpClient,
-					clientLoader,
-					runtimeConfigLoader,
-					developerMode,
-					options.has("safe-mode"),
-					options.valueOf(sessionfile),
-					options.valueOf(configfile)));
+				okHttpClient,
+				clientLoader,
+				runtimeConfigLoader,
+				developerMode,
+				options.has("safe-mode"),
+				options.valueOf(sessionfile),
+				options.valueOf(configfile)));
 
 			injector.getInstance(RuneLite.class).start();
 
@@ -329,8 +338,9 @@ public class RuneLite
 		{
 			log.error("Failure during startup", e);
 			SwingUtilities.invokeLater(() ->
-					new FatalErrorDialog("Fusion has encountered an unexpected error during startup.")
-							.open());
+				new FatalErrorDialog("Fusion has encountered an unexpected error during startup.")
+					.addHelpButtons()
+					.open());
 		}
 		finally
 		{
@@ -371,6 +381,11 @@ public class RuneLite
 			}
 
 			applet.start();
+
+			if (applet instanceof OAuthApi)
+			{
+				setupJxAuth((OAuthApi) applet);
+			}
 		}
 
 		SplashScreen.stage(.57, null, "Loading configuration");
@@ -467,8 +482,8 @@ public class RuneLite
 			final File file;
 
 			if (Paths.get(fileName).isAbsolute()
-					|| fileName.startsWith("./")
-					|| fileName.startsWith(".\\"))
+				|| fileName.startsWith("./")
+				|| fileName.startsWith(".\\"))
 			{
 				file = new File(fileName);
 			}
@@ -540,30 +555,30 @@ public class RuneLite
 	static OkHttpClient buildHttpClient(boolean insecureSkipTlsVerification)
 	{
 		OkHttpClient.Builder builder = new OkHttpClient.Builder()
-				.pingInterval(30, TimeUnit.SECONDS)
-				.addNetworkInterceptor(chain ->
+			.pingInterval(30, TimeUnit.SECONDS)
+			.addNetworkInterceptor(chain ->
+			{
+				Request userAgentRequest = chain.request()
+					.newBuilder()
+					.header("User-Agent", USER_AGENT)
+					.build();
+				return chain.proceed(userAgentRequest);
+			})
+			// Setup cache
+			.cache(new Cache(new File(CACHE_DIR, "okhttp"), MAX_OKHTTP_CACHE_SIZE))
+			.addNetworkInterceptor(chain ->
+			{
+				// This has to be a network interceptor so it gets hit before the cache tries to store stuff
+				Response res = chain.proceed(chain.request());
+				if (res.code() >= 400 && "GET".equals(res.request().method()))
 				{
-					Request userAgentRequest = chain.request()
-							.newBuilder()
-							.header("User-Agent", USER_AGENT)
-							.build();
-					return chain.proceed(userAgentRequest);
-				})
-				// Setup cache
-				.cache(new Cache(new File(CACHE_DIR, "okhttp"), MAX_OKHTTP_CACHE_SIZE))
-				.addNetworkInterceptor(chain ->
-				{
-					// This has to be a network interceptor so it gets hit before the cache tries to store stuff
-					Response res = chain.proceed(chain.request());
-					if (res.code() >= 400 && "GET".equals(res.request().method()))
-					{
-						// if the request 404'd we don't want to cache it because its probably temporary
-						res = res.newBuilder()
-								.header("Cache-Control", "no-store")
-								.build();
-					}
-					return res;
-				});
+					// if the request 404'd we don't want to cache it because its probably temporary
+					res = res.newBuilder()
+						.header("Cache-Control", "no-store")
+						.build();
+				}
+				return res;
+			});
 
 		if (insecureSkipTlsVerification || RuneLiteProperties.isInsecureSkipTlsVerification())
 		{
@@ -659,6 +674,85 @@ public class RuneLite
 			String key = entry.getKey(), value = entry.getValue();
 			log.debug("Setting property {}={}", key, value);
 			System.setProperty(key, value);
+		}
+	}
+
+	private void setupJxAuth(OAuthApi oAuthApi)
+	{
+		String accessToken = System.getenv("JX_ACCESS_TOKEN");
+		if (Strings.isNullOrEmpty(accessToken))
+		{
+			return;
+		}
+
+		try
+		{
+			log.info("Initializing OTL token requester with access token");
+			oAuthApi.setOtlTokenRequester(url ->
+			{
+				CompletableFuture<OtlTokenResponse> f = new CompletableFuture<>();
+				okHttpClient.newCall(new Request.Builder()
+					.url(url)
+					.header("Authorization", "Bearer " + accessToken)
+					.get()
+					.build())
+					.enqueue(new Callback()
+					{
+						private void complete(boolean success, String token)
+						{
+							f.complete(new OtlTokenResponse()
+							{
+								@Override
+								public boolean isSuccess()
+								{
+									return success;
+								}
+
+								@Override
+								public String getToken()
+								{
+									return token;
+								}
+							});
+						}
+
+						@Override
+						public void onFailure(Call call, IOException e)
+						{
+							log.error("HTTP error while performing OTL request", e);
+							complete(false, null);
+						}
+
+						@Override
+						public void onResponse(Call call, Response response) throws IOException
+						{
+							if (response.code() != 200)
+							{
+								log.error("Non-OK response performing OTL request: {}", response.code());
+								complete(false, null);
+								response.close();
+								return;
+							}
+
+							if (response.body() == null)
+							{
+								log.error("OK response with empty body from OTL request");
+								complete(false, null);
+								response.close();
+								return;
+							}
+
+							log.debug("Successful OTL response");
+							complete(true, response.body().string());
+							response.close();
+						}
+					});
+				return f;
+			});
+		}
+		catch (LinkageError ex)
+		{
+			log.error("error setting up OTL requester", ex);
 		}
 	}
 }
