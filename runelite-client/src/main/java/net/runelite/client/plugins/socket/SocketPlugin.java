@@ -396,7 +396,7 @@ public class SocketPlugin extends Plugin {
                             if (!b.equals("")) {
                                 if (isInRegion(getCurrentRegionID(client))) {
                                     flagMesOut("You scythed on " + b + ".");
-                                } else if (!b.equals("crush")) {
+                                } else if (!b.equals("crush") && (!b.equals("accurate"))) {
                                     flagMesOut("You scythed on " + b + ".");
                                 }
                             }
@@ -411,7 +411,7 @@ public class SocketPlugin extends Plugin {
                         } else if (anim == godBop) {
                             flagMesOut("You godsword bopped.");
                         } else if (anim == chalyBop) {
-                            flagMesOut("You chaly poked.");
+                            flagMesOut("You chally poked.");
                         }
                     }
 
