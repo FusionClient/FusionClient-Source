@@ -25,8 +25,27 @@
 package net.runelite.client.plugins.playerindicators;
 
 import com.google.inject.Provides;
+import java.awt.Color;
+import javax.inject.Inject;
 import lombok.Value;
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.FriendsChatRank;
+import static net.runelite.api.FriendsChatRank.UNRANKED;
+import net.runelite.api.MenuAction;
+import static net.runelite.api.MenuAction.ITEM_USE_ON_PLAYER;
+import static net.runelite.api.MenuAction.PLAYER_EIGTH_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_FIFTH_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_FIRST_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_FOURTH_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_SECOND_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_SEVENTH_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_SIXTH_OPTION;
+import static net.runelite.api.MenuAction.PLAYER_THIRD_OPTION;
+import static net.runelite.api.MenuAction.RUNELITE_PLAYER;
+import static net.runelite.api.MenuAction.WIDGET_TARGET_ON_PLAYER;
+import static net.runelite.api.MenuAction.WALK;
+import net.runelite.api.MenuEntry;
+import net.runelite.api.Player;
 import net.runelite.api.clan.ClanTitle;
 import net.runelite.api.events.ClientTick;
 import net.runelite.client.config.ConfigManager;
@@ -36,12 +55,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
-
-import javax.inject.Inject;
-import java.awt.*;
-
-import static net.runelite.api.FriendsChatRank.UNRANKED;
-import static net.runelite.api.MenuAction.*;
 
 @PluginDescriptor(
 	name = "Player Indicators",
@@ -111,7 +124,7 @@ public class PlayerIndicatorsPlugin extends Plugin
 			MenuAction type = entry.getType();
 
 			if (type == WALK
-				|| type == SPELL_CAST_ON_PLAYER
+				|| type == WIDGET_TARGET_ON_PLAYER
 				|| type == ITEM_USE_ON_PLAYER
 				|| type == PLAYER_FIRST_OPTION
 				|| type == PLAYER_SECOND_OPTION
