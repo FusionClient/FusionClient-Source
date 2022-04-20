@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.socket;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,16 +24,17 @@ import net.runelite.client.plugins.socket.org.json.JSONArray;
 import net.runelite.client.plugins.socket.org.json.JSONObject;
 import net.runelite.client.plugins.socket.packet.*;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
-import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.ImageUtil;
 import org.pf4j.Extension;
 
 import javax.inject.Inject;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+
+import static net.runelite.api.NpcID.*;
 
 @Slf4j
 @Extension
@@ -90,6 +92,7 @@ public class SocketPlugin extends Plugin {
     final BufferedImage icon_Ready = ImageUtil.loadImageResource(getClass(), "icon_Ready.png");
     public String connectionState = "";
 
+    public static SocketPlugin instance = null;
 
     //Player status extended
     private DeferredCheck deferredCheck;
@@ -97,6 +100,8 @@ public class SocketPlugin extends Plugin {
     @Override
     protected void startUp()
     {
+        instance = this;
+
         infoBoxManager.removeInfoBox(connectionIB);
 
         this.nextConnection = 0L;
@@ -117,6 +122,8 @@ public class SocketPlugin extends Plugin {
     @Override
     protected void shutDown()
     {
+        instance = null;
+
         infoBoxManager.removeInfoBox(connectionIB);
 
         eventBus.post(new SocketShutdown());
@@ -265,12 +272,15 @@ public class SocketPlugin extends Plugin {
         onCheckAnimationChanged(event);
     }
 
-    private boolean nyloSlaveInteracting(NPC target) {
-        if (target != null && target.getName() != null && target.getName().toLowerCase().contains("nylocas")) {
-            return !target.getName().toLowerCase().contains("vasil");
-        } else {
-            return false;
+    protected static final Set<Integer> VERZIK_P2_IDS = ImmutableSet.of(
+            VERZIK_VITUR_8372, VERZIK_VITUR_10833, VERZIK_VITUR_10850
+    );
+
+    private boolean ignoredNPCs(NPC target) {
+        if (target != null && target.getName() != null) {
+            return !VERZIK_P2_IDS.contains(target.getId());
         }
+        return false;
     }
 
     private boolean otherShitBow(int i) {
@@ -304,7 +314,7 @@ public class SocketPlugin extends Plugin {
             if (anim == i) {
                 int lvl = client.getBoostedSkillLevel(Skill.STRENGTH);
                 boolean piety = deferredCheck.isPiety();
-                boolean is118 = lvl == 118 || lvl == 120;
+                boolean is118 = lvl >= 118;
                 if (!piety || !is118) {
                     String s = "attacked";
                     if (i == clawSpec) {
@@ -324,7 +334,7 @@ public class SocketPlugin extends Plugin {
                         } else {
                             s2 = " without piety.";
                         }
-                    } else if (!is118) {
+                    } else {
                         s2 = " with " + lvl + " strength.";
                     }
 
@@ -381,7 +391,7 @@ public class SocketPlugin extends Plugin {
                 }
 
                 if (p.equals(client.getLocalPlayer()) && anim != 0 && anim != -1) {
-                    if (!nyloSlaveInteracting(target)) {
+                    if (ignoredNPCs(target)) {
                         int style = client.getVar(VarPlayer.ATTACK_STYLE);
                         if (anim == scy) {
                             String b = "";
@@ -396,7 +406,7 @@ public class SocketPlugin extends Plugin {
                             if (!b.equals("")) {
                                 if (isInRegion(getCurrentRegionID(client))) {
                                     flagMesOut("You scythed on " + b + ".");
-                                } else if (!b.equals("crush") && (!b.equals("accurate"))) {
+                                } else if (!b.equals("crush")) {
                                     flagMesOut("You scythed on " + b + ".");
                                 }
                             }
@@ -411,7 +421,7 @@ public class SocketPlugin extends Plugin {
                         } else if (anim == godBop) {
                             flagMesOut("You godsword bopped.");
                         } else if (anim == chalyBop) {
-                            flagMesOut("You chally poked.");
+                            flagMesOut("You chaly poked.");
                         }
                     }
 
@@ -430,7 +440,7 @@ public class SocketPlugin extends Plugin {
             json$.put("sender", client.getLocalPlayer().getName());
             int[] mapRegions = (client.getMapRegions() == null) ? new int[0] : client.getMapRegions();
             json$.put("mapregion", Arrays.toString(mapRegions));
-            json$.put("raidbit", client.getVar(Varbits.IN_RAID));
+            json$.put("raidbit", client.getVarbitValue(Varbits.IN_RAID));
             data.put(json$);
             JSONObject send = new JSONObject();
             send.put("sLeech", data);

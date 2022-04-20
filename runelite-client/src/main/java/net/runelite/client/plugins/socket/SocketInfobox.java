@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.runelite.client.ui.overlay.infobox.InfoBox;
 import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
 import net.runelite.client.util.ColorUtil;
-import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -46,7 +45,7 @@ public class SocketInfobox extends InfoBox {
                 color = Color.RED;
                 break;
         }
-        return color;
+         return color;
     }
 
     @Override
