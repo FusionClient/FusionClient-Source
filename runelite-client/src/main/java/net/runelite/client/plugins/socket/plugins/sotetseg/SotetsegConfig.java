@@ -90,7 +90,8 @@ public interface SotetsegConfig extends Config
 			name = "Streamer Mode",
 			description = "Send Maze Info to team but don't display maze overlay on your screen."
 	)
-	default boolean streamerMode() {
+	default boolean streamerMode()
+	{
 		return false;
 	}
 
@@ -111,7 +112,7 @@ public interface SotetsegConfig extends Config
 			name = "Warns if invisible ball is sent",
 			description = "Warns you if the ball was sent while you were chosen since it's invisible otherwise"
 	)
-	default boolean warnBall() { return true;}
+	default boolean warnBall()  { return true;}
 
 	@ConfigItem(
 			position = 7,

@@ -23,7 +23,7 @@ public class MazeTrueTileOverlay extends Overlay {
 
     @Inject
     private MazeTrueTileOverlay(Client client, SotetsegConfig config, SotetsegPlugin plugin, SotetsegOverlay overlay)
-         {
+        {
         this.client = client;
         this.config = config;
         this.plugin = plugin;
@@ -33,9 +33,12 @@ public class MazeTrueTileOverlay extends Overlay {
         setPriority(OverlayPriority.HIGHEST);
         }
 
-    public Dimension render(Graphics2D graphics) {
-        if (config.trueMaze()) {
-            if (plugin.isSotetsegActive() && !plugin.mazePings.isEmpty()) {
+        public Dimension render(Graphics2D graphics)
+        {
+    if (config.trueMaze())
+    {
+            if (plugin.isSotetsegActive() && !plugin.mazePings.isEmpty())
+            {
                 WorldPoint playerPos = client.getLocalPlayer().getWorldLocation();
                 if (playerPos == null)
                     return null;
@@ -44,7 +47,7 @@ public class MazeTrueTileOverlay extends Overlay {
                     return null;
                 renderTile(graphics, playerPosLocal, config.trueMazeColor());
             }
-        }
+    }
         return null;
     }
 
@@ -54,7 +57,8 @@ public class MazeTrueTileOverlay extends Overlay {
         Polygon poly = Perspective.getCanvasTilePoly(client, dest);
         if (poly == null)
             return;
-        if (config.antiAlias()) {
+        if (config.antiAlias())
+        {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         } else {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
