@@ -52,7 +52,7 @@ public class SpoonNpcHighlightPlugin extends Plugin {
     private ConfigManager configManager;
 
     private static final Set<MenuAction> NPC_MENU_ACTIONS = ImmutableSet.of(MenuAction.NPC_FIRST_OPTION, MenuAction.NPC_SECOND_OPTION,
-		MenuAction.NPC_THIRD_OPTION, MenuAction.NPC_FOURTH_OPTION, MenuAction.NPC_FIFTH_OPTION, MenuAction.SPELL_CAST_ON_NPC,
+		MenuAction.NPC_THIRD_OPTION, MenuAction.NPC_FOURTH_OPTION, MenuAction.NPC_FIFTH_OPTION, MenuAction.WIDGET_TARGET_ON_NPC,
 		MenuAction.ITEM_USE_ON_NPC);
 
     public ArrayList<String> tileNames = new ArrayList<String>();
@@ -83,7 +83,8 @@ public class SpoonNpcHighlightPlugin extends Plugin {
         return (SpoonNpcHighlightConfig)configManager.getConfig(SpoonNpcHighlightConfig.class);
     }
 
-    protected void startUp() {
+    protected void startUp()
+    {
         reset();
         this.overlayManager.add(this.overlay);
         this.overlayManager.add(this.mapOverlay);
