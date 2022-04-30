@@ -35,7 +35,6 @@ import com.google.inject.CreationException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-import com.google.inject.*;
 import com.openosrs.client.OpenOSRS;
 import static com.openosrs.client.OpenOSRS.EXTERNALPLUGIN_DIR;
 import static com.openosrs.client.OpenOSRS.SYSTEM_API_VERSION;
@@ -89,33 +88,8 @@ import org.pf4j.PluginDependency;
 import org.pf4j.PluginRuntimeException;
 import org.pf4j.PluginWrapper;
 import org.pf4j.*;
-import org.pf4j.update.DefaultUpdateRepository;
 import org.pf4j.update.PluginInfo;
 import org.pf4j.update.VerifyException;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.openosrs.client.OpenOSRS.EXTERNALPLUGIN_DIR;
-import static com.openosrs.client.OpenOSRS.SYSTEM_API_VERSION;
 
 @SuppressWarnings("UnstableApiUsage")
 @Slf4j
@@ -149,13 +123,12 @@ public class OPRSExternalPluginManager
 	@Getter(AccessLevel.PUBLIC)
 	private Groups groups;
 	@Getter(AccessLevel.PUBLIC)
-	private UpdateManager updateManager;
+	private OPRSUpdateManager updateManager;
 
 	@Inject
 	private fExternalPluginManager fPlugins;
 	public static final Map<String, String> hashedPlugins = new HashMap<>();
 
-	private OPRSUpdateManager updateManager;
 	@Inject
 	@Named("safeMode")
 	private boolean safeMode;

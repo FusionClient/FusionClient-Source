@@ -38,6 +38,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.fusionreflection.HideExternalManagerConfig;
 import net.runelite.client.plugins.openosrs.externals.ExternalPluginManagerPanel;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.ClientUI;
@@ -84,7 +85,8 @@ public class OpenOSRSPlugin extends Plugin
 			.panel(panel)
 			.build();
 		clientToolbar.addNavigation(navButton);
-		if (!config.hideOprsManager()) {
+		if (!configManager.getConfig(HideExternalManagerConfig.class).hideOPRS())
+		{
 			clientToolbar.addNavigation(navButton);
 		}
 
@@ -112,16 +114,15 @@ public class OpenOSRSPlugin extends Plugin
 				configManager.setConfiguration("openosrs", "disableHw", false);
 			}
 		}
-	}
-
-		if (config.hideOprsManager() && navButton != null)
+		if (configManager.getConfig(HideExternalManagerConfig.class).hideOPRS() && navButton != null)
 		{
 			clientToolbar.removeNavigation(navButton);
 		}
 
-		if (!config.hideOprsManager())
+		if (!configManager.getConfig(HideExternalManagerConfig.class).hideOPRS())
 		{
 			clientToolbar.addNavigation(navButton);
 		}
 	}
+
 }
