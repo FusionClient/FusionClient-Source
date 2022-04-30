@@ -44,8 +44,8 @@ public interface OpenOSRSConfig extends Config
 	@AllArgsConstructor
 	enum BootstrapMode
 	{
-		STABLE("Stable"),
-		NIGHTLY("Nightly");
+		STABLE("Stable");
+//		NIGHTLY("Nightly");
 
 		private final String name;
 
@@ -237,7 +237,8 @@ public interface OpenOSRSConfig extends Config
 	@ConfigItem(
 			keyName = "hideOprsManager",
 			name = "",
-			description = ""
+			description = "",
+			hidden = true
 	)
 	default boolean hideOprsManager()
 	{
