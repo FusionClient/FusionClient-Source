@@ -30,14 +30,47 @@ import com.google.common.collect.Multimap;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.Graphs;
 import com.google.common.graph.MutableGraph;
+import com.google.inject.Binder;
+import com.google.inject.CreationException;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.*;
 import com.openosrs.client.OpenOSRS;
+import static com.openosrs.client.OpenOSRS.EXTERNALPLUGIN_DIR;
+import static com.openosrs.client.OpenOSRS.SYSTEM_API_VERSION;
 import com.openosrs.client.config.OpenOSRSConfig;
 import com.openosrs.client.events.OPRSPluginChanged;
 import com.openosrs.client.events.OPRSRepositoryChanged;
 import com.openosrs.client.ui.OpenOSRSSplashScreen;
 import com.openosrs.client.util.Groups;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import javax.swing.JOptionPane;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,11 +86,12 @@ import net.runelite.client.ui.ClientUI;
 import net.runelite.client.util.SwingUtil;
 import org.jgroups.Message;
 import org.pf4j.PluginDependency;
+import org.pf4j.PluginRuntimeException;
+import org.pf4j.PluginWrapper;
 import org.pf4j.*;
 import org.pf4j.update.DefaultUpdateRepository;
 import org.pf4j.update.PluginInfo;
-import org.pf4j.update.UpdateManager;
-import org.pf4j.update.UpdateRepository;
+import org.pf4j.update.VerifyException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -97,7 +131,7 @@ public class OPRSExternalPluginManager
 	@Getter(AccessLevel.PUBLIC)
 	private org.pf4j.PluginManager externalPluginManager;
 	@Getter(AccessLevel.PUBLIC)
-	private final List<UpdateRepository> repositories = new ArrayList<>();
+	private final List<OPRSUpdateRepository> repositories = new ArrayList<>();
 	@Inject
 	private OpenOSRSConfig openOSRSConfig;
 	@Inject
@@ -121,6 +155,7 @@ public class OPRSExternalPluginManager
 	private fExternalPluginManager fPlugins;
 	public static final Map<String, String> hashedPlugins = new HashMap<>();
 
+	private OPRSUpdateManager updateManager;
 	@Inject
 	@Named("safeMode")
 	private boolean safeMode;
@@ -158,7 +193,7 @@ public class OPRSExternalPluginManager
 	}
 
 	/**
-	 * Note that {@link UpdateManager#addRepository} checks if the repo exists, however it throws an exception which is bad
+	 * Note that {@link OPRSUpdateManager#addRepository} checks if the repo exists, however it throws an exception which is bad
 	 */
 	public boolean doesRepoExist(String id)
 	{
@@ -190,17 +225,17 @@ public class OPRSExternalPluginManager
 
 	public static boolean testRepository(URL url, String pluginsJson)
 	{
-		final List<UpdateRepository> repositories = new ArrayList<>();
+		final List<OPRSUpdateRepository> repositories = new ArrayList<>();
 		if (pluginsJson != null)
 		{
-			repositories.add(new DefaultUpdateRepository("repository-testing", url, pluginsJson));
+			repositories.add(new OPRSUpdateRepository("repository-testing", url, pluginsJson));
 		}
 		else
 		{
-			repositories.add(new DefaultUpdateRepository("repository-testing", url));
+			repositories.add(new OPRSUpdateRepository("repository-testing", url));
 		}
 		DefaultPluginManager testPluginManager = new DefaultPluginManager(EXTERNALPLUGIN_DIR.toPath());
-		UpdateManager updateManager = new UpdateManager(testPluginManager, repositories);
+		OPRSUpdateManager updateManager = new OPRSUpdateManager(testPluginManager, repositories);
 
 		return updateManager.getPlugins().size() <= 0;
 	}
@@ -257,7 +292,7 @@ public class OPRSExternalPluginManager
 			loadOldFormat();
 		}
 
-		updateManager = new UpdateManager(externalPluginManager, repositories);
+		updateManager = new OPRSUpdateManager(externalPluginManager, repositories);
 		saveConfig();
 	}
 
@@ -309,11 +344,11 @@ public class OPRSExternalPluginManager
 
 				if (pluginJson == null)
 				{
-					repositories.add(new DefaultUpdateRepository(id, new URL(url)));
+					repositories.add(new OPRSUpdateRepository(id, new URL(url)));
 				}
 				else
 				{
-					repositories.add(new DefaultUpdateRepository(id, new URL(url), pluginJson));
+					repositories.add(new OPRSUpdateRepository(id, new URL(url), pluginJson));
 				}
 			}
 		}
@@ -339,7 +374,7 @@ public class OPRSExternalPluginManager
 				String id = keyval.substring(0, keyval.lastIndexOf(":https"));
 				String url = keyval.substring(keyval.lastIndexOf("https"));
 
-				DefaultUpdateRepository defaultRepo = new DefaultUpdateRepository(id, new URL(url));
+				OPRSUpdateRepository defaultRepo = new OPRSUpdateRepository(id, new URL(url));
 				repositories.add(defaultRepo);
 				log.debug("Added Repo: {}", defaultRepo.getUrl());
 			}
@@ -354,7 +389,7 @@ public class OPRSExternalPluginManager
 			openOSRSConfig.setExternalRepositories(DEFAULT_PLUGIN_REPOS);
 		}
 
-		updateManager = new UpdateManager(externalPluginManager, repositories);
+		updateManager = new OPRSUpdateManager(externalPluginManager, repositories);
 	}
 
 	public void addGHRepository(String owner, String name)
@@ -369,19 +404,22 @@ public class OPRSExternalPluginManager
 		}
 	}
 
-	public void addRepository(String key, URL url) { addRepository(key, url, null); }
+	public void addRepository(String key, URL url)
+	{
+		addRepository(key, url, null);
+	}
 
 	public void addRepository(String key, URL url, String pluginsJson)
 	{
-		DefaultUpdateRepository respository;
+		OPRSUpdateRepository respository;
 
 		if (pluginsJson != null)
 		{
-			respository = new DefaultUpdateRepository(key, url, pluginsJson);
+			respository = new OPRSUpdateRepository(key, url, pluginsJson);
 		}
 		else
 		{
-			respository = new DefaultUpdateRepository(key, url);
+			respository = new OPRSUpdateRepository(key, url);
 		}
 
 		updateManager.addRepository(respository);
@@ -405,9 +443,15 @@ public class OPRSExternalPluginManager
 		openOSRSConfig.setExternalRepositories(config);
 	}
 
-	public void setWarning(boolean val) { configManager.setConfiguration("openosrs", "warning", val); }
+	public void setWarning(boolean val)
+	{
+		configManager.setConfiguration("openosrs", "warning", val);
+	}
 
-	public boolean getWarning() { return openOSRSConfig.warning(); }
+	public boolean getWarning()
+	{
+		return openOSRSConfig.warning();
+	}
 
 	/**
 	 * This method is a fail safe to ensure that no duplicate
@@ -464,8 +508,8 @@ public class OPRSExternalPluginManager
 	{
 		OpenOSRSSplashScreen.stage(.66, "Loading external plugins");
 		MutableGraph<Class<? extends Plugin>> graph = GraphBuilder
-				.directed()
-				.build();
+			.directed()
+			.build();
 
 		for (Plugin plugin : plugins)
 		{
@@ -541,30 +585,30 @@ public class OPRSExternalPluginManager
 		{
 			List<Future<?>> curGroup = new ArrayList<>();
 			group.forEach(pluginClazz ->
-					curGroup.add(executorService.submit(() ->
+				curGroup.add(executorService.submit(() ->
+				{
+					Plugin plugininst;
+					try
 					{
-						Plugin plugininst;
-						try
+						//noinspection unchecked
+						plugininst = instantiate(scannedPlugins, (Class<Plugin>) pluginClazz, init, initConfig);
+						if (plugininst == null)
 						{
-							//noinspection unchecked
-							plugininst = instantiate(scannedPlugins, (Class<Plugin>) pluginClazz, init, initConfig);
-							if (plugininst == null)
-							{
-								return;
-							}
-
-							scannedPlugins.add(plugininst);
-						}
-						catch (PluginInstantiationException e)
-						{
-							log.warn("Error instantiating plugin!", e);
 							return;
 						}
 
-						loaded.getAndIncrement();
+						scannedPlugins.add(plugininst);
+					}
+					catch (PluginInstantiationException e)
+					{
+						log.warn("Error instantiating plugin!", e);
+						return;
+					}
 
-						OpenOSRSSplashScreen.stage(.67, .75, "Loading external plugins", loaded.get(), scannedPlugins.size());
-					})));
+					loaded.getAndIncrement();
+
+					OpenOSRSSplashScreen.stage(.67, .75, "Loading external plugins", loaded.get(), scannedPlugins.size());
+				})));
 			curGroup.forEach(future ->
 			{
 				try
@@ -585,17 +629,17 @@ public class OPRSExternalPluginManager
 	private Plugin instantiate(List<Plugin> scannedPlugins, Class<Plugin> clazz, boolean init, boolean initConfig) throws PluginInstantiationException
 	{
 		net.runelite.client.plugins.PluginDependency[] pluginDependencies =
-				clazz.getAnnotationsByType(net.runelite.client.plugins.PluginDependency.class);
+			clazz.getAnnotationsByType(net.runelite.client.plugins.PluginDependency.class);
 		List<Plugin> deps = new ArrayList<>();
 		for (net.runelite.client.plugins.PluginDependency pluginDependency : pluginDependencies)
 		{
 			Optional<net.runelite.client.plugins.Plugin> dependency =
-					Stream.concat(runelitePluginManager.getPlugins().stream(), scannedPlugins.stream())
-							.filter(p -> p.getClass() == pluginDependency.value()).findFirst();
+				Stream.concat(runelitePluginManager.getPlugins().stream(), scannedPlugins.stream())
+					.filter(p -> p.getClass() == pluginDependency.value()).findFirst();
 			if (dependency.isEmpty())
 			{
 				throw new PluginInstantiationException(
-						"Unmet dependency for " + clazz.getSimpleName() + ": " + pluginDependency.value().getSimpleName());
+					"Unmet dependency for " + clazz.getSimpleName() + ": " + pluginDependency.value().getSimpleName());
 			}
 			deps.add(dependency.get());
 		}
@@ -680,7 +724,7 @@ public class OPRSExternalPluginManager
 							runelitePluginManager.add(plugin);
 							runelitePluginManager.startPlugin(plugin);
 							eventBus.post(new OPRSPluginChanged(pluginsMap.get(plugin.getClass().getSimpleName()),
-									plugin, true));
+								plugin, true));
 						}
 						catch (PluginInstantiationException e)
 						{
@@ -780,23 +824,23 @@ public class OPRSExternalPluginManager
 				AtomicReference<String> support = new AtomicReference<>("");
 
 				updateManager.getRepositories().forEach(repository ->
-						repository.getPlugins().forEach((key, value) ->
+					repository.getPlugins().forEach((key, value) ->
+					{
+						if (key.equals(pluginId))
 						{
-							if (key.equals(pluginId))
-							{
-								support.set(value.projectUrl);
-							}
-						}));
+							support.set(value.projectUrl);
+						}
+					}));
 
 				pluginsInfoMap.put(
-						plugin.getClass().getSimpleName(),
-						new HashMap<>()
-						{{
-							put("version", externalPluginManager.getPlugin(pluginId).getDescriptor().getVersion());
-							put("id", externalPluginManager.getPlugin(pluginId).getDescriptor().getPluginId());
-							put("provider", externalPluginManager.getPlugin(pluginId).getDescriptor().getProvider());
-							put("support", support.get());
-						}}
+					plugin.getClass().getSimpleName(),
+					new HashMap<>()
+					{{
+						put("version", externalPluginManager.getPlugin(pluginId).getDescriptor().getVersion());
+						put("id", externalPluginManager.getPlugin(pluginId).getDescriptor().getPluginId());
+						put("provider", externalPluginManager.getPlugin(pluginId).getDescriptor().getProvider());
+						put("support", support.get());
+					}}
 				);
 
 				String[] packageName = plugin.getClass().getPackage().toString().split("\\.");
@@ -912,10 +956,10 @@ public class OPRSExternalPluginManager
 					try
 					{
 						SwingUtil.syncExec(() ->
-								JOptionPane.showMessageDialog(ClientUI.getFrame(),
-										pluginId + " is outdated and cannot be installed",
-										"Installation error",
-										JOptionPane.ERROR_MESSAGE));
+							JOptionPane.showMessageDialog(ClientUI.getFrame(),
+								pluginId + " is outdated and cannot be installed",
+								"Installation error",
+								JOptionPane.ERROR_MESSAGE));
 					}
 					catch (InvocationTargetException | InterruptedException ignored)
 					{
@@ -956,7 +1000,10 @@ public class OPRSExternalPluginManager
 		return false;
 	}
 
-	public boolean uninstall(String pluginId) { return uninstall(pluginId, false); }
+	public boolean uninstall(String pluginId)
+	{
+		return uninstall(pluginId, false);
+	}
 
 	public boolean uninstall(String pluginId, boolean skip)
 	{
@@ -1023,10 +1070,18 @@ public class OPRSExternalPluginManager
 						error = true;
 					}
 				}
+				catch (VerifyException ex)
+				{
+					// This should never happen but can crash the client
+					log.error("Cannot update plugin '{}', the SHA512 hash mismatches! {}", plugin.id, ex.getMessage());
+					error = true;
+					break;
+				}
 				catch (PluginRuntimeException ex)
 				{
 					// This should never happen but can crash the client
 					log.warn("Cannot update plugin '{}', the user probably has another client open", plugin.id);
+					log.error(String.valueOf(ex));
 					error = true;
 					break;
 				}
@@ -1060,17 +1115,17 @@ public class OPRSExternalPluginManager
 	public List<PluginWrapper> getDisabledPlugins()
 	{
 		return externalPluginManager.getResolvedPlugins()
-				.stream()
-				.filter(not(externalPluginManager.getStartedPlugins()::contains))
-				.collect(Collectors.toList());
+			.stream()
+			.filter(not(externalPluginManager.getStartedPlugins()::contains))
+			.collect(Collectors.toList());
 	}
 
 	public List<String> getDisabledPluginIds()
 	{
 		return getDisabledPlugins()
-				.stream()
-				.map(PluginWrapper::getPluginId)
-				.collect(Collectors.toList());
+			.stream()
+			.map(PluginWrapper::getPluginId)
+			.collect(Collectors.toList());
 	}
 
 	public List<PluginWrapper> getStartedPlugins()
@@ -1174,8 +1229,6 @@ public class OPRSExternalPluginManager
 	}
 
 	/**
-	 * Mostly stolen from
-	 *
 	 * @param url URL to encode
 	 * @return URL, with path, query and ref encoded
 	 */
@@ -1183,13 +1236,13 @@ public class OPRSExternalPluginManager
 	{
 		String s;
 		String path = url.getPath() != null ? Stream.of(url.getPath().split("/"))
-				.map(s2 -> URLEncoder.encode(s2, StandardCharsets.UTF_8)).collect(Collectors.joining("/")) : "";
+			.map(s2 -> URLEncoder.encode(s2, StandardCharsets.UTF_8)).collect(Collectors.joining("/")) : "";
 		return url.getProtocol()
-				+ ':'
-				+ (((s = url.getAuthority()) != null && s.length() > 0) ? "//" + s : "")
-				+ (path)
-				+ (((s = url.getQuery()) != null) ? '?' + urlEncode(s) : "")
-				+ (((s = url.getRef()) != null) ? '#' + urlEncode(s) : "");
+			+ ':'
+			+ (((s = url.getAuthority()) != null && s.length() > 0) ? "//" + s : "")
+			+ (path)
+			+ (((s = url.getQuery()) != null) ? '?' + urlEncode(s) : "")
+			+ (((s = url.getRef()) != null) ? '#' + urlEncode(s) : "");
 	}
 
 	private static String urlEncode(String s)
