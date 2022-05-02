@@ -44,8 +44,8 @@ public interface OpenOSRSConfig extends Config
 	@AllArgsConstructor
 	enum BootstrapMode
 	{
-		STABLE("Stable");
-//		NIGHTLY("Nightly");
+		STABLE("Fusion"),
+		NIGHTLY("RuneLite");
 
 		private final String name;
 

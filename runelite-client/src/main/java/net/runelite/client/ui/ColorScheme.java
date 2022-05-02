@@ -32,10 +32,10 @@ import java.awt.Color;
 public class ColorScheme
 {
 	/* The blue color used for the branding's accents */
-	public static final Color BRAND_BLUE = new Color(220, 138, 0);
+	public static final Color BRAND_BLUE = new Color(243, 255, 0);
 
 	/* The blue color used for the branding's accents, with lowered opacity */
-	public static final Color BRAND_BLUE_TRANSPARENT = new Color(220, 138, 0, 120);
+	public static final Color BRAND_BLUE_TRANSPARENT = new Color(255, 226, 0, 255);
 
 	/* The orange color used for the branding's accents */
 	public static final Color BRAND_ORANGE = BRAND_BLUE;
@@ -58,7 +58,7 @@ public class ColorScheme
 	public static final Color PROGRESS_ERROR_COLOR = new Color(230, 30, 30);
 
 	/* The color for the orange progress bar (used in ge offers, farming tracker, etc)*/
-	public static final Color PROGRESS_INPROGRESS_COLOR = new Color(230, 150, 30);
+	public static final Color PROGRESS_INPROGRESS_COLOR = new Color(255, 226, 0);
 
 	/* The color for the price indicator in the ge search results */
 	public static final Color GRAND_EXCHANGE_PRICE = new Color(110, 225, 110);

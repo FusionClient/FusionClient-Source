@@ -119,7 +119,7 @@ public class OpenOSRSPlugin extends Plugin
 			clientToolbar.removeNavigation(navButton);
 		}
 
-		if (!configManager.getConfig(HideExternalManagerConfig.class).hideOPRS())
+		else if (!configManager.getConfig(HideExternalManagerConfig.class).hideOPRS())
 		{
 			clientToolbar.addNavigation(navButton);
 		}

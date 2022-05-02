@@ -48,7 +48,7 @@ public class OpenOSRSSplashScreen extends JFrame
 
 	private OpenOSRSSplashScreen()
 	{
-		this.setTitle("OpenOSRS");
+		this.setTitle("Fusion");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(FRAME_SIZE);
 		this.setLayout(new BorderLayout());
@@ -121,7 +121,7 @@ public class OpenOSRSSplashScreen extends JFrame
 		{
 			try
 			{
-				INSTANCE = null;//new OpenOSRSSplashScreen();
+				INSTANCE = new OpenOSRSSplashScreen();
 			}
 			catch (Exception e)
 			{
