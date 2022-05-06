@@ -130,7 +130,7 @@ public class SplashScreen extends JFrame implements ActionListener
 		timer.setRepeats(true);
 		timer.start();
 
-		setVisible(true);
+		//setVisible(true);
 	}
 
 	@Override
