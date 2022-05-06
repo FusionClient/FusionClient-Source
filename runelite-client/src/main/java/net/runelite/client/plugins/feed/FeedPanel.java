@@ -101,7 +101,7 @@ class FeedPanel extends PluginPanel
 
 	static
 	{
-		RUNELITE_ICON = new ImageIcon(ImageUtil.loadImageResource(FeedPanel.class, "runelite.png"));
+		RUNELITE_ICON = new ImageIcon(ImageUtil.loadImageResource(FeedPanel.class, "Fusion_Icon.png"));
 		OSRS_ICON = new ImageIcon(ImageUtil.loadImageResource(FeedPanel.class, "osrs.png"));
 	}
 

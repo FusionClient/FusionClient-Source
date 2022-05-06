@@ -68,7 +68,7 @@ public class SplashScreen extends JFrame implements ActionListener
 
 	private SplashScreen()
 	{
-		BufferedImage logo = ImageUtil.loadImageResource(SplashScreen.class, "Fusion_Icon1");
+		BufferedImage logo = ImageUtil.loadImageResource(SplashScreen.class, "Fusion_Icon1.png");
 
 		setTitle("Fusion Launcher");
 
@@ -130,7 +130,7 @@ public class SplashScreen extends JFrame implements ActionListener
 		timer.setRepeats(true);
 		timer.start();
 
-		//setVisible(true);
+		setVisible(true);
 	}
 
 	@Override
