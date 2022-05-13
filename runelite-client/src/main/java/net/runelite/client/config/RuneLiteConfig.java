@@ -534,5 +534,15 @@ public interface RuneLiteConfig extends Config
 			return weight;
 		}
 	}
-}
 
+	@ConfigItem(
+		keyName = "dragHotkey",
+		name = "Drag Hotkey",
+		description = "Configures the hotkey used to drag UI elements around",
+		position = 52
+	)
+	default Keybind dragHotkey()
+	{
+		return Keybind.ALT;
+	}
+}
