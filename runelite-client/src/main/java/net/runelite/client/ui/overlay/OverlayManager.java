@@ -24,9 +24,18 @@
  */
 package net.runelite.client.ui.overlay;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ArrayListMultimap;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Predicate;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -65,7 +74,6 @@ public class OverlayManager
 	private static final String OVERLAY_CONFIG_PREFERRED_SIZE = "_preferredSize";
 	private static final String RUNELITE_CONFIG_GROUP_NAME = RuneLiteConfig.class.getAnnotation(ConfigGroup.class).value();
 
-	@VisibleForTesting
 	static final Comparator<Overlay> OVERLAY_COMPARATOR = (a, b) ->
 	{
 		final OverlayPosition aPos = MoreObjects.firstNonNull(a.getPreferredPosition(), a.getPosition());
@@ -83,9 +91,9 @@ public class OverlayManager
 		// For non-dynamic overlays, higher priority means
 		// draw *earlier* so that they are closer to their
 		// defined position.
-		return aPos == OverlayPosition.DYNAMIC
-				? a.getPriority().compareTo(b.getPriority())
-				: b.getPriority().compareTo(a.getPriority());
+		return aPos == OverlayPosition.DYNAMIC || aPos == OverlayPosition.DETACHED
+			? a.getPriority().compareTo(b.getPriority())
+			: b.getPriority().compareTo(a.getPriority());
 	};
 
 	/**
@@ -331,7 +339,6 @@ public class OverlayManager
 			{
 				overlayMap.put(drawHook, overlay);
 			}
-
 		}
 
 		for (Object key : overlayMap.keys())
@@ -378,15 +385,15 @@ public class OverlayManager
 		if (overlay.getPreferredLocation() != null)
 		{
 			configManager.setConfiguration(
-					RUNELITE_CONFIG_GROUP_NAME,
-					key,
-					overlay.getPreferredLocation());
+				RUNELITE_CONFIG_GROUP_NAME,
+				key,
+				overlay.getPreferredLocation());
 		}
 		else
 		{
 			configManager.unsetConfiguration(
-					RUNELITE_CONFIG_GROUP_NAME,
-					key);
+				RUNELITE_CONFIG_GROUP_NAME,
+				key);
 		}
 	}
 
@@ -396,15 +403,15 @@ public class OverlayManager
 		if (overlay.getPreferredSize() != null)
 		{
 			configManager.setConfiguration(
-					RUNELITE_CONFIG_GROUP_NAME,
-					key,
-					overlay.getPreferredSize());
+				RUNELITE_CONFIG_GROUP_NAME,
+				key,
+				overlay.getPreferredSize());
 		}
 		else
 		{
 			configManager.unsetConfiguration(
-					RUNELITE_CONFIG_GROUP_NAME,
-					key);
+				RUNELITE_CONFIG_GROUP_NAME,
+				key);
 		}
 	}
 
@@ -414,15 +421,15 @@ public class OverlayManager
 		if (overlay.getPreferredPosition() != null)
 		{
 			configManager.setConfiguration(
-					RUNELITE_CONFIG_GROUP_NAME,
-					key,
-					overlay.getPreferredPosition());
+				RUNELITE_CONFIG_GROUP_NAME,
+				key,
+				overlay.getPreferredPosition());
 		}
 		else
 		{
 			configManager.unsetConfiguration(
-					RUNELITE_CONFIG_GROUP_NAME,
-					key);
+				RUNELITE_CONFIG_GROUP_NAME,
+				key);
 		}
 	}
 
