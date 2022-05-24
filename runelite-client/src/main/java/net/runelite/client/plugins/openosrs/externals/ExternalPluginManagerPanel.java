@@ -28,6 +28,7 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
+import org.checkerframework.checker.guieffect.qual.UI;
 
 @Slf4j
 public class ExternalPluginManagerPanel extends PluginPanel
@@ -40,9 +41,9 @@ public class ExternalPluginManagerPanel extends PluginPanel
 	static
 	{
 		final BufferedImage addIconRaw =
-			ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "add_raw_icon.png");
+				ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "add_raw_icon.png");
 		final BufferedImage addIconGh = ImageUtil
-			.resizeImage(ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "gh_icon.png"), 14, 14);
+				.resizeImage(ImageUtil.loadImageResource(ExternalPluginManagerPanel.class, "gh_icon.png"), 14, 14);
 		ADD_ICON_RAW = new ImageIcon(addIconRaw);
 		ADD_HOVER_ICON_RAW = new ImageIcon(ImageUtil.alphaOffset(addIconRaw, 0.53f));
 		ADD_ICON_GH = new ImageIcon(addIconGh);
@@ -106,12 +107,12 @@ public class ExternalPluginManagerPanel extends PluginPanel
 				JTextField owner = new JTextField();
 				JTextField name = new JTextField();
 				Object[] message = {
-					"Github Repository owner:", owner,
-					"Github Repository name:", name
+						"Github Repository owner:", owner,
+						"Github Repository name:", name
 				};
 
 				int option =
-					JOptionPane.showConfirmDialog(ClientUI.getFrame(), message, "Add repository", JOptionPane.OK_CANCEL_OPTION);
+						JOptionPane.showConfirmDialog(ClientUI.getFrame(), message, "Add repository", JOptionPane.OK_CANCEL_OPTION);
 				if (option != JOptionPane.OK_OPTION || owner.getText().equals("") || name.getText().equals(""))
 				{
 					return;
@@ -120,14 +121,14 @@ public class ExternalPluginManagerPanel extends PluginPanel
 				if (externalPluginManager.doesGhRepoExist(owner.getText(), name.getText()))
 				{
 					JOptionPane.showMessageDialog(ClientUI.getFrame(), "This repository already exists.", "Error!",
-						JOptionPane.ERROR_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
 				if (OPRSExternalPluginManager.testGHRepository(owner.getText(), name.getText()))
 				{
 					JOptionPane.showMessageDialog(ClientUI.getFrame(), "This doesn't appear to be a valid repository.", "Error!",
-						JOptionPane.ERROR_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -162,12 +163,12 @@ public class ExternalPluginManagerPanel extends PluginPanel
 				JTextField id = new JTextField();
 				JTextField url = new JTextField();
 				Object[] message = {
-					"Repository ID:", id,
-					"Repository URL:", url
+						"Repository ID:", id,
+						"Repository URL:", url
 				};
 
 				int option =
-					JOptionPane.showConfirmDialog(ClientUI.getFrame(), message, "Add repository", JOptionPane.OK_CANCEL_OPTION);
+						JOptionPane.showConfirmDialog(ClientUI.getFrame(), message, "Add repository", JOptionPane.OK_CANCEL_OPTION);
 				if (option != JOptionPane.OK_OPTION || id.getText().equals("") || url.getText().equals(""))
 				{
 					return;
@@ -176,16 +177,16 @@ public class ExternalPluginManagerPanel extends PluginPanel
 				if (id.getText().startsWith("gh:") || id.getText().contains("|"))
 				{
 					JOptionPane.showMessageDialog(ClientUI.getFrame(),
-						"Repository id cannot begin with \"gh:\"\nor contain the pipe character '|'.", "Error!",
-						JOptionPane.ERROR_MESSAGE);
+							"Repository id cannot begin with \"gh:\"\nor contain the pipe character '|'.", "Error!",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
 				if (externalPluginManager.doesRepoExist(id.getText()))
 				{
 					JOptionPane.showMessageDialog(ClientUI.getFrame(),
-						String.format("The repository with id %s already exists.", id.getText()), "Error!",
-						JOptionPane.ERROR_MESSAGE);
+							String.format("The repository with id %s already exists.", id.getText()), "Error!",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -206,26 +207,24 @@ public class ExternalPluginManagerPanel extends PluginPanel
 					}
 
 					urlActual = new URL(urlText);
-				}
-				catch (MalformedURLException e)
+				} catch (MalformedURLException e)
 				{
 					JOptionPane.showMessageDialog(ClientUI.getFrame(), "This doesn't appear to be a valid repository.", "Error!",
-						JOptionPane.ERROR_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
 				if ((pluginJson == null && OPRSExternalPluginManager.testRepository(urlActual)) || (pluginJson != null && OPRSExternalPluginManager.testRepository(urlActual, pluginJson)))
 				{
 					JOptionPane.showMessageDialog(ClientUI.getFrame(), "This doesn't appear to be a valid repository.", "Error!",
-						JOptionPane.ERROR_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
 				if (pluginJson == null)
 				{
 					externalPluginManager.addRepository(id.getText(), urlActual);
-				}
-				else
+				} else
 				{
 					externalPluginManager.addRepository(id.getText(), urlActual, pluginJson);
 				}
@@ -266,6 +265,14 @@ public class ExternalPluginManagerPanel extends PluginPanel
 		return mainTabPane;
 	}
 
+	private boolean userDontAskAgain()
+	{
+		Font font = (Font) UIManager.get("OptionPane.buttonFont");
+		int answer = showWarningDialog();
+		UIManager.put("OptionPane.buttonFont", font);
+		return answer != 0;
+	}
+
 	private boolean userDidNotAcceptRisk()
 	{
 		Font font = (Font) UIManager.get("OptionPane.buttonFont");
@@ -278,24 +285,23 @@ public class ExternalPluginManagerPanel extends PluginPanel
 	{
 		Object[] options = {"Okay, I accept the risk", "Never mind, turn back"};
 		JLabel label = new JLabel("<html><p>" +
-			"If you were messaged in game or on Discord and " +
-			"were told to add this repo, you may be getting lured/phished/hacked. " +
-			"Adding plugins from unverified sources may put your account " +
-			"or personal information at risk!</p></html>"
+				"Don't be retarded and get lured/phished/hacked. " +
+				"If you're unsure on a repo, ask in discord.</p></html>"
 		);
-		Font font = new Font(FontManager.getRunescapeFont().getName(), FontManager.getRunescapeFont().getStyle(), 32);
+		Font font = new Font(FontManager.getRunescapeFont().getName(), FontManager.getRunescapeFont().getStyle(), 16);
 		UIManager.put("OptionPane.buttonFont", font);
-		label.setPreferredSize(new Dimension(450, 200));
+		label.setPreferredSize(new Dimension(290, 70));
 		label.setFont(font);
 
+
 		return JOptionPane.showOptionDialog(new JFrame(),
-			label,
-			"Account security warning",
-			JOptionPane.YES_NO_OPTION,
-			JOptionPane.WARNING_MESSAGE,
-			null,
-			options,
-			options[1]);
+				label,
+				"Account security warning",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE,
+				null,
+				options,
+				options[1]);
 	}
 
 	static JScrollPane wrapContainer(final JPanel container)
