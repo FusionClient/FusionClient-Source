@@ -43,9 +43,9 @@ public class Text
 	private static final Pattern TAG_REGEXP = Pattern.compile("<[^>]*>");
 	public static final JaroWinklerDistance DISTANCE = new JaroWinklerDistance();
 	public static final Splitter COMMA_SPLITTER = Splitter
-		.on(",")
-		.omitEmptyStrings()
-		.trimResults();
+			.on(",")
+			.omitEmptyStrings()
+			.trimResults();
 
 	private static final Joiner COMMA_JOINER = Joiner.on(",").skipNulls();
 
@@ -101,7 +101,7 @@ public class Text
 
 		int open, close;
 		if ((open = StringUtils.indexOf(str, '<')) == -1
-			|| (close = StringUtils.indexOf(str, '>', open)) == -1)
+				|| (close = StringUtils.indexOf(str, '>', open)) == -1)
 		{
 			return strLen == str.length() ? str : str.substring(0, strLen - 1);
 		}
@@ -116,7 +116,7 @@ public class Text
 			}
 
 			if ((open = StringUtils.indexOf(str, '<', open)) == -1
-				|| (StringUtils.indexOf(str, '>', open)) == -1)
+					|| (StringUtils.indexOf(str, '>', open)) == -1)
 			{
 				return StringUtils.substring(str, close + 1);
 			}
@@ -138,8 +138,8 @@ public class Text
 			i = close + 1;
 		}
 		while ((open = StringUtils.indexOf(str, '<', close)) != -1
-			&& (close = StringUtils.indexOf(str, '>', open)) != -1
-			&& i < strLen);
+				&& (close = StringUtils.indexOf(str, '>', open)) != -1
+				&& i < strLen);
 
 		while (i < strLen)
 		{
@@ -147,6 +147,17 @@ public class Text
 		}
 
 		return SB.toString();
+	}
+
+	/**
+	 * Removes levels from the given string.
+	 *
+	 * @param str The string to remove levels from.
+	 * @return The given string with all levels removed from it.
+	 */
+	public static String removeLevels(String str)
+	{
+		return str.contains("  (level-") ? str.substring(0, str.indexOf("  (level-")).trim() : str;
 	}
 
 	public static String removeTags(String str)
@@ -224,9 +235,9 @@ public class Text
 	public static String sanitizeMultilineText(String str)
 	{
 		return removeTags(str
-			.replaceAll("-<br>", "-")
-			.replaceAll("<br>", " ")
-			.replaceAll("[ ]+", " "));
+				.replaceAll("-<br>", "-")
+				.replaceAll("<br>", " ")
+				.replaceAll("[ ]+", " "));
 	}
 
 	/**
@@ -290,13 +301,13 @@ public class Text
 		if (o.name().equals(toString))
 		{
 			return WordUtils
-				.capitalize(toString.toLowerCase(), '_')
-				.replace('_', ' ');
+					.capitalize(toString.toLowerCase(), '_')
+					.replace('_', ' ');
 		}
 
 		return toString;
 	}
-	
+
 	/**
 	 * Checks if all the search terms in the given list matches at least one keyword.
 	 *
@@ -307,7 +318,7 @@ public class Text
 		for (String term : searchTerms)
 		{
 			if (keywords.stream().noneMatch((t) -> t.contains(term) ||
-				DISTANCE.apply(t, term) > 0.9))
+					DISTANCE.apply(t, term) > 0.9))
 			{
 				return false;
 			}

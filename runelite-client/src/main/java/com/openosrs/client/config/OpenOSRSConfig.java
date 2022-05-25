@@ -170,6 +170,7 @@ public interface OpenOSRSConfig extends Config
 		min = 15,
 		max = 100
 	)
+
 	@ConfigItem(
 		keyName = "opacityPercentage",
 		name = "Opacity percentage",
@@ -183,6 +184,18 @@ public interface OpenOSRSConfig extends Config
 	default int opacityPercentage()
 	{
 		return 100;
+	}
+
+	@ConfigItem(
+			keyName = "warning",
+			name = "External Manager Warning",
+			description = "To re-enable the warning, Idk why you would",
+			position = 11,
+			title = miscClientTitle
+	)
+	default boolean warning()
+	{
+		return true;
 	}
 
 	@ConfigItem(
@@ -203,17 +216,6 @@ public interface OpenOSRSConfig extends Config
 			hidden = true
 	)
 	void setExternalRepositories(String val);
-
-	@ConfigItem(
-			keyName = "warning",
-			name = "",
-			description = "",
-			hidden = true
-	)
-	default boolean warning()
-	{
-		return true;
-	}
 
 	@ConfigItem(
 			keyName = "fGetDisabledPlugins",

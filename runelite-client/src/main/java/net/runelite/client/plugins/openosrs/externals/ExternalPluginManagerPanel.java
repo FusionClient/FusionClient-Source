@@ -1,25 +1,5 @@
 package net.runelite.client.plugins.openosrs.externals;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.inject.Inject;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.plugins.OPRSExternalPluginManager;
@@ -28,7 +8,16 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
-import org.checkerframework.checker.guieffect.qual.UI;
+
+import javax.inject.Inject;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @Slf4j
 public class ExternalPluginManagerPanel extends PluginPanel
@@ -99,9 +88,20 @@ public class ExternalPluginManagerPanel extends PluginPanel
 			@Override
 			public void mousePressed(MouseEvent mouseEvent)
 			{
-				if (userDidNotAcceptRisk())
+				if (externalPluginManager.getWarning())
 				{
-					return;
+					JCheckBox checkbox = new JCheckBox("Don't show again.");
+					int answer = showWarningDialog(checkbox);
+
+					if (answer == 1 || answer == -1)
+					{
+						return;
+					}
+
+					if (checkbox.isSelected())
+					{
+						externalPluginManager.setWarning(false);
+					}
 				}
 
 				JTextField owner = new JTextField();
@@ -155,9 +155,20 @@ public class ExternalPluginManagerPanel extends PluginPanel
 			@Override
 			public void mousePressed(MouseEvent mouseEvent)
 			{
-				if (userDidNotAcceptRisk())
+				if (externalPluginManager.getWarning())
 				{
-					return;
+					JCheckBox checkbox = new JCheckBox("Don't show again.");
+					int answer = showWarningDialog(checkbox);
+
+					if (answer == 1 || answer == -1)
+					{
+						return;
+					}
+
+					if (checkbox.isSelected())
+					{
+						externalPluginManager.setWarning(true);
+					}
 				}
 
 				JTextField id = new JTextField();
@@ -265,34 +276,14 @@ public class ExternalPluginManagerPanel extends PluginPanel
 		return mainTabPane;
 	}
 
-	private boolean userDontAskAgain()
+	private int showWarningDialog(JCheckBox checkBox)
 	{
-		Font font = (Font) UIManager.get("OptionPane.buttonFont");
-		int answer = showWarningDialog();
-		UIManager.put("OptionPane.buttonFont", font);
-		return answer != 0;
-	}
-
-	private boolean userDidNotAcceptRisk()
-	{
-		Font font = (Font) UIManager.get("OptionPane.buttonFont");
-		int answer = showWarningDialog();
-		UIManager.put("OptionPane.buttonFont", font);
-		return answer != 0;
-	}
-
-	private int showWarningDialog()
-	{
-		Object[] options = {"Okay, I accept the risk", "Never mind, turn back"};
+		Object[] options = {"Okay, I accept the risk", "Never mind, turn back", checkBox};
 		JLabel label = new JLabel("<html><p>" +
-				"Don't be retarded and get lured/phished/hacked. " +
-				"If you're unsure on a repo, ask in discord.</p></html>"
+				"If you were messaged in game or on Discord and were told to add this repo, <br>" +
+				"you may be getting <u>lured/phished/hacked</u>. " + "Adding plugins from unverified <br>" +
+				"sources may put your account or personal information at risk!</p></html>"
 		);
-		Font font = new Font(FontManager.getRunescapeFont().getName(), FontManager.getRunescapeFont().getStyle(), 16);
-		UIManager.put("OptionPane.buttonFont", font);
-		label.setPreferredSize(new Dimension(290, 70));
-		label.setFont(font);
-
 
 		return JOptionPane.showOptionDialog(new JFrame(),
 				label,
@@ -301,7 +292,7 @@ public class ExternalPluginManagerPanel extends PluginPanel
 				JOptionPane.WARNING_MESSAGE,
 				null,
 				options,
-				options[1]);
+				options[0]);
 	}
 
 	static JScrollPane wrapContainer(final JPanel container)
