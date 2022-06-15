@@ -36,25 +36,23 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.BufferProvider;
 import net.runelite.api.Client;
 import net.runelite.api.MainBufferProvider;
 import net.runelite.api.RenderOverview;
 import net.runelite.api.Renderable;
 import net.runelite.api.Skill;
 import net.runelite.api.WorldMapManager;
-import net.runelite.api.events.BeforeMenuRender;
 import net.runelite.api.events.BeforeRender;
 import net.runelite.api.events.FakeXpDrop;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ScriptCallbackEvent;
 import net.runelite.api.hooks.Callbacks;
-import net.runelite.api.hooks.DrawCallbacks;
 import net.runelite.api.widgets.Widget;
 import static net.runelite.api.widgets.WidgetInfo.WORLD_MAP_VIEW;
 import net.runelite.api.widgets.WidgetItem;
@@ -62,7 +60,6 @@ import net.runelite.client.Notifier;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.DrawFinished;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.input.MouseManager;
 import net.runelite.client.task.Scheduler;
@@ -72,7 +69,6 @@ import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayRenderer;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.DeferredEventBus;
-import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.RSTimeUnit;
 
 /**
@@ -88,12 +84,7 @@ public class Hooks implements Callbacks
 
 	private static final GameTick GAME_TICK = new GameTick();
 	private static final BeforeRender BEFORE_RENDER = new BeforeRender();
-	private static final DrawFinished drawFinishedEvent = new DrawFinished();
-/*
-	public int mouseX = 0;
-	public int mouseY = 0;
-	public final Image cursor = ImageUtil.loadImageResource(Hooks.class, "cursor.png");
-*/
+
 	private static Client client;
 	private final OverlayRenderer renderer;
 	private final EventBus eventBus;
@@ -117,11 +108,20 @@ public class Hooks implements Callbacks
 	private boolean shouldProcessGameTick;
 
 	private static MainBufferProvider lastMainBufferProvider;
-	public static Graphics2D lastGraphics;
+	private static Graphics2D lastGraphics;
+
+	@FunctionalInterface
+	public interface RenderableDrawListener
+	{
+		boolean draw(Renderable renderable, boolean ui);
+	}
+
+	private final List<RenderableDrawListener> renderableDrawListeners = new ArrayList<>();
 
 	/**
 	 * Get the Graphics2D for the MainBufferProvider image
 	 * This caches the Graphics2D instance so it can be reused
+	 *
 	 * @param mainBufferProvider
 	 * @return
 	 */
@@ -143,19 +143,19 @@ public class Hooks implements Callbacks
 
 	@Inject
 	private Hooks(
-			Client client,
-			OverlayRenderer renderer,
-			EventBus eventBus,
-			DeferredEventBus deferredEventBus,
-			Scheduler scheduler,
-			InfoBoxManager infoBoxManager,
-			ChatMessageManager chatMessageManager,
-			MouseManager mouseManager,
-			KeyManager keyManager,
-			ClientThread clientThread,
-			DrawManager drawManager,
-			Notifier notifier,
-			ClientUI clientUi
+		Client client,
+		OverlayRenderer renderer,
+		EventBus eventBus,
+		DeferredEventBus deferredEventBus,
+		Scheduler scheduler,
+		InfoBoxManager infoBoxManager,
+		ChatMessageManager chatMessageManager,
+		MouseManager mouseManager,
+		KeyManager keyManager,
+		ClientThread clientThread,
+		DrawManager drawManager,
+		Notifier notifier,
+		ClientUI clientUi
 	)
 	{
 		this.client = client;
@@ -226,7 +226,7 @@ public class Hooks implements Callbacks
 		}
 		catch (Exception ex)
 		{
-			log.warn("error during main loop tasks", ex);
+			log.error("error during main loop tasks", ex);
 		}
 	}
 
@@ -302,16 +302,12 @@ public class Hooks implements Callbacks
 	@Override
 	public MouseEvent mouseDragged(MouseEvent mouseEvent)
 	{
-//		mouseX = mouseEvent.getX();
-//		mouseY = mouseEvent.getY();
 		return mouseManager.processMouseDragged(mouseEvent);
 	}
 
 	@Override
 	public MouseEvent mouseMoved(MouseEvent mouseEvent)
 	{
-//		mouseX = mouseEvent.getX();
-//		mouseY = mouseEvent.getY();
 		return mouseManager.processMouseMoved(mouseEvent);
 	}
 
@@ -355,7 +351,7 @@ public class Hooks implements Callbacks
 		}
 		catch (Exception ex)
 		{
-			log.warn("Error during overlay rendering", ex);
+			log.error("Error during overlay rendering", ex);
 		}
 
 		notifier.processFlash(graphics2d);
@@ -379,7 +375,7 @@ public class Hooks implements Callbacks
 			Dimension stretchedDimensions = client.getStretchedDimensions();
 
 			if (lastStretchedDimensions == null || !lastStretchedDimensions.equals(stretchedDimensions)
-					|| (stretchedImage != null && stretchedImage.validate(gc) == VolatileImage.IMAGE_INCOMPATIBLE))
+				|| (stretchedImage != null && stretchedImage.validate(gc) == VolatileImage.IMAGE_INCOMPATIBLE))
 			{
 				/*
 					Reuse the resulting image instance to avoid creating an extreme amount of objects
@@ -402,9 +398,9 @@ public class Hooks implements Callbacks
 			}
 
 			stretchedGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-					client.isStretchedFast()
-							? RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
-							: RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				client.isStretchedFast()
+					? RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
+					: RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			stretchedGraphics.drawImage(image, 0, 0, stretchedDimensions.width, stretchedDimensions.height, null);
 
 			finalImage = stretchedImage;
@@ -414,22 +410,6 @@ public class Hooks implements Callbacks
 			finalImage = image;
 		}
 
-/*		if (client.isMirrored())
-		{
-			drawFinishedEvent.image = copy(finalImage);
-			drawFinishedEvent.image.getGraphics().drawImage(cursor, mouseX, mouseY, null);
-			eventBus.post(drawFinishedEvent);
-		}
-
-		try
-		{
-			renderer.renderOverlayLayer((Graphics2D)finalImage.getGraphics(), OverlayLayer.AFTER_MIRROR);
-		}
-		catch (Exception ex)
-		{
-			log.warn("Error during post-mirror rendering", ex);
-		}
-*/
 		// Draw the image onto the game canvas
 		graphics.drawImage(finalImage, 0, 0, client.getCanvas());
 
@@ -440,10 +420,11 @@ public class Hooks implements Callbacks
 
 	/**
 	 * Copy an image
+	 *
 	 * @param src
 	 * @return
 	 */
-	public static Image copy(Image src)
+	private static Image copy(Image src)
 	{
 		final int width = src.getWidth(null);
 		final int height = src.getHeight(null);
@@ -466,7 +447,7 @@ public class Hooks implements Callbacks
 		}
 		catch (Exception ex)
 		{
-			log.warn("Error during overlay rendering", ex);
+			log.error("Error during overlay rendering", ex);
 		}
 	}
 
@@ -482,7 +463,7 @@ public class Hooks implements Callbacks
 		}
 		catch (Exception ex)
 		{
-			log.warn("Error during overlay rendering", ex);
+			log.error("Error during overlay rendering", ex);
 		}
 	}
 
@@ -534,7 +515,7 @@ public class Hooks implements Callbacks
 		}
 		catch (Exception ex)
 		{
-			log.warn("Error during overlay rendering", ex);
+			log.error("Error during overlay rendering", ex);
 		}
 	}
 
@@ -550,7 +531,7 @@ public class Hooks implements Callbacks
 		}
 		catch (Exception ex)
 		{
-			log.warn("Error during overlay rendering", ex);
+			log.error("Error during overlay rendering", ex);
 		}
 	}
 
@@ -570,49 +551,39 @@ public class Hooks implements Callbacks
 
 		Skill skill = Skill.values()[statId];
 		FakeXpDrop fakeXpDrop = new FakeXpDrop(
-				skill,
-				xp
+			skill,
+			xp
 		);
 		eventBus.post(fakeXpDrop);
 	}
 
-
-	public static void clearColorBuffer(int x, int y, int width, int height, int color)
+	public void registerRenderableDrawListener(RenderableDrawListener listener)
 	{
-		BufferProvider bp = client.getBufferProvider();
-		int canvasWidth = bp.getWidth();
-		int[] pixels = bp.getPixels();
+		renderableDrawListeners.add(listener);
+	}
 
-		int pixelPos = y * canvasWidth + x;
-		int pixelJump = canvasWidth - width;
+	public void unregisterRenderableDrawListener(RenderableDrawListener listener)
+	{
+		renderableDrawListeners.remove(listener);
+	}
 
-		for (int cy = y; cy < y + height; cy++)
+	@Override
+	public boolean draw(Renderable renderable, boolean drawingUi)
+	{
+		try
 		{
-			for (int cx = x; cx < x + width; cx++)
+			for (RenderableDrawListener renderableDrawListener : renderableDrawListeners)
 			{
-				pixels[pixelPos++] = 0;
+				if (!renderableDrawListener.draw(renderable, drawingUi))
+				{
+					return false;
+				}
 			}
-			pixelPos += pixelJump;
 		}
-	}
-
-	public static void renderDraw(Renderable renderable, int orientation, int pitchSin, int pitchCos, int yawSin, int yawCos, int x, int y, int z, long hash)
-	{
-		DrawCallbacks drawCallbacks = client.getDrawCallbacks();
-		if (drawCallbacks != null)
+		catch (Exception ex)
 		{
-			drawCallbacks.draw(renderable, orientation, pitchSin, pitchCos, yawSin, yawCos, x, y, z, hash);
+			log.error("exception from renderable draw listener", ex);
 		}
-		else
-		{
-			renderable.draw(orientation, pitchSin, pitchCos, yawSin, yawCos, x, y, z, hash);
-		}
-	}
-
-	public static boolean drawMenu()
-	{
-		BeforeMenuRender event = new BeforeMenuRender();
-		client.getCallbacks().post(event);
-		return event.isConsumed();
+		return true;
 	}
 }
